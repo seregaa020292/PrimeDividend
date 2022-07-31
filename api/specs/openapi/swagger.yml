@@ -1,0 +1,91 @@
+openapi: "3.0.0"
+
+info:
+  version: 1.0.1
+  title: "PrimeDividend"
+  description: "API для приложения PrimeDividend"
+externalDocs:
+  description: "Спецификация Swagger"
+  url: https://swagger.io/specification
+
+servers:
+  - url: http://localhost/api
+    description: "Local server"
+
+security:
+  - bearerAuth: [ ]
+
+tags:
+  - name: user
+    description: "Инвестор"
+  - name: currency
+    description: "Валюта"
+  - name: provider
+    description: "Поставщики котировок"
+  - name: instrument
+    description: "Ценные инструменты, по классификации"
+  - name: market
+    description: "Список ценных бумаг"
+  - name: register
+    description: "Связь с поставщиком котировок и ценной бумагой"
+  - name: portfolio
+    description: "Портфели инвестора"
+  - name: asset
+    description: "Активы инвестора"
+
+paths:
+  /portfolio/{portfolioId}:
+    get:
+      tags: [ portfolio ]
+      operationId: getPortfolioById
+      parameters:
+        - $ref: "#/components/parameters/portfolioId"
+      responses:
+        200:
+          description: todo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/portfolio'
+        500:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    portfolioId:
+      in: path
+      name: portfolioId
+      schema:
+        type: string
+        format: uuid
+      required: true
+
+  schemas:
+    portfolio:
+      type: object
+      required: [ date ]
+      properties:
+        created_at:
+          type: string
+          format: date
+          example: "2020-03-22"
+    error:
+      type: object
+      required: [ slug, message ]
+      properties:
+        slug:
+          type: string
+        message:
+          type: string

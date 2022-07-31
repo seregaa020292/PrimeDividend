@@ -1,0 +1,9 @@
+/.idea
+/.DS_Store
+/node_modules
+/tmp
+/dist
+/yarn-debug.log*
+/yarn-error.log*
+/.done
+/.eslintcache

@@ -1,0 +1,105 @@
+version: "3.9"
+
+services:
+  gateway:
+    build:
+      context: gateway/docker
+      dockerfile: development/nginx/Dockerfile
+    ports:
+      - "80:80"
+
+  api-nginx:
+    build:
+      context: api/docker
+      dockerfile: development/nginx/Dockerfile
+    volumes:
+      - ./api:/app
+
+  api-go:
+    build:
+      context: api/docker
+      dockerfile: development/go/Dockerfile
+      args:
+        USER_ID: 1000
+        GROUP_ID: 1000
+    environment:
+      APP_ENV: development
+      SITE_ORIGIN: http://localhost
+      DB_HOST: api-postgres
+      DB_NAME: app
+      DB_USER: app
+      DB_PASSWORD_FILE: /run/secrets/api_db_password
+      GOOSE_DRIVER: postgres
+      GOOSE_DIR_MIGRATIONS: ./database/migrations
+      MAILER_HOST: mailer
+      MAILER_PORT: 1025
+      MAILER_USERNAME: app
+      MAILER_PASSWORD_FILE: /run/secrets/api_mailer_password
+      MAILER_ENCRYPTION: tcp
+      MAILER_FROM_EMAIL: mail@app.test
+    secrets:
+      - api_db_password
+      - api_mailer_password
+    volumes:
+      - ./api:/app
+    command: sh -c "until [ -f .done ] ; do sleep 1 ; done && air"
+
+  front-nginx:
+    build:
+      context: front/docker/development/nginx
+
+  front-node:
+    build:
+      context: front/docker/development/node
+    volumes:
+      - ./front:/app
+    command: sh -c "until [ -f .done ] ; do sleep 1 ; done && yarn dev"
+    tty: true
+
+  api-postgres:
+    image: postgres:13.3-alpine
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD_FILE: /run/secrets/api_db_password
+    secrets:
+      - api_db_password
+    volumes:
+      - api-postgres:/var/lib/postgresql/data
+    ports:
+      - "54321:5432"
+
+  api-redis:
+    image: redis:6-alpine
+    ports:
+      - "63791:6379"
+    restart: on-failure
+    volumes:
+      - api-redis:/data
+
+  api-swagger:
+    image: swaggerapi/swagger-ui
+    environment:
+      SWAGGER_JSON: /spec/swagger.yml
+    volumes:
+      - ./api/specs/openapi:/spec
+
+  api-swagger-editor:
+    image: swaggerapi/swagger-editor
+    environment:
+      SWAGGER_FILE: /spec/swagger.yml
+    volumes:
+      - ./api/specs/openapi:/spec
+
+  mailer:
+    image: mailhog/mailhog
+
+secrets:
+  api_db_password:
+    file: ./docker/development/secrets/api_db_password
+  api_mailer_password:
+    file: ./docker/development/secrets/api_mailer_password
+
+volumes:
+  api-postgres:
+  api-redis:
