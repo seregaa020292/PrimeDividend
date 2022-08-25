@@ -42,6 +42,7 @@ services:
       - api_mailer_password
     volumes:
       - ./api:/app
+      - ./specs:/app/specs:ro
     command: sh -c "until [ -f .done ] ; do sleep 1 ; done && air"
 
   front-nginx:
@@ -80,16 +81,16 @@ services:
   api-swagger:
     image: swaggerapi/swagger-ui
     environment:
-      SWAGGER_JSON: /spec/swagger.yml
+      SWAGGER_JSON: /specs/swagger.yml
     volumes:
-      - ./api/specs/openapi:/spec
+      - ./specs/openapi:/specs
 
   api-swagger-editor:
     image: swaggerapi/swagger-editor
     environment:
-      SWAGGER_FILE: /spec/swagger.yml
+      SWAGGER_FILE: /specs/swagger.yml
     volumes:
-      - ./api/specs/openapi:/spec
+      - ./specs/openapi:/specs
 
   mailer:
     image: mailhog/mailhog

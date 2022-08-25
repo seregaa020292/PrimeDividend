@@ -1,0 +1,4 @@
+!.gitignore
+http-client.env.json
+test.http
+test.*.http

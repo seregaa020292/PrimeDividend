@@ -1,0 +1,6 @@
+##### Портфель #####
+
+#### Портфель по ИД
+GET {{host}}/portfolio/{{portfolioId}}
+Content-type: application/json
+Accept: application/xml

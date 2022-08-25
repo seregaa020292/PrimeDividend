@@ -2,7 +2,7 @@
 set -e
 
 readonly service="$1"
-readonly path="../../internal/handlers/http"
+readonly path="../../internal/ports/http"
 
 mkdir -p "$path/$service"
 
