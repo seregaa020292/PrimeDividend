@@ -2,28 +2,54 @@ package http
 
 import (
 	"github.com/go-chi/chi/v5"
+
+	"context"
+	"log"
 	"net/http"
+
 	"primedivident/internal/infrastructures/server/http/middlewares"
 )
 
-type Handler func(router chi.Router) http.Handler
+const (
+	startPath = "/"
+	addr      = ":3000"
+)
 
-type Handlers []Handler
+type (
+	Handler  func(router chi.Router) http.Handler
+	Handlers []Handler
+)
 
-func RunHTTPServer(createHandlers Handlers) {
+type Server struct {
+	server *http.Server
+}
+
+func NewServer() Server {
+	return Server{}
+}
+
+func (s *Server) Run(createHandlers Handlers) {
 	apiRouter := chi.NewRouter()
 	middlewares.Setup(apiRouter)
 
-	rootRouter := chi.NewRouter()
+	router := chi.NewRouter()
 
 	for _, createHandler := range createHandlers {
-		rootRouter.Mount("/", createHandler(apiRouter))
+		router.Mount(startPath, createHandler(apiRouter))
 	}
 
-	//logrus.Info("Starting HTTP server")
+	log.Println("Starting HTTP server")
 
-	err := http.ListenAndServe(":3000", rootRouter)
-	if err != nil {
-		//logrus.WithError(err).Panic("Unable to start HTTP server")
+	s.server = &http.Server{
+		Addr:    addr,
+		Handler: router,
 	}
+
+	if err := s.server.ListenAndServe(); err != nil {
+		log.Fatalf("Unable to start HTTP server: %s", err)
+	}
+}
+
+func (s *Server) Stop(ctx context.Context) error {
+	return s.server.Shutdown(ctx)
 }

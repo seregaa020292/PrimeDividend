@@ -1,16 +1,18 @@
 package main
 
 import (
-	"github.com/go-chi/chi/v5"
-	"net/http"
-	serverHttp "primedivident/internal/infrastructures/server/http"
-	"primedivident/internal/ports/http/portfolio"
+	"primedivident/internal/infrastructures/server/http/handler"
+	"primedivident/pkg/graceful"
+	"time"
 )
 
 func main() {
-	serverHttp.RunHTTPServer(serverHttp.Handlers{
-		func(router chi.Router) http.Handler {
-			return portfolio.HandlerFromMux(portfolio.NewHttpServer(), router)
-		},
+	server := InitializeServer()
+
+	g := graceful.NewGraceful(5 * time.Second)
+	g.Shutdown(graceful.Operations{
+		server.Stop,
 	})
+
+	server.Run(handler.Handlers)
 }

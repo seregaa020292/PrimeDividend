@@ -5,9 +5,13 @@ package main
 
 import (
 	"github.com/google/wire"
+	serverHttp "primedivident/internal/infrastructures/server/http"
 )
 
-func InitHttpProtocol() interface{} {
-	wire.Build()
-	return nil
+func InitializeServer() serverHttp.Server {
+	wire.Build(
+		serverHttp.NewServer,
+	)
+
+	return serverHttp.Server{}
 }
