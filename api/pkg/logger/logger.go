@@ -4,7 +4,7 @@ import (
 	"log"
 	"sync"
 
-	"primedivident/internal/config"
+	"primedivident/internal/config/consts"
 )
 
 type (
@@ -34,9 +34,9 @@ func GetLogger() Logger {
 		log.Println("Start Logger")
 
 		instance = NewLogrus(Config{
-			Format:  config.TimestampFormat,
-			FileLog: config.TmpLog,
-			Level:   config.LevelLog,
+			Format:  consts.TimestampFormat,
+			FileLog: consts.TmpLog,
+			Level:   consts.LevelLog,
 		})
 	})
 

@@ -5,13 +5,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"log"
 	"net/http"
+	"primedivident/internal/config/consts"
 
 	"primedivident/internal/infrastructures/server/http/middlewares"
-)
-
-const (
-	startPath = "/"
-	addr      = ":3000"
 )
 
 type (
@@ -34,13 +30,13 @@ func (s *Server) Run(createHandlers Handlers) {
 	router := chi.NewRouter()
 
 	for _, createHandler := range createHandlers {
-		router.Mount(startPath, createHandler(apiRouter))
+		router.Mount("/", createHandler(apiRouter))
 	}
 
 	log.Println("Starting HTTP server")
 
 	s.server = &http.Server{
-		Addr:    addr,
+		Addr:    consts.ServerAddr,
 		Handler: router,
 	}
 

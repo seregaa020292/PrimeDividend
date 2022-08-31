@@ -6,7 +6,7 @@ import (
 
 	"github.com/jinzhu/now"
 
-	"primedivident/internal/config"
+	"primedivident/internal/config/consts"
 )
 
 var (
@@ -16,7 +16,7 @@ var (
 
 func GetNow() *now.Now {
 	once.Do(func() {
-		location, _ := time.LoadLocation(config.Timezone)
+		location, _ := time.LoadLocation(consts.Timezone)
 
 		nowConfig := &now.Config{
 			WeekStartDay: time.Monday,
