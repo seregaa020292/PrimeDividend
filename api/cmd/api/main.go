@@ -10,7 +10,7 @@ import (
 func main() {
 	server := wire.InitializeServer()
 
-	//config.GetConfig()
+	config.GetConfig()
 
 	g := graceful.NewGraceful(config.TimeoutShutdown)
 	g.Shutdown(graceful.Operations{

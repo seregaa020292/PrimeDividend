@@ -26,6 +26,7 @@ services:
       APP_ENV: development
       SITE_ORIGIN: http://localhost
       DB_HOST: api-postgres
+      DB_PORT: 54321
       DB_NAME: app
       DB_USER: app
       DB_PASSWORD_FILE: /run/secrets/api_db_password

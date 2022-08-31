@@ -1,35 +1,55 @@
 package config
 
 import (
+	"io/ioutil"
 	"log"
+	"strings"
 	"sync"
 
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
+type App struct {
+	Env        string `env:"APP_ENV" env-default:"development"`
+	SiteOrigin string `env:"SITE_ORIGIN" env-default:"http://localhost"`
+	LogLevel   string `env:"LOG_LEVEL" env-default:"debug"`
+}
+
+func (a App) IsDevelopment() bool {
+	return a.Env == "development"
+}
+
+type Mailer struct {
+	Host         string `env:"MAILER_HOST"`
+	Port         int    `env:"MAILER_PORT"`
+	Username     string `env:"MAILER_USERNAME"`
+	PasswordFile string `env:"MAILER_PASSWORD_FILE"`
+	Encryption   string `env:"MAILER_ENCRYPTION"`
+	FromEmail    string `env:"MAILER_FROM_EMAIL"`
+}
+
+func (m Mailer) Password() string {
+	file, _ := ioutil.ReadFile(m.PasswordFile)
+	return strings.TrimSpace(string(file))
+}
+
+type Postgres struct {
+	Username     string `env:"DB_USER" env-required:"true"`
+	PasswordFile string `env:"DB_PASSWORD_FILE" env-required:"true"`
+	Host         string `env:"DB_HOST" env-required:"true"`
+	Port         int    `env:"DB_PORT" env-required:"true"`
+	Database     string `env:"DB_NAME" env-required:"true"`
+}
+
+func (p Postgres) Password() string {
+	file, _ := ioutil.ReadFile(p.PasswordFile)
+	return strings.TrimSpace(string(file))
+}
+
 type Config struct {
-	IsDebug       bool `env:"IS_DEBUG" env-default:"false"`
-	IsDevelopment bool `env:"IS_DEV" env-default:"false"`
-	Listen        struct {
-		Type       string `env:"LISTEN_TYPE" env-default:"port" env-description:"'port' or 'sock'. if 'sock' then env 'SOCKET_FILE' is required"`
-		BindIP     string `env:"BIND_IP" env-default:"0.0.0.0"`
-		Port       string `env:"PORT" env-default:"3000"`
-		SocketFile string `env:"SOCKET_FILE" env-default:"app.sock"`
-	}
-	AppConfig struct {
-		LogLevel  string `env:"LOG_LEVEL" env-default:"trace"`
-		AdminUser struct {
-			Email    string `env:"ADMIN_EMAIL" env-default:"admin"`
-			Password string `env:"ADMIN_PWD" env-default:"admin"`
-		}
-	}
-	PostgreSQL struct {
-		Username string `env:"PSQL_USERNAME" env-required:"true"`
-		Password string `env:"PSQL_PASSWORD" env-required:"true"`
-		Host     string `env:"PSQL_HOST" env-required:"true"`
-		Port     string `env:"PSQL_PORT" env-required:"true"`
-		Database string `env:"PSQL_DATABASE" env-required:"true"`
-	}
+	App      App
+	Mailer   Mailer
+	Postgres Postgres
 }
 
 var (
@@ -39,11 +59,11 @@ var (
 
 func GetConfig() Config {
 	once.Do(func() {
-		log.Println("Read config")
+		log.Println("Start config")
 
 		instance = Config{}
 
-		if err := cleanenv.ReadEnv(instance); err != nil {
+		if err := cleanenv.ReadEnv(&instance); err != nil {
 			help, _ := cleanenv.GetDescription(instance, nil)
 			log.Println(help)
 			log.Fatalln(err)
