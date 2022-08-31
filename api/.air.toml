@@ -5,11 +5,11 @@ tmp_dir = "tmp/air"
 [build]
   args_bin = []
   bin = "./bin/app"
-  cmd = "go build -o bin/app cmd/api/main.go cmd/api/wire_gen.go"
+  cmd = "go build -o bin/app cmd/api/main.go"
   delay = 1000
-  exclude_dir = ["assets", "tmp", "vendor", "testdata"]
+  exclude_dir = ["assets", "tmp", "vendor", "testdata", "bin"]
   exclude_file = []
-  exclude_regex = ["_test.go"]
+  exclude_regex = ["_test\\.go"]
   exclude_unchanged = false
   follow_symlink = false
   full_bin = ""

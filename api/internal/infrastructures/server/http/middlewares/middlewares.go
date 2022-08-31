@@ -8,7 +8,7 @@ import (
 func Setup(router *chi.Mux) {
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
-	//router.Use(logs.NewStructuredLogger(logrus.StandardLogger()))
+	router.Use(NewStructuredLogger())
 	router.Use(middleware.Recoverer)
 
 	router.Use(corsHandler())

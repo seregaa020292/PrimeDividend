@@ -1,9 +1,8 @@
 package http
 
 import (
-	"github.com/go-chi/chi/v5"
-
 	"context"
+	"github.com/go-chi/chi/v5"
 	"log"
 	"net/http"
 

@@ -77,7 +77,7 @@ api-test-coverage:
 	docker-compose exec api-go go tool cover -func=./tmp/test/cover.out
 
 api-wire-gen:
-	docker-compose exec api-go wire ./cmd/api/
+	docker-compose exec api-go wire ./internal/infrastructures/wire
 
 api-oapi-gen:
 	docker-compose exec api-go go generate ./specs/openapi/

@@ -1,15 +1,18 @@
 package main
 
 import (
+	"primedivident/internal/config"
 	"primedivident/internal/infrastructures/server/http/handler"
+	"primedivident/internal/infrastructures/wire"
 	"primedivident/pkg/graceful"
-	"time"
 )
 
 func main() {
-	server := InitializeServer()
+	server := wire.InitializeServer()
 
-	g := graceful.NewGraceful(5 * time.Second)
+	//config.GetConfig()
+
+	g := graceful.NewGraceful(config.TimeoutShutdown)
 	g.Shutdown(graceful.Operations{
 		server.Stop,
 	})
