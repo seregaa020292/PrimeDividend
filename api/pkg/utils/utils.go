@@ -8,10 +8,6 @@ import (
 	"time"
 )
 
-func NewOf[T any](value T) *T {
-	return &value
-}
-
 func DownloadFile(filepath string, url string) error {
 	out, err := os.Create(filepath)
 	if err != nil {

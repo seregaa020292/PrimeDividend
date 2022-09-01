@@ -3,7 +3,7 @@ package main
 import (
 	"primedivident/internal/config"
 	"primedivident/internal/config/consts"
-	"primedivident/internal/infrastructures/server/http/handler"
+	"primedivident/internal/infrastructures/server/http/handlers"
 	"primedivident/internal/infrastructures/wire"
 	"primedivident/pkg/graceful"
 	"primedivident/pkg/logger"
@@ -25,5 +25,5 @@ func main() {
 		server.Stop,
 	})
 
-	server.Run(handler.Handlers)
+	server.Run(handlers.NewHandlers())
 }

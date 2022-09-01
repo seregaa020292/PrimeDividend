@@ -2,18 +2,18 @@ package http
 
 import (
 	"context"
-	"github.com/go-chi/chi/v5"
 	"log"
 	"net/http"
-	"primedivident/internal/config/consts"
 
+	"github.com/go-chi/chi/v5"
+
+	"primedivident/internal/config/consts"
 	"primedivident/internal/infrastructures/server/http/middlewares"
 )
 
-type (
-	Handler  func(router chi.Router) http.Handler
-	Handlers []Handler
-)
+type Handlers interface {
+	Setup(router chi.Router)
+}
 
 type Server struct {
 	server *http.Server
@@ -23,17 +23,13 @@ func NewServer() Server {
 	return Server{}
 }
 
-func (s *Server) Run(createHandlers Handlers) {
-	apiRouter := chi.NewRouter()
-	middlewares.Setup(apiRouter)
+func (s *Server) Run(handlers Handlers) {
+	log.Println("Starting HTTP server")
 
 	router := chi.NewRouter()
 
-	for _, createHandler := range createHandlers {
-		router.Mount("/", createHandler(apiRouter))
-	}
-
-	log.Println("Starting HTTP server")
+	middlewares.Setup(router)
+	handlers.Setup(router)
 
 	s.server = &http.Server{
 		Addr:    consts.ServerAddr,
@@ -46,5 +42,7 @@ func (s *Server) Run(createHandlers Handlers) {
 }
 
 func (s *Server) Stop(ctx context.Context) error {
+	log.Println("Stop HTTP server")
+
 	return s.server.Shutdown(ctx)
 }

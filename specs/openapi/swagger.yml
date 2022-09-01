@@ -57,6 +57,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/error'
 
+  /instrument:
+    get:
+      tags: [ instrument ]
+      operationId: getInstruments
+      responses:
+        200:
+          description: Все инструменты
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/instruments'
+        500:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -82,6 +103,30 @@ components:
           type: string
           format: date-time
           example: "2020-03-22"
+
+    instruments:
+      type: array
+      items:
+        $ref: '#/components/schemas/instrument'
+
+    instrument:
+      type: object
+      required: [ id, title, description, createdAt, updatedAt ]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
     meta:
       type: object
       description: Метаданные

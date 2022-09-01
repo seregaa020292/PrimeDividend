@@ -4,14 +4,48 @@
 package instrument
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"time"
 
+	openapi_types "github.com/deepmap/oapi-codegen/pkg/types"
 	"github.com/go-chi/chi/v5"
 )
 
+const (
+	BearerAuthScopes = "bearerAuth.Scopes"
+)
+
+// Error defines model for error.
+type Error struct {
+	Data  *interface{} `json:"data"`
+	Error struct {
+		// Код ошибки в приложении
+		Code string `json:"code"`
+
+		// Сообщение об ошибке для пользователя
+		Message string `json:"message"`
+	} `json:"error"`
+}
+
+// Instrument defines model for instrument.
+type Instrument struct {
+	CreatedAt   time.Time          `json:"createdAt"`
+	Description string             `json:"description"`
+	Id          openapi_types.UUID `json:"id"`
+	Title       string             `json:"title"`
+	UpdatedAt   time.Time          `json:"updatedAt"`
+}
+
+// Instruments defines model for instruments.
+type Instruments = []Instrument
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+
+	// (GET /instrument)
+	GetInstruments(w http.ResponseWriter, r *http.Request)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -22,6 +56,23 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(http.HandlerFunc) http.HandlerFunc
+
+// GetInstruments operation middleware
+func (siw *ServerInterfaceWrapper) GetInstruments(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{""})
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetInstruments(w, r)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
 
 type UnescapedCookieParamError struct {
 	ParamName string
@@ -130,6 +181,15 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
 	}
+	wrapper := ServerInterfaceWrapper{
+		Handler:            si,
+		HandlerMiddlewares: options.Middlewares,
+		ErrorHandlerFunc:   options.ErrorHandlerFunc,
+	}
+
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/instrument", wrapper.GetInstruments)
+	})
 
 	return r
 }
