@@ -1,9 +1,12 @@
 package response
 
 import (
-	"github.com/go-chi/render"
 	"net/http"
+
+	"github.com/go-chi/render"
+
 	"primedivident/internal/errors"
+	"primedivident/internal/infrastructures/server/http/middlewares"
 )
 
 type Response struct {
@@ -50,6 +53,11 @@ func (h HttpResponse) Err(err error) {
 	} else {
 		errorResponse = FindErrorType(slugError)
 	}
+
+	middlewares.GetLogEntry(h.r).
+		ExtraError(err).
+		ExtraField("error-slug", slugError.Slug()).
+		Warnf(slugError.Error())
 
 	if err := render.Render(h.w, h.r, errorResponse); err != nil {
 		panic(err)

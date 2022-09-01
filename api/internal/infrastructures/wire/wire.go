@@ -8,7 +8,7 @@ import (
 	serverHttp "primedivident/internal/infrastructures/server/http"
 )
 
-func InitializeServer() serverHttp.Server {
+func Initialize() serverHttp.Server {
 	wire.Build(
 		serverHttp.NewServer,
 	)

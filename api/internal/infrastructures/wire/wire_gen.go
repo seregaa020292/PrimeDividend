@@ -12,7 +12,7 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeServer() http.Server {
+func Initialize() http.Server {
 	server := http.NewServer()
 	return server
 }

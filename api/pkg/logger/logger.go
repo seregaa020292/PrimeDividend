@@ -3,8 +3,6 @@ package logger
 import (
 	"log"
 	"sync"
-
-	"primedivident/internal/config/consts"
 )
 
 type (
@@ -14,6 +12,8 @@ type (
 		Errorf(format string, args ...interface{})
 		Fatalln(args ...interface{})
 		ExtraFields(keyValues Fields) Logger
+		ExtraField(key string, value interface{}) Logger
+		ExtraError(err error) Logger
 	}
 	Fields map[string]interface{}
 
@@ -27,17 +27,18 @@ type (
 var (
 	instance Logger
 	once     sync.Once
+	config   Config
 )
+
+func SetConfig(c Config) {
+	log.Println("Config Logger")
+	config = c
+}
 
 func GetLogger() Logger {
 	once.Do(func() {
 		log.Println("Start Logger")
-
-		instance = NewLogrus(Config{
-			Format:  consts.TimestampFormat,
-			FileLog: consts.TmpLog,
-			Level:   consts.LevelLog,
-		})
+		instance = NewLogrus(config)
 	})
 
 	return instance

@@ -28,7 +28,7 @@ func NewLogrus(config Config) Logger {
 	})
 
 	logNew.SetLevel(level)
-	logNew.SetOutput(io.MultiWriter(outputFile(config.FileLog)))
+	logNew.SetOutput(io.MultiWriter( /*os.Stdout,*/ outputFile(config.FileLog)))
 
 	logEntry := &Logrus{logrus.NewEntry(logNew)}
 
@@ -57,6 +57,14 @@ func (l *Logrus) Fatalln(args ...interface{}) {
 
 func (l *Logrus) ExtraFields(fields Fields) Logger {
 	return &Logrus{l.Entry.WithFields(convertToFields(fields))}
+}
+
+func (l *Logrus) ExtraField(key string, value interface{}) Logger {
+	return &Logrus{l.Entry.WithField(key, value)}
+}
+
+func (l *Logrus) ExtraError(err error) Logger {
+	return &Logrus{l.Entry.WithError(err)}
 }
 
 func callerPrettyfier(pc uintptr, file string, line int, ok bool) logrus.Fields {
