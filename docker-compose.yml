@@ -26,7 +26,7 @@ services:
       APP_ENV: development
       SITE_ORIGIN: http://localhost
       DB_HOST: api-postgres
-      DB_PORT: 54321
+      DB_PORT: 5432
       DB_NAME: app
       DB_USER: app
       DB_PASSWORD_FILE: /run/secrets/api_db_password
@@ -38,6 +38,8 @@ services:
       MAILER_PASSWORD_FILE: /run/secrets/api_mailer_password
       MAILER_ENCRYPTION: tcp
       MAILER_FROM_EMAIL: mail@app.test
+      REDIS_HOST: api-redis
+      REDIS_PORT: 6379
     secrets:
       - api_db_password
       - api_mailer_password
