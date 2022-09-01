@@ -32,7 +32,7 @@ type Error struct {
 
 // Portfolio defines model for portfolio.
 type Portfolio struct {
-	CreatedAt *time.Time `json:"created_at,omitempty"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
 }
 
 // PortfolioId defines model for portfolioId.

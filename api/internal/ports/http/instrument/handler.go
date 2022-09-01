@@ -1,43 +1,37 @@
 package instrument
 
 import (
-	"github.com/google/uuid"
 	"net/http"
 	"primedivident/internal/config"
 	"primedivident/internal/infrastructures/server/http/response"
+	"primedivident/internal/modules/instrument/entity"
+	"primedivident/internal/modules/instrument/repository"
 	"primedivident/pkg/db/postgres"
-	"time"
 )
 
 type handler struct {
+	repository repository.Repository
 }
 
 func NewHandler() ServerInterface {
-	return handler{}
-}
-
-type ModelInstrument struct {
-	ID          uuid.UUID `db:"id"`
-	Title       string    `db:"title"`
-	Description string    `db:"description"`
-	CreatedAt   time.Time `db:"created_at"`
-	UpdatedAt   time.Time `db:"updated_at"`
+	return handler{
+		repository: repository.NewRepository(postgres.NewPostgres(config.GetConfig().Postgres)),
+	}
 }
 
 func (h handler) GetInstruments(w http.ResponseWriter, r *http.Request) {
-	pq := postgres.NewPostgres(config.GetConfig().Postgres)
+	httpResponse := response.New(w, r)
 
-	var instruments []ModelInstrument
-	err := pq.Select(&instruments, "SELECT * FROM instruments")
+	instruments, err := h.repository.GetAll()
 	if err != nil {
-		response.New(w, r).Err(err)
+		httpResponse.Err(err)
 		return
 	}
 
-	response.New(w, r).Json(http.StatusOK, presenter(instruments))
+	httpResponse.Json(http.StatusOK, presenter(instruments))
 }
 
-func presenter(instruments []ModelInstrument) Instruments {
+func presenter(instruments entity.Instruments) Instruments {
 	result := make(Instruments, len(instruments))
 
 	for i, instrument := range instruments {
