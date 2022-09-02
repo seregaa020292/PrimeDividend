@@ -5,63 +5,63 @@ import (
 	"primedivident/internal/errors"
 )
 
-type Error struct {
+type ErrorResponse struct {
 	Code    string
 	Message string
 }
 
-type ErrorResponse struct {
-	Data       *interface{} `json:"data"`
-	Err        Error        `json:"error"`
+type ErrorRespond struct {
+	Data       *interface{}  `json:"data"`
+	Err        ErrorResponse `json:"error"`
 	httpStatus int
 }
 
-func (e ErrorResponse) Render(w http.ResponseWriter, r *http.Request) error {
+func (e ErrorRespond) Render(w http.ResponseWriter, r *http.Request) error {
 	w.WriteHeader(e.httpStatus)
 	return nil
 }
 
-func InternalError(m string) ErrorResponse {
-	return ErrorResponse{
+func InternalError(m string) ErrorRespond {
+	return ErrorRespond{
 		httpStatus: http.StatusInternalServerError,
-		Err: Error{
+		Err: ErrorResponse{
 			Code:    "",
 			Message: m,
 		},
 	}
 }
 
-func BadRequest(m string) ErrorResponse {
-	return ErrorResponse{
+func BadRequest(m string) ErrorRespond {
+	return ErrorRespond{
 		httpStatus: http.StatusBadRequest,
-		Err: Error{
+		Err: ErrorResponse{
 			Code:    "",
 			Message: m,
 		},
 	}
 }
 
-func NotFound(m string) ErrorResponse {
-	return ErrorResponse{
+func NotFound(m string) ErrorRespond {
+	return ErrorRespond{
 		httpStatus: http.StatusNotFound,
-		Err: Error{
+		Err: ErrorResponse{
 			Code:    "",
 			Message: m,
 		},
 	}
 }
 
-func Unauthorised(m string) ErrorResponse {
-	return ErrorResponse{
+func Unauthorised(m string) ErrorRespond {
+	return ErrorRespond{
 		httpStatus: http.StatusUnauthorized,
-		Err: Error{
+		Err: ErrorResponse{
 			Code:    "",
 			Message: m,
 		},
 	}
 }
 
-func FindErrorType(slugError errors.SlugError) ErrorResponse {
+func FindErrorType(slugError errors.SlugError) ErrorRespond {
 	switch slugError.ErrorType() {
 	case errors.ErrorTypeAuthorization:
 		return Unauthorised(slugError.Slug())

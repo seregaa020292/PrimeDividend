@@ -20,7 +20,7 @@ var (
 
 func GetConfig() Config {
 	once.Do(func() {
-		log.Println("Start config")
+		log.Println("Start Config")
 
 		instance = Config{}
 

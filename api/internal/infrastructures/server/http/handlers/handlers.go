@@ -9,13 +9,21 @@ import (
 )
 
 type handlers struct {
+	portfolio  portfolio.ServerInterface
+	instrument instrument.ServerInterface
 }
 
-func NewHandlers() serverHttp.Handlers {
-	return handlers{}
+func NewHandlers(
+	portfolio portfolio.ServerInterface,
+	instrument instrument.ServerInterface,
+) serverHttp.Handlers {
+	return handlers{
+		portfolio:  portfolio,
+		instrument: instrument,
+	}
 }
 
 func (h handlers) Setup(router chi.Router) {
-	portfolio.HandlerFromMux(portfolio.NewHandler(), router)
-	instrument.HandlerFromMux(instrument.NewHandler(), router)
+	portfolio.HandlerFromMux(h.portfolio, router)
+	instrument.HandlerFromMux(h.instrument, router)
 }

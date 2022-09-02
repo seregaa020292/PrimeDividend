@@ -30,9 +30,9 @@ var (
 	config   Config
 )
 
-func SetConfig(c Config) {
-	log.Println("Config Logger")
+func InitConfig(c Config) Logger {
 	config = c
+	return GetLogger()
 }
 
 func GetLogger() Logger {

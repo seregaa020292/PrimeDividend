@@ -2,10 +2,9 @@ package http
 
 import (
 	"context"
+	"github.com/go-chi/chi/v5"
 	"log"
 	"net/http"
-
-	"github.com/go-chi/chi/v5"
 
 	"primedivident/internal/config/consts"
 	"primedivident/internal/infrastructures/server/http/middlewares"
@@ -16,20 +15,23 @@ type Handlers interface {
 }
 
 type Server struct {
-	server *http.Server
+	server   *http.Server
+	handlers Handlers
 }
 
-func NewServer() Server {
-	return Server{}
+func NewServer(handlers Handlers) Server {
+	return Server{
+		handlers: handlers,
+	}
 }
 
-func (s *Server) Run(handlers Handlers) {
+func (s *Server) Run() {
 	log.Println("Starting HTTP server")
 
 	router := chi.NewRouter()
 
 	middlewares.Setup(router)
-	handlers.Setup(router)
+	s.handlers.Setup(router)
 
 	s.server = &http.Server{
 		Addr:    consts.ServerAddr,

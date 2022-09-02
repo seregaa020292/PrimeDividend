@@ -7,12 +7,23 @@
 package wire
 
 import (
+	"primedivident/internal/config"
 	"primedivident/internal/infrastructures/server/http"
+	"primedivident/internal/infrastructures/server/http/handlers"
+	"primedivident/internal/modules/instrument/repository"
+	"primedivident/internal/ports/http/instrument"
+	"primedivident/internal/ports/http/portfolio"
 )
 
 // Injectors from wire.go:
 
-func Initialize() http.Server {
-	server := http.NewServer()
+func Initialize(cfg config.Config) http.Server {
+	logger := ProvideLogger(cfg)
+	serverInterface := portfolio.NewHandler(logger)
+	postgres := ProvidePostgres(cfg)
+	repositoryRepository := repository.NewRepository(postgres)
+	instrumentServerInterface := instrument.NewHandler(logger, repositoryRepository)
+	httpHandlers := handlers.NewHandlers(serverInterface, instrumentServerInterface)
+	server := http.NewServer(httpHandlers)
 	return server
 }
