@@ -52,17 +52,12 @@ type StructuredLoggerEntry struct {
 }
 
 func (l *StructuredLoggerEntry) Write(status, bytes int, header http.Header, elapsed time.Duration, extra interface{}) {
-	loggerFields := l.logger.ExtraFields(logger.Fields{
-		"resp_status":       status,
-		"resp_bytes_length": bytes,
-		"resp_elapsed_ms":   float64(elapsed.Nanoseconds()) / 1000000.0,
-	})
-
-	switch {
-	case status > http.StatusBadRequest:
-		loggerFields.Errorf("Request fail")
-	default:
-		loggerFields.Infof("Request complete")
+	if status > http.StatusBadRequest {
+		l.logger.ExtraFields(logger.Fields{
+			"resp_status":       status,
+			"resp_bytes_length": bytes,
+			"resp_elapsed_ms":   float64(elapsed.Nanoseconds()) / 1000000.0,
+		}).Errorf("Request fail")
 	}
 }
 

@@ -3,7 +3,7 @@ package main
 import (
 	"primedivident/internal/config"
 	"primedivident/internal/config/consts"
-	"primedivident/internal/infrastructures/wire"
+	"primedivident/internal/infrastructure/wire"
 	"primedivident/pkg/graceful"
 )
 

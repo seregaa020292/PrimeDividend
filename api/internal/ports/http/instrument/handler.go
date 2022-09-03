@@ -2,7 +2,7 @@ package instrument
 
 import (
 	"net/http"
-	"primedivident/internal/infrastructures/server/http/response"
+	"primedivident/internal/infrastructure/server/http/response"
 	"primedivident/internal/modules/instrument/repository"
 	"primedivident/pkg/logger"
 )

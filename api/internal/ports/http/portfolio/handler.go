@@ -2,7 +2,7 @@ package portfolio
 
 import (
 	"net/http"
-	"primedivident/internal/infrastructures/server/http/response"
+	"primedivident/internal/infrastructure/server/http/response"
 	"primedivident/pkg/logger"
 	"primedivident/pkg/utils"
 	"time"

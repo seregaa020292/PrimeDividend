@@ -8,8 +8,8 @@ package wire
 
 import (
 	"primedivident/internal/config"
-	"primedivident/internal/infrastructures/server/http"
-	"primedivident/internal/infrastructures/server/http/handlers"
+	"primedivident/internal/infrastructure/server/http"
+	"primedivident/internal/infrastructure/server/http/handlers"
 	"primedivident/internal/modules/instrument/repository"
 	"primedivident/internal/ports/http/instrument"
 	"primedivident/internal/ports/http/portfolio"

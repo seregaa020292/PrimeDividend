@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-chi/render"
 
-	"primedivident/internal/infrastructures/server/http/middlewares"
+	"primedivident/internal/infrastructure/server/http/middlewares"
 	"primedivident/internal/mistakes"
 )
 

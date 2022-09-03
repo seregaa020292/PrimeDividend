@@ -6,7 +6,7 @@
 # Main
 
 init: full-clear docker-build up \
-	full-init full-done
+ full-init full-done
 
 up: docker-up
 down: docker-down
@@ -76,10 +76,12 @@ api-test-coverage:
 	docker-compose exec api-go go test --short -coverprofile=./tmp/test/cover.out -v ./...
 	docker-compose exec api-go go tool cover -func=./tmp/test/cover.out
 
-api-wire-gen:
+api-gen-full: api-gen-wire api-gen-oapi
+
+api-gen-wire:
 	docker-compose exec api-go wire ./internal/infrastructures/wire/
 
-api-oapi-gen:
+api-gen-oapi:
 	docker-compose exec api-go go generate ./specs/openapi/
 
 # ==============================================================================

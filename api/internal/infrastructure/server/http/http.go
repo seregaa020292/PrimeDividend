@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"primedivident/internal/config/consts"
-	"primedivident/internal/infrastructures/server/http/middlewares"
+	"primedivident/internal/infrastructure/server/http/middlewares"
 )
 
 type Handlers interface {
