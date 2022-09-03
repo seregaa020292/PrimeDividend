@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-chi/render"
 
-	"primedivident/internal/errors"
 	"primedivident/internal/infrastructures/server/http/middlewares"
+	"primedivident/internal/mistakes"
 )
 
 type Response struct {
@@ -47,7 +47,7 @@ func (h Respond) NoContent() {
 func (h Respond) Err(err error) {
 	var errorResponse ErrorRespond
 
-	slugError, ok := err.(errors.SlugError)
+	slugError, ok := err.(mistakes.SlugError)
 	if !ok {
 		errorResponse = InternalError(err.Error())
 	} else {

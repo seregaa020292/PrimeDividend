@@ -1,4 +1,4 @@
-package errors
+package mistakes
 
 type ErrorType struct {
 	t string

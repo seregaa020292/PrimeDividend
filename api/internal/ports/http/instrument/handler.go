@@ -12,8 +12,12 @@ type handler struct {
 	repository repository.Repository
 }
 
-func NewHandler(logger logger.Logger, repository repository.Repository) ServerInterface {
+func NewHandler(
+	logger logger.Logger,
+	repository repository.Repository,
+) ServerInterface {
 	return handler{
+		logger:     logger,
 		repository: repository,
 	}
 }
@@ -27,5 +31,5 @@ func (h handler) GetInstruments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respond.Json(http.StatusOK, instruments)
+	respond.Json(http.StatusOK, presenterGetAll(instruments))
 }
