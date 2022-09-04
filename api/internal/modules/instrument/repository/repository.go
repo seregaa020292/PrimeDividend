@@ -2,6 +2,7 @@ package repository
 
 import (
 	"primedivident/internal/modules/instrument/entity"
+	"primedivident/internal/modules/instrument/model"
 	"primedivident/pkg/db/postgres"
 )
 
@@ -20,7 +21,7 @@ func NewRepository(db *postgres.Postgres) Repository {
 func (r repository) GetAll() (entity.Instruments, error) {
 	var instruments entity.Instruments
 
-	err := r.db.Select(&instruments, "SELECT * FROM instruments")
+	err := r.db.Select(&instruments, model.Instrument.SelectAll())
 
 	return instruments, err
 }

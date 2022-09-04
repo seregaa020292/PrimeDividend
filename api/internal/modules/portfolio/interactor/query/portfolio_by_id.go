@@ -9,8 +9,8 @@ import (
 )
 
 type (
-	PortfolioId   = uuid.UUID
-	PortfolioById = decorator.QueryHandler[PortfolioId, entity.Portfolio]
+	PortfolioId   uuid.UUID
+	PortfolioById decorator.QueryHandler[PortfolioId, entity.Portfolio]
 )
 
 type portfolioById struct {
@@ -26,7 +26,7 @@ func NewPortfolioById(
 }
 
 func (q portfolioById) Fetch(portfolioId PortfolioId) (entity.Portfolio, error) {
-	portfolio, err := q.repository.FindById(portfolioId)
+	portfolio, err := q.repository.FindById(uuid.UUID(portfolioId))
 	if err != nil {
 		return entity.Portfolio{}, mistake.UnknownError(err, "")
 	}

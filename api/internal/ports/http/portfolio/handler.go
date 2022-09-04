@@ -26,14 +26,11 @@ func NewHandler(
 func (h handler) GetPortfolioById(w http.ResponseWriter, r *http.Request, portfolioId PortfolioId) {
 	respond := response.New(w, r)
 
-	portfolio, err := h.queryPortfolioById.Fetch(portfolioId)
+	portfolio, err := h.queryPortfolioById.Fetch(query.PortfolioId(portfolioId))
 	if err != nil {
 		respond.Err(err)
 		return
 	}
 
-	respond.Json(http.StatusOK, Portfolio{
-		Id:        portfolio.ID,
-		CreatedAt: portfolio.CreatedAt,
-	})
+	respond.Json(http.StatusOK, presenterPortfolio(portfolio))
 }
