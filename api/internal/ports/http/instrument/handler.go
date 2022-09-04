@@ -3,29 +3,29 @@ package instrument
 import (
 	"net/http"
 	"primedivident/internal/infrastructure/server/http/response"
-	"primedivident/internal/modules/instrument/repository"
+	"primedivident/internal/modules/instrument/interactor/query"
 	"primedivident/pkg/logger"
 )
 
 type handler struct {
-	logger     logger.Logger
-	repository repository.Repository
+	logger             logger.Logger
+	queryInstrumentAll query.InstrumentAll
 }
 
 func NewHandler(
 	logger logger.Logger,
-	repository repository.Repository,
+	queryInstrumentAll query.InstrumentAll,
 ) ServerInterface {
 	return handler{
-		logger:     logger,
-		repository: repository,
+		logger:             logger,
+		queryInstrumentAll: queryInstrumentAll,
 	}
 }
 
 func (h handler) GetInstruments(w http.ResponseWriter, r *http.Request) {
 	respond := response.New(w, r)
 
-	instruments, err := h.repository.GetAll()
+	instruments, err := h.queryInstrumentAll.Fetch(query.FilterOrderInstruments{})
 	if err != nil {
 		respond.Err(err)
 		return

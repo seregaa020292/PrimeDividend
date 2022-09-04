@@ -79,7 +79,7 @@ api-test-coverage:
 api-gen-full: api-gen-wire api-gen-oapi
 
 api-gen-wire:
-	docker-compose exec api-go wire ./internal/infrastructures/wire/
+	docker-compose exec api-go wire ./internal/infrastructure/wire/
 
 api-gen-oapi:
 	docker-compose exec api-go go generate ./specs/openapi/

@@ -5,15 +5,19 @@ import (
 	"primedivident/pkg/db/postgres"
 )
 
-type Repository struct {
+type Repository interface {
+	GetAll() (entity.Instruments, error)
+}
+
+type repository struct {
 	db *postgres.Postgres
 }
 
 func NewRepository(db *postgres.Postgres) Repository {
-	return Repository{db: db}
+	return repository{db: db}
 }
 
-func (r Repository) GetAll() (entity.Instruments, error) {
+func (r repository) GetAll() (entity.Instruments, error) {
 	var instruments entity.Instruments
 
 	err := r.db.Select(&instruments, "SELECT * FROM instruments")

@@ -97,8 +97,11 @@ components:
   schemas:
     portfolio:
       type: object
-      required: [ date ]
+      required: [ id, createdAt ]
       properties:
+        id:
+          type: string
+          format: uuid
         createdAt:
           type: string
           format: date-time

@@ -8,9 +8,6 @@ import (
 	"primedivident/internal/config"
 	serverHttp "primedivident/internal/infrastructure/server/http"
 	"primedivident/internal/infrastructure/server/http/handlers"
-	"primedivident/internal/modules/instrument/repository"
-	"primedivident/internal/ports/http/instrument"
-	"primedivident/internal/ports/http/portfolio"
 )
 
 func Initialize(cfg config.Config) serverHttp.Server {
@@ -18,10 +15,8 @@ func Initialize(cfg config.Config) serverHttp.Server {
 		ProvideLogger,
 		ProvidePostgres,
 
-		repository.NewRepository,
-
-		portfolio.NewHandler,
-		instrument.NewHandler,
+		portfolioSet,
+		instrumentSet,
 
 		handlers.NewHandlers,
 		serverHttp.NewServer,

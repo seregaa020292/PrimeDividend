@@ -1,4 +1,4 @@
-package mistakes
+package mistake
 
 type ErrorType struct {
 	t string
@@ -11,13 +11,13 @@ var (
 )
 
 type SlugError struct {
-	error     string
+	error     error
 	slug      string
 	errorType ErrorType
 }
 
 func (s SlugError) Error() string {
-	return s.error
+	return s.error.Error()
 }
 
 func (s SlugError) Slug() string {
@@ -28,7 +28,7 @@ func (s SlugError) ErrorType() ErrorType {
 	return s.errorType
 }
 
-func UnknownError(error string, slug string) SlugError {
+func UnknownError(error error, slug string) SlugError {
 	return SlugError{
 		error:     error,
 		slug:      slug,
@@ -36,7 +36,7 @@ func UnknownError(error string, slug string) SlugError {
 	}
 }
 
-func AuthorizationError(error string, slug string) SlugError {
+func AuthorizationError(error error, slug string) SlugError {
 	return SlugError{
 		error:     error,
 		slug:      slug,
@@ -44,7 +44,7 @@ func AuthorizationError(error string, slug string) SlugError {
 	}
 }
 
-func IncorrectInputError(error string, slug string) SlugError {
+func IncorrectInputError(error error, slug string) SlugError {
 	return SlugError{
 		error:     error,
 		slug:      slug,

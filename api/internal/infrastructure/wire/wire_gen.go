@@ -10,7 +10,10 @@ import (
 	"primedivident/internal/config"
 	"primedivident/internal/infrastructure/server/http"
 	"primedivident/internal/infrastructure/server/http/handlers"
-	"primedivident/internal/modules/instrument/repository"
+	query2 "primedivident/internal/modules/instrument/interactor/query"
+	repository2 "primedivident/internal/modules/instrument/repository"
+	"primedivident/internal/modules/portfolio/interactor/query"
+	"primedivident/internal/modules/portfolio/repository"
 	"primedivident/internal/ports/http/instrument"
 	"primedivident/internal/ports/http/portfolio"
 )
@@ -19,10 +22,13 @@ import (
 
 func Initialize(cfg config.Config) http.Server {
 	logger := ProvideLogger(cfg)
-	serverInterface := portfolio.NewHandler(logger)
 	postgres := ProvidePostgres(cfg)
 	repositoryRepository := repository.NewRepository(postgres)
-	instrumentServerInterface := instrument.NewHandler(logger, repositoryRepository)
+	queryHandler := query.NewPortfolioById(repositoryRepository)
+	serverInterface := portfolio.NewHandler(logger, queryHandler)
+	repository3 := repository2.NewRepository(postgres)
+	instrumentAll := query2.NewInstrumentAll(repository3)
+	instrumentServerInterface := instrument.NewHandler(logger, instrumentAll)
 	httpHandlers := handlers.NewHandlers(serverInterface, instrumentServerInterface)
 	server := http.NewServer(httpHandlers)
 	return server

@@ -32,7 +32,8 @@ type Error struct {
 
 // Portfolio defines model for portfolio.
 type Portfolio struct {
-	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	CreatedAt time.Time          `json:"createdAt"`
+	Id        openapi_types.UUID `json:"id"`
 }
 
 // PortfolioId defines model for portfolioId.

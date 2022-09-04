@@ -2,7 +2,7 @@ package response
 
 import (
 	"net/http"
-	"primedivident/internal/mistakes"
+	"primedivident/internal/mistake"
 )
 
 type ErrorResponse struct {
@@ -61,11 +61,11 @@ func Unauthorised(m string) ErrorRespond {
 	}
 }
 
-func FindErrorType(slugError mistakes.SlugError) ErrorRespond {
+func FindErrorType(slugError mistake.SlugError) ErrorRespond {
 	switch slugError.ErrorType() {
-	case mistakes.ErrorTypeAuthorization:
+	case mistake.ErrorTypeAuthorization:
 		return Unauthorised(slugError.Slug())
-	case mistakes.ErrorTypeIncorrectInput:
+	case mistake.ErrorTypeIncorrectInput:
 		return BadRequest(slugError.Slug())
 	}
 

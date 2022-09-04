@@ -6,7 +6,7 @@ import (
 	"github.com/go-chi/render"
 
 	"primedivident/internal/infrastructure/server/http/middlewares"
-	"primedivident/internal/mistakes"
+	"primedivident/internal/mistake"
 )
 
 type Response struct {
@@ -45,21 +45,21 @@ func (h Respond) NoContent() {
 }
 
 func (h Respond) Err(err error) {
-	var errorResponse ErrorRespond
+	var errorRespond ErrorRespond
 
-	slugError, ok := err.(mistakes.SlugError)
+	slugError, ok := err.(mistake.SlugError)
 	if !ok {
-		errorResponse = InternalError(err.Error())
+		errorRespond = InternalError(err.Error())
 	} else {
-		errorResponse = FindErrorType(slugError)
+		errorRespond = FindErrorType(slugError)
 	}
 
 	middlewares.GetLogEntry(h.r).
 		ExtraError(err).
-		ExtraField("error-slug", slugError.Slug()).
-		Warnf(slugError.Error())
+		ExtraField("error-slug", errorRespond.Err.Message).
+		Errorf("%s", errorRespond.Err.Code)
 
-	if err := render.Render(h.w, h.r, errorResponse); err != nil {
+	if err := render.Render(h.w, h.r, errorRespond); err != nil {
 		panic(err)
 	}
 }
