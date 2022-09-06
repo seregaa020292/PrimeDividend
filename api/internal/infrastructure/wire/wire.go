@@ -8,12 +8,16 @@ import (
 	"primedivident/internal/config"
 	serverHttp "primedivident/internal/infrastructure/server/http"
 	"primedivident/internal/infrastructure/server/http/handlers"
+	"primedivident/internal/services/email"
 )
 
 func Initialize(cfg config.Config) serverHttp.Server {
 	wire.Build(
 		ProvideLogger,
 		ProvidePostgres,
+		ProvideMailerObserver,
+
+		email.NewFirstTestSend,
 
 		portfolioSet,
 		instrumentSet,

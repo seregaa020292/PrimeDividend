@@ -16,6 +16,7 @@ require (
 	github.com/jackc/pgx v3.6.2+incompatible
 	github.com/jinzhu/now v1.1.5
 	github.com/jmoiron/sqlx v1.3.5
+	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/sirupsen/logrus v1.9.0
 )
 

@@ -36,8 +36,8 @@ services:
       MAILER_PORT: 1025
       MAILER_USERNAME: app
       MAILER_PASSWORD_FILE: /run/secrets/api_mailer_password
-      MAILER_ENCRYPTION: tcp
       MAILER_FROM_EMAIL: mail@app.test
+      MAILER_FROM_NAME: PrimeDividend
       REDIS_HOST: api-redis
       REDIS_PORT: 6379
     secrets:
