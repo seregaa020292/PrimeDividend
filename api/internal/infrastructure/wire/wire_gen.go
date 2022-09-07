@@ -12,6 +12,7 @@ import (
 	"primedivident/internal/infrastructure/server/http/handlers"
 	query2 "primedivident/internal/modules/instrument/interactor/query"
 	repository2 "primedivident/internal/modules/instrument/repository"
+	"primedivident/internal/modules/portfolio/interactor/command"
 	"primedivident/internal/modules/portfolio/interactor/query"
 	"primedivident/internal/modules/portfolio/repository"
 	"primedivident/internal/ports/http/instrument"
@@ -22,15 +23,16 @@ import (
 // Injectors from wire.go:
 
 func Initialize(cfg config.Config) http.Server {
-	logger := ProvideLogger(cfg)
 	postgres := ProvidePostgres(cfg)
 	repositoryRepository := repository.NewRepository(postgres)
 	portfolioById := query.NewPortfolioById(repositoryRepository)
-	serverInterface := portfolio.NewHandler(logger, portfolioById)
+	logger := ProvideLogger(cfg)
 	sender := ProvideMailerObserver(cfg, logger)
 	firstTestSend := email.NewFirstTestSend(cfg, sender)
+	portfolioCreate := command.NewPortfolioCreate(firstTestSend, repositoryRepository)
+	serverInterface := portfolio.NewHandler(portfolioById, portfolioCreate)
 	repository3 := repository2.NewRepository(postgres)
-	instrumentAll := query2.NewInstrumentAll(firstTestSend, repository3)
+	instrumentAll := query2.NewInstrumentAll(repository3)
 	instrumentServerInterface := instrument.NewHandler(logger, instrumentAll)
 	httpHandlers := handlers.NewHandlers(serverInterface, instrumentServerInterface)
 	server := http.NewServer(httpHandlers)

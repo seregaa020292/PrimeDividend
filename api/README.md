@@ -2,5 +2,5 @@
 
 ### TODO:
 - Проработать Ошибки
-- Использовать Email send
 - Использовать Шаблонизатор
+- "https://github.com/go-jet/jet" вместо Squirrel

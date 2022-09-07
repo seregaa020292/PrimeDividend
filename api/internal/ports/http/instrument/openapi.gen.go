@@ -41,6 +41,9 @@ type Instrument struct {
 // Instruments defines model for instruments.
 type Instruments = []Instrument
 
+// N500 defines model for 500.
+type N500 = Error
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 

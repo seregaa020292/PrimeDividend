@@ -57,20 +57,9 @@ func NewMessage(subject, body string, contentType ...ContentType) Message {
 	}
 }
 
-func (m Message) AttachFile(filename string, inline ...bool) error {
-	attachFile, err := m.email.AttachFile(filename)
-	if err != nil {
-		return err
-	}
-
-	defInline := false
-	if len(inline) >= 1 {
-		defInline = inline[0]
-	}
-
-	attachFile.HTMLRelated = defInline
-
-	return nil
+func (m Message) AttachFile(filename string) error {
+	_, err := m.email.AttachFile(filename)
+	return err
 }
 
 func (m Message) Bytes() ([]byte, error) {

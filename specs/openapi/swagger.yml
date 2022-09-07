@@ -29,7 +29,7 @@ tags:
   - name: register
     description: "Связь с поставщиком котировок и ценной бумагой"
   - name: portfolio
-    description: "Портфели инвестора"
+    description: "Портфель инвестора"
   - name: asset
     description: "Активы инвестора"
 
@@ -38,6 +38,7 @@ paths:
     get:
       tags: [ portfolio ]
       operationId: getPortfolioById
+      summary: Получение портфеля по ID
       parameters:
         - $ref: "#/components/parameters/portfolioId"
       responses:
@@ -51,11 +52,24 @@ paths:
                   data:
                     $ref: '#/components/schemas/portfolio'
         500:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
+          $ref: '#/components/responses/500'
+
+  /portfolio:
+    post:
+      tags: [ portfolio ]
+      operationId: createPortfolio
+      summary: Создание портфеля
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/portfolioUpdate"
+      responses:
+        204:
+          $ref: '#/components/responses/204'
+        500:
+          $ref: '#/components/responses/500'
 
   /instrument:
     get:
@@ -72,11 +86,7 @@ paths:
                   data:
                     $ref: '#/components/schemas/instruments'
         500:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'
+          $ref: '#/components/responses/500'
 
 components:
   securitySchemes:
@@ -94,6 +104,50 @@ components:
         format: uuid
       required: true
 
+  responses:
+    101:
+      description: Switching Protocols
+    202:
+      description: Accepted
+    204:
+      description: No Content
+    400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    401:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    403:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    404:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    422:
+      description: Unprocessable Entity
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    500:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+
   schemas:
     portfolio:
       type: object
@@ -105,7 +159,18 @@ components:
         createdAt:
           type: string
           format: date-time
-          example: "2020-03-22"
+    portfolioUpdate:
+      type: object
+      required: [ title, userId, currencyId ]
+      properties:
+        title:
+          type: string
+        userId:
+          type: string
+          format: uuid
+        currencyId:
+          type: string
+          format: uuid
 
     instruments:
       type: array

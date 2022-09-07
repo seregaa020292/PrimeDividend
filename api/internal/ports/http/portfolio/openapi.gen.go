@@ -36,12 +36,31 @@ type Portfolio struct {
 	Id        openapi_types.UUID `json:"id"`
 }
 
+// PortfolioUpdate defines model for portfolioUpdate.
+type PortfolioUpdate struct {
+	CurrencyId openapi_types.UUID `json:"currencyId"`
+	Title      string             `json:"title"`
+	UserId     openapi_types.UUID `json:"userId"`
+}
+
 // PortfolioId defines model for portfolioId.
 type PortfolioId = openapi_types.UUID
 
+// N500 defines model for 500.
+type N500 = Error
+
+// CreatePortfolioJSONBody defines parameters for CreatePortfolio.
+type CreatePortfolioJSONBody = PortfolioUpdate
+
+// CreatePortfolioJSONRequestBody defines body for CreatePortfolio for application/json ContentType.
+type CreatePortfolioJSONRequestBody = CreatePortfolioJSONBody
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-
+	// Создание портфеля
+	// (POST /portfolio)
+	CreatePortfolio(w http.ResponseWriter, r *http.Request)
+	// Получение портфеля по ID
 	// (GET /portfolio/{portfolioId})
 	GetPortfolioById(w http.ResponseWriter, r *http.Request, portfolioId PortfolioId)
 }
@@ -54,6 +73,23 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(http.HandlerFunc) http.HandlerFunc
+
+// CreatePortfolio operation middleware
+func (siw *ServerInterfaceWrapper) CreatePortfolio(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{""})
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreatePortfolio(w, r)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
 
 // GetPortfolioById operation middleware
 func (siw *ServerInterfaceWrapper) GetPortfolioById(w http.ResponseWriter, r *http.Request) {
@@ -196,6 +232,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		ErrorHandlerFunc:   options.ErrorHandlerFunc,
 	}
 
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/portfolio", wrapper.CreatePortfolio)
+	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/portfolio/{portfolioId}", wrapper.GetPortfolioById)
 	})

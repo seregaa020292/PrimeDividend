@@ -4,3 +4,12 @@
 GET {{host}}/portfolio/{{portfolioId}}
 Content-type: application/json
 Accept: application/xml
+
+#### Создать новый портфель
+POST {{host}}/portfolio
+Content-type: application/json
+
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "createdAt": "2020-03-22"
+}

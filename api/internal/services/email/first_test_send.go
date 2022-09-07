@@ -1,6 +1,7 @@
 package email
 
 import (
+	"fmt"
 	"primedivident/internal/config"
 	"primedivident/pkg/mailer"
 )
@@ -17,8 +18,8 @@ func NewFirstTestSend(config config.Config, mailer mailer.Sender) FirstTestSend 
 	}
 }
 
-func (s FirstTestSend) Send() error {
-	msg := mailer.NewMessage("Theme First Test", "Hello Mail Sender!!!")
+func (s FirstTestSend) Send(data []byte) error {
+	msg := mailer.NewMessage("Theme First Test", fmt.Sprintf("%s %s", "Hello Mail Sender!!!", data))
 	msg.To = []string{"serega020292@mail.ru"}
 
 	return s.mailer.Send(msg)

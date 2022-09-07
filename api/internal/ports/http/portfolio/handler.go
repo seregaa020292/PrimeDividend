@@ -3,23 +3,25 @@ package portfolio
 import (
 	"net/http"
 
+	"github.com/go-chi/render"
+
 	"primedivident/internal/infrastructure/server/http/response"
+	"primedivident/internal/modules/portfolio/interactor/command"
 	"primedivident/internal/modules/portfolio/interactor/query"
-	"primedivident/pkg/logger"
 )
 
 type handler struct {
-	logger             logger.Logger
 	queryPortfolioById query.PortfolioById
+	cmdPortfolioCreate command.PortfolioCreate
 }
 
 func NewHandler(
-	logger logger.Logger,
 	queryPortfolioById query.PortfolioById,
+	cmdPortfolioCreate command.PortfolioCreate,
 ) ServerInterface {
 	return handler{
-		logger:             logger,
 		queryPortfolioById: queryPortfolioById,
+		cmdPortfolioCreate: cmdPortfolioCreate,
 	}
 }
 
@@ -33,4 +35,25 @@ func (h handler) GetPortfolioById(w http.ResponseWriter, r *http.Request, portfo
 	}
 
 	respond.Json(http.StatusOK, presenterPortfolio(portfolio))
+}
+
+func (h handler) CreatePortfolio(w http.ResponseWriter, r *http.Request) {
+	respond := response.New(w, r)
+
+	portfolio := new(PortfolioUpdate)
+	if err := render.Decode(r, portfolio); err != nil {
+		respond.Err(err)
+		return
+	}
+
+	if err := h.cmdPortfolioCreate.Exec(command.PortfolioNew{
+		Title:      portfolio.Title,
+		UserId:     portfolio.UserId,
+		CurrencyId: portfolio.CurrencyId,
+	}); err != nil {
+		respond.Err(err)
+		return
+	}
+
+	respond.NoContent()
 }
