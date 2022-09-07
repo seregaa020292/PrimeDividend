@@ -44,6 +44,10 @@ func (h Respond) NoContent() {
 	render.NoContent(h.w, h.r)
 }
 
+func (h Respond) Decode(v interface{}) error {
+	return render.Decode(h.r, v)
+}
+
 func (h Respond) Err(err error) {
 	var errorRespond ErrorRespond
 
