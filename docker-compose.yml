@@ -32,14 +32,14 @@ services:
       DB_PASSWORD_FILE: /run/secrets/api_db_password
       GOOSE_DRIVER: postgres
       GOOSE_DIR_MIGRATIONS: ./database/migrations
+      REDIS_HOST: api-redis
+      REDIS_PORT: 6379
       MAILER_HOST: mailer
       MAILER_PORT: 1025
       MAILER_USERNAME: app
       MAILER_PASSWORD_FILE: /run/secrets/api_mailer_password
       MAILER_FROM_EMAIL: mail@app.test
       MAILER_FROM_NAME: PrimeDividend
-      REDIS_HOST: api-redis
-      REDIS_PORT: 6379
     secrets:
       - api_db_password
       - api_mailer_password

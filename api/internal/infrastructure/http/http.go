@@ -5,9 +5,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"log"
 	"net/http"
+	"primedivident/internal/infrastructure/http/middlewares"
 
 	"primedivident/internal/config/consts"
-	"primedivident/internal/infrastructure/server/http/middlewares"
 )
 
 type Handlers interface {

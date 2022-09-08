@@ -3,21 +3,27 @@ package portfolio
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/http/response"
 	"primedivident/internal/modules/portfolio/interactor/command"
 	"primedivident/internal/modules/portfolio/interactor/query"
+	"primedivident/pkg/response"
+	"primedivident/pkg/validator"
 )
 
+//var _ ServerInterface = (*handler)(nil)
+
 type handler struct {
+	validator          validator.Validator
 	queryPortfolioById query.PortfolioById
 	cmdPortfolioCreate command.PortfolioCreate
 }
 
 func NewHandler(
+	validator validator.Validator,
 	queryPortfolioById query.PortfolioById,
 	cmdPortfolioCreate command.PortfolioCreate,
 ) ServerInterface {
 	return handler{
+		validator:          validator,
 		queryPortfolioById: queryPortfolioById,
 		cmdPortfolioCreate: cmdPortfolioCreate,
 	}
@@ -40,6 +46,11 @@ func (h handler) CreatePortfolio(w http.ResponseWriter, r *http.Request) {
 
 	portfolio := new(PortfolioUpdate)
 	if err := respond.Decode(portfolio); err != nil {
+		respond.Err(err)
+		return
+	}
+
+	if err := h.validator.Struct(portfolio); err != nil {
 		respond.Err(err)
 		return
 	}

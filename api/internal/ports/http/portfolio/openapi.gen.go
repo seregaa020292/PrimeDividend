@@ -20,14 +20,14 @@ const (
 
 // Error defines model for error.
 type Error struct {
-	Data  *interface{} `json:"data"`
-	Error struct {
-		// Код ошибки в приложении
-		Code string `json:"code"`
+	Data   *interface{} `json:"data"`
+	Errors []struct {
+		// Поле в котором произошла ошибка
+		Field *string `json:"field,omitempty"`
 
-		// Сообщение об ошибке для пользователя
+		// Описание ошибки
 		Message string `json:"message"`
-	} `json:"error"`
+	} `json:"errors"`
 }
 
 // Portfolio defines model for portfolio.
@@ -38,9 +38,9 @@ type Portfolio struct {
 
 // PortfolioUpdate defines model for portfolioUpdate.
 type PortfolioUpdate struct {
-	CurrencyId openapi_types.UUID `json:"currencyId"`
-	Title      string             `json:"title"`
-	UserId     openapi_types.UUID `json:"userId"`
+	CurrencyId openapi_types.UUID `json:"currencyId" validate:"required,uuid"`
+	Title      string             `json:"title" validate:"required"`
+	UserId     openapi_types.UUID `json:"userId" validate:"required,uuid"`
 }
 
 // PortfolioId defines model for portfolioId.

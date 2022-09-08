@@ -52,7 +52,7 @@ type StructuredLoggerEntry struct {
 }
 
 func (l *StructuredLoggerEntry) Write(status, bytes int, header http.Header, elapsed time.Duration, extra interface{}) {
-	if status > http.StatusBadRequest {
+	if status >= http.StatusBadRequest {
 		l.logger.ExtraFields(logger.Fields{
 			"resp_status":       status,
 			"resp_bytes_length": bytes,

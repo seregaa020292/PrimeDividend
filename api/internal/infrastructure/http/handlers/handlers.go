@@ -2,8 +2,7 @@ package handlers
 
 import (
 	"github.com/go-chi/chi/v5"
-
-	serverHttp "primedivident/internal/infrastructure/server/http"
+	serverHttp "primedivident/internal/infrastructure/http"
 	"primedivident/internal/ports/http/instrument"
 	"primedivident/internal/ports/http/portfolio"
 )

@@ -2,9 +2,9 @@ package query
 
 import (
 	"primedivident/internal/decorator"
-	"primedivident/internal/mistake"
 	"primedivident/internal/modules/instrument/entity"
 	"primedivident/internal/modules/instrument/repository"
+	"primedivident/pkg/errorn"
 )
 
 type (
@@ -27,7 +27,7 @@ func NewInstrumentAll(
 func (q instrumentAll) Fetch(_ FilterOrderInstruments) (entity.Instruments, error) {
 	instruments, err := q.repository.GetAll()
 	if err != nil {
-		return entity.Instruments{}, mistake.UnknownError(err, "")
+		return entity.Instruments{}, errorn.Unknown(errorn.Message{Error: err})
 	}
 
 	return instruments, nil

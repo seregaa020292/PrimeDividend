@@ -2,11 +2,10 @@ package response
 
 import (
 	"net/http"
+	"primedivident/internal/infrastructure/http/middlewares"
+	"primedivident/pkg/errorn"
 
 	"github.com/go-chi/render"
-
-	"primedivident/internal/infrastructure/server/http/middlewares"
-	"primedivident/internal/mistake"
 )
 
 type Response struct {
@@ -51,17 +50,16 @@ func (h Respond) Decode(v interface{}) error {
 func (h Respond) Err(err error) {
 	var errorRespond ErrorRespond
 
-	slugError, ok := err.(mistake.SlugError)
-	if !ok {
-		errorRespond = InternalError(err.Error())
+	e, ok := err.(errorn.Errorn)
+	if ok {
+		errorRespond = FindErrorType(e)
 	} else {
-		errorRespond = FindErrorType(slugError)
+		errorRespond = InternalError(err)
 	}
 
 	middlewares.GetLogEntry(h.r).
 		ExtraError(err).
-		ExtraField("error-slug", errorRespond.Err.Message).
-		Errorf("%s", errorRespond.Err.Code)
+		Errorf("%+v", errorRespond.Errors)
 
 	if err := render.Render(h.w, h.r, errorRespond); err != nil {
 		panic(err)

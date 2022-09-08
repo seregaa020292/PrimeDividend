@@ -3,9 +3,9 @@ package query
 import (
 	"github.com/google/uuid"
 	"primedivident/internal/decorator"
-	"primedivident/internal/mistake"
 	"primedivident/internal/modules/portfolio/entity"
 	"primedivident/internal/modules/portfolio/repository"
+	"primedivident/pkg/errorn"
 )
 
 type (
@@ -28,7 +28,7 @@ func NewPortfolioById(
 func (q portfolioById) Fetch(portfolioId PortfolioId) (entity.Portfolio, error) {
 	portfolio, err := q.repository.FindById(uuid.UUID(portfolioId))
 	if err != nil {
-		return entity.Portfolio{}, mistake.UnknownError(err, "")
+		return entity.Portfolio{}, errorn.Unknown(errorn.Message{Error: err})
 	}
 
 	return portfolio, nil

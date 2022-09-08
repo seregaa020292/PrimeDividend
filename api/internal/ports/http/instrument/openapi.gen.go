@@ -19,14 +19,14 @@ const (
 
 // Error defines model for error.
 type Error struct {
-	Data  *interface{} `json:"data"`
-	Error struct {
-		// Код ошибки в приложении
-		Code string `json:"code"`
+	Data   *interface{} `json:"data"`
+	Errors []struct {
+		// Поле в котором произошла ошибка
+		Field *string `json:"field,omitempty"`
 
-		// Сообщение об ошибке для пользователя
+		// Описание ошибки
 		Message string `json:"message"`
-	} `json:"error"`
+	} `json:"errors"`
 }
 
 // Instrument defines model for instrument.

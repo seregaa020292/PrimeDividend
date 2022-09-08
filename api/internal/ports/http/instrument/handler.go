@@ -2,9 +2,9 @@ package instrument
 
 import (
 	"net/http"
-	"primedivident/internal/infrastructure/server/http/response"
 	"primedivident/internal/modules/instrument/interactor/query"
 	"primedivident/pkg/logger"
+	"primedivident/pkg/response"
 )
 
 type handler struct {

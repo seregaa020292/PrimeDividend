@@ -6,9 +6,9 @@ import (
 	"github.com/google/uuid"
 
 	"primedivident/internal/decorator"
-	"primedivident/internal/mistake"
 	"primedivident/internal/modules/portfolio/repository"
 	"primedivident/internal/services/email"
+	"primedivident/pkg/errorn"
 )
 
 type (
@@ -39,7 +39,7 @@ func (c portfolioCreate) Exec(cmd PortfolioNew) error {
 	portfolioNew, _ := json.MarshalIndent(cmd, "", "\t")
 
 	if err := c.email.Send(portfolioNew); err != nil {
-		return mistake.UnknownError(err, "")
+		return errorn.Unknown(errorn.Message{Error: err})
 	}
 
 	return nil

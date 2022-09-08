@@ -8,8 +8,8 @@ package wire
 
 import (
 	"primedivident/internal/config"
-	"primedivident/internal/infrastructure/server/http"
-	"primedivident/internal/infrastructure/server/http/handlers"
+	"primedivident/internal/infrastructure/http"
+	"primedivident/internal/infrastructure/http/handlers"
 	query2 "primedivident/internal/modules/instrument/interactor/query"
 	repository2 "primedivident/internal/modules/instrument/repository"
 	"primedivident/internal/modules/portfolio/interactor/command"
@@ -18,11 +18,13 @@ import (
 	"primedivident/internal/ports/http/instrument"
 	"primedivident/internal/ports/http/portfolio"
 	"primedivident/internal/services/email"
+	"primedivident/pkg/validator"
 )
 
 // Injectors from wire.go:
 
 func Initialize(cfg config.Config) http.Server {
+	validatorValidator := validator.GetValidator()
 	postgres := ProvidePostgres(cfg)
 	repositoryRepository := repository.NewRepository(postgres)
 	portfolioById := query.NewPortfolioById(repositoryRepository)
@@ -30,7 +32,7 @@ func Initialize(cfg config.Config) http.Server {
 	sender := ProvideMailerObserver(cfg, logger)
 	firstTestSend := email.NewFirstTestSend(cfg, sender)
 	portfolioCreate := command.NewPortfolioCreate(firstTestSend, repositoryRepository)
-	serverInterface := portfolio.NewHandler(portfolioById, portfolioCreate)
+	serverInterface := portfolio.NewHandler(validatorValidator, portfolioById, portfolioCreate)
 	repository3 := repository2.NewRepository(postgres)
 	instrumentAll := query2.NewInstrumentAll(repository3)
 	instrumentServerInterface := instrument.NewHandler(logger, instrumentAll)

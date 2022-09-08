@@ -1,10 +1,15 @@
 package utils
 
 import (
+	"context"
 	"fmt"
 	"io"
+	"log"
+	"net"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -47,4 +52,39 @@ func DoWithAttempts(fn func() error, maxAttempts int, delay time.Duration) error
 	}
 
 	return err
+}
+
+func Context() context.Context {
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go func() {
+		sigs := make(chan os.Signal, 1)
+		signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+		select {
+		case <-sigs:
+			cancel()
+		case <-ctx.Done():
+			return
+		}
+	}()
+
+	return ctx
+}
+
+func WaitForService(host string) {
+	log.Printf("Waiting for %s\n", host)
+
+	for {
+		log.Printf("Testing connection to %s\n", host)
+
+		conn, err := net.Dial("tcp", host)
+		if err == nil {
+			_ = conn.Close()
+			log.Printf("%s is up!\n", host)
+			return
+		}
+
+		time.Sleep(time.Millisecond * 500)
+	}
 }
