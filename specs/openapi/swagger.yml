@@ -12,8 +12,8 @@ servers:
   - url: http://localhost/api
     description: "Local server"
 
-security:
-  - bearerAuth: [ ]
+#security:
+#  - BearerAuth: [ ]
 
 tags:
   - name: user
@@ -59,6 +59,8 @@ paths:
       tags: [ portfolio ]
       operationId: createPortfolio
       summary: Создание портфеля
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
@@ -90,7 +92,7 @@ paths:
 
 components:
   securitySchemes:
-    bearerAuth:
+    BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT

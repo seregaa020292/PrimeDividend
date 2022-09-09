@@ -3,12 +3,11 @@ package middlewares
 import (
 	"github.com/go-chi/cors"
 
-	"net/http"
 	"os"
 	"strings"
 )
 
-func corsHandler() func(next http.Handler) http.Handler {
+func corsHandler() middlewareFunc {
 	allowedOrigins := strings.Split(os.Getenv("CORS_ALLOWED_ORIGINS"), ";")
 	if len(allowedOrigins) == 0 {
 		return nil

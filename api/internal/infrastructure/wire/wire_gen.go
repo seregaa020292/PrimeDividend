@@ -10,13 +10,19 @@ import (
 	"primedivident/internal/config"
 	"primedivident/internal/infrastructure/http"
 	"primedivident/internal/infrastructure/http/handlers"
-	query2 "primedivident/internal/modules/instrument/interactor/query"
-	repository2 "primedivident/internal/modules/instrument/repository"
+	"primedivident/internal/modules/instrument/interactor/query"
+	"primedivident/internal/modules/instrument/repository"
 	"primedivident/internal/modules/portfolio/interactor/command"
-	"primedivident/internal/modules/portfolio/interactor/query"
-	"primedivident/internal/modules/portfolio/repository"
+	query2 "primedivident/internal/modules/portfolio/interactor/query"
+	repository2 "primedivident/internal/modules/portfolio/repository"
+	"primedivident/internal/ports/http/asset"
+	"primedivident/internal/ports/http/currency"
 	"primedivident/internal/ports/http/instrument"
+	"primedivident/internal/ports/http/market"
 	"primedivident/internal/ports/http/portfolio"
+	"primedivident/internal/ports/http/provider"
+	"primedivident/internal/ports/http/register"
+	"primedivident/internal/ports/http/user"
 	"primedivident/internal/services/email"
 	"primedivident/pkg/validator"
 )
@@ -24,19 +30,25 @@ import (
 // Injectors from wire.go:
 
 func Initialize(cfg config.Config) http.Server {
-	validatorValidator := validator.GetValidator()
+	handlerAsset := asset.NewHandler()
+	handlerCurrency := currency.NewHandler()
+	logger := ProvideLogger(cfg)
 	postgres := ProvidePostgres(cfg)
 	repositoryRepository := repository.NewRepository(postgres)
-	portfolioById := query.NewPortfolioById(repositoryRepository)
-	logger := ProvideLogger(cfg)
+	instrumentAll := query.NewInstrumentAll(repositoryRepository)
+	handlerInstrument := instrument.NewHandler(logger, instrumentAll)
+	handlerMarket := market.NewHandler()
+	validatorValidator := validator.GetValidator()
+	repository3 := repository2.NewRepository(postgres)
+	portfolioById := query2.NewPortfolioById(repository3)
 	sender := ProvideMailerObserver(cfg, logger)
 	firstTestSend := email.NewFirstTestSend(cfg, sender)
-	portfolioCreate := command.NewPortfolioCreate(firstTestSend, repositoryRepository)
-	serverInterface := portfolio.NewHandler(validatorValidator, portfolioById, portfolioCreate)
-	repository3 := repository2.NewRepository(postgres)
-	instrumentAll := query2.NewInstrumentAll(repository3)
-	instrumentServerInterface := instrument.NewHandler(logger, instrumentAll)
-	httpHandlers := handlers.NewHandlers(serverInterface, instrumentServerInterface)
+	portfolioCreate := command.NewPortfolioCreate(firstTestSend, repository3)
+	handlerPortfolio := portfolio.NewHandler(validatorValidator, portfolioById, portfolioCreate)
+	handlerProvider := provider.NewHandler()
+	handlerRegister := register.NewHandler()
+	handlerUser := user.NewHandler()
+	httpHandlers := handlers.NewHandlers(handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
 	server := http.NewServer(httpHandlers)
 	return server
 }

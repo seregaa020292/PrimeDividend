@@ -7,7 +7,7 @@ import (
 	"primedivident/pkg/response"
 )
 
-type handler struct {
+type HandlerInstrument struct {
 	logger             logger.Logger
 	queryInstrumentAll query.InstrumentAll
 }
@@ -15,14 +15,14 @@ type handler struct {
 func NewHandler(
 	logger logger.Logger,
 	queryInstrumentAll query.InstrumentAll,
-) ServerInterface {
-	return handler{
+) HandlerInstrument {
+	return HandlerInstrument{
 		logger:             logger,
 		queryInstrumentAll: queryInstrumentAll,
 	}
 }
 
-func (h handler) GetInstruments(w http.ResponseWriter, r *http.Request) {
+func (h HandlerInstrument) GetInstruments(w http.ResponseWriter, r *http.Request) {
 	respond := response.New(w, r)
 
 	instruments, err := h.queryInstrumentAll.Fetch(query.FilterOrderInstruments{})

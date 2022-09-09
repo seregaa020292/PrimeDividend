@@ -1,4 +1,4 @@
-package wire
+package wire_group
 
 import (
 	"github.com/google/wire"
@@ -8,7 +8,7 @@ import (
 	"primedivident/internal/ports/http/instrument"
 )
 
-var instrumentSet = wire.NewSet(
+var Instrument = wire.NewSet(
 	repository.NewRepository,
 	query.NewInstrumentAll,
 	instrument.NewHandler,

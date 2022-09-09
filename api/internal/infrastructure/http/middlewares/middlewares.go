@@ -1,6 +1,8 @@
 package middlewares
 
 import (
+	"net/http"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httprate"
@@ -8,12 +10,14 @@ import (
 	"primedivident/internal/config/consts"
 )
 
+type middlewareFunc = func(next http.Handler) http.Handler
+
 func Setup(router *chi.Mux) {
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
 	router.Use(middleware.Heartbeat("/health"))
 	router.Use(httprate.LimitByIP(consts.RequestLimit, consts.WindowLength))
-	router.Use(NewStructuredLogger())
+	router.Use(newStructuredLogger())
 	router.Use(middleware.Recoverer)
 
 	router.Use(corsHandler())
@@ -24,4 +28,6 @@ func Setup(router *chi.Mux) {
 	)
 
 	router.Use(middleware.NoCache)
+
+	router.Use(newOpenapi()...)
 }

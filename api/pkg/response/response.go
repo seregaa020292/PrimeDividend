@@ -2,10 +2,11 @@ package response
 
 import (
 	"net/http"
-	"primedivident/internal/infrastructure/http/middlewares"
-	"primedivident/pkg/errorn"
 
 	"github.com/go-chi/render"
+
+	"primedivident/pkg/errorn"
+	"primedivident/pkg/logger"
 )
 
 type Response struct {
@@ -57,10 +58,11 @@ func (h Respond) Err(err error) {
 		errorRespond = InternalError(err)
 	}
 
-	middlewares.GetLogEntry(h.r).
+	logger.GetLogger().
 		ExtraError(err).
 		Errorf("%+v", errorRespond.Errors)
 
+	h.SetHeader("Content-Type", "application/json; charset=utf-8")
 	if err := render.Render(h.w, h.r, errorRespond); err != nil {
 		panic(err)
 	}

@@ -1,4 +1,4 @@
-package wire
+package wire_group
 
 import (
 	"github.com/google/wire"
@@ -9,7 +9,7 @@ import (
 	"primedivident/internal/ports/http/portfolio"
 )
 
-var portfolioSet = wire.NewSet(
+var Portfolio = wire.NewSet(
 	repository.NewRepository,
 	query.NewPortfolioById,
 	command.NewPortfolioCreate,

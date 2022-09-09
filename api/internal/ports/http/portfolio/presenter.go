@@ -1,9 +1,12 @@
 package portfolio
 
-import "primedivident/internal/modules/portfolio/entity"
+import (
+	"primedivident/internal/infrastructure/http/openapi"
+	"primedivident/internal/modules/portfolio/entity"
+)
 
-func presenterPortfolio(portfolio entity.Portfolio) Portfolio {
-	return Portfolio{
+func presenterPortfolio(portfolio entity.Portfolio) openapi.Portfolio {
+	return openapi.Portfolio{
 		Id:        portfolio.ID,
 		CreatedAt: portfolio.CreatedAt,
 	}

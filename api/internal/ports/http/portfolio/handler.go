@@ -3,16 +3,14 @@ package portfolio
 import (
 	"net/http"
 
+	"primedivident/internal/infrastructure/http/openapi"
 	"primedivident/internal/modules/portfolio/interactor/command"
 	"primedivident/internal/modules/portfolio/interactor/query"
 	"primedivident/pkg/response"
 	"primedivident/pkg/validator"
 )
 
-//var _ ServerInterface = (*handler)(nil)
-
-type handler struct {
-	validator          validator.Validator
+type HandlerPortfolio struct {
 	queryPortfolioById query.PortfolioById
 	cmdPortfolioCreate command.PortfolioCreate
 }
@@ -21,15 +19,14 @@ func NewHandler(
 	validator validator.Validator,
 	queryPortfolioById query.PortfolioById,
 	cmdPortfolioCreate command.PortfolioCreate,
-) ServerInterface {
-	return handler{
-		validator:          validator,
+) HandlerPortfolio {
+	return HandlerPortfolio{
 		queryPortfolioById: queryPortfolioById,
 		cmdPortfolioCreate: cmdPortfolioCreate,
 	}
 }
 
-func (h handler) GetPortfolioById(w http.ResponseWriter, r *http.Request, portfolioId PortfolioId) {
+func (h HandlerPortfolio) GetPortfolioById(w http.ResponseWriter, r *http.Request, portfolioId openapi.PortfolioId) {
 	respond := response.New(w, r)
 
 	portfolio, err := h.queryPortfolioById.Fetch(query.PortfolioId(portfolioId))
@@ -41,16 +38,18 @@ func (h handler) GetPortfolioById(w http.ResponseWriter, r *http.Request, portfo
 	respond.Json(http.StatusOK, presenterPortfolio(portfolio))
 }
 
-func (h handler) CreatePortfolio(w http.ResponseWriter, r *http.Request) {
+func (h HandlerPortfolio) CreatePortfolio(w http.ResponseWriter, r *http.Request) {
 	respond := response.New(w, r)
 
-	portfolio := new(PortfolioUpdate)
-	if err := respond.Decode(portfolio); err != nil {
+	//portfolio := r.Context().Value(portfolioUpdateKey).(openapi.PortfolioUpdate)
+
+	portfolio := openapi.PortfolioUpdate{}
+	if err := respond.Decode(&portfolio); err != nil {
 		respond.Err(err)
 		return
 	}
 
-	if err := h.validator.Struct(portfolio); err != nil {
+	if err := validator.GetValidator().Struct(portfolio); err != nil {
 		respond.Err(err)
 		return
 	}

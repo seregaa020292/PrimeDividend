@@ -11,17 +11,17 @@ import (
 )
 
 type StructuredLogger struct {
-	logger logger.Logger
+	logger.Logger
 }
 
-func NewStructuredLogger() func(next http.Handler) http.Handler {
+func newStructuredLogger() middlewareFunc {
 	return middleware.RequestLogger(&StructuredLogger{
-		logger: logger.GetLogger(),
+		logger.GetLogger(),
 	})
 }
 
 func (l *StructuredLogger) NewLogEntry(r *http.Request) middleware.LogEntry {
-	entry := &StructuredLoggerEntry{logger: l.logger}
+	entry := &StructuredLoggerEntry{Logger: l.Logger}
 	logFields := logger.Fields{}
 
 	if reqID := middleware.GetReqID(r.Context()); reqID != "" {
@@ -42,18 +42,18 @@ func (l *StructuredLogger) NewLogEntry(r *http.Request) middleware.LogEntry {
 
 	logFields["uri"] = fmt.Sprintf("%s://%s%s", scheme, r.Host, r.RequestURI)
 
-	entry.logger.ExtraFields(logFields).Infof("Request started")
+	entry.Logger.ExtraFields(logFields).Infof("Request started")
 
 	return entry
 }
 
 type StructuredLoggerEntry struct {
-	logger logger.Logger
+	logger.Logger
 }
 
 func (l *StructuredLoggerEntry) Write(status, bytes int, header http.Header, elapsed time.Duration, extra interface{}) {
 	if status >= http.StatusBadRequest {
-		l.logger.ExtraFields(logger.Fields{
+		l.Logger.ExtraFields(logger.Fields{
 			"resp_status":       status,
 			"resp_bytes_length": bytes,
 			"resp_elapsed_ms":   float64(elapsed.Nanoseconds()) / 1000000.0,
@@ -62,13 +62,8 @@ func (l *StructuredLoggerEntry) Write(status, bytes int, header http.Header, ela
 }
 
 func (l *StructuredLoggerEntry) Panic(v interface{}, stack []byte) {
-	l.logger.ExtraFields(logger.Fields{
+	l.Logger.ExtraFields(logger.Fields{
 		"stack": string(stack),
 		"panic": fmt.Sprintf("%+v", v),
 	}).Errorf("Request panic")
-}
-
-func GetLogEntry(r *http.Request) logger.Logger {
-	entry := middleware.GetLogEntry(r).(*StructuredLoggerEntry)
-	return entry.logger
 }

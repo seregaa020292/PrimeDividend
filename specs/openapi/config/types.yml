@@ -1,0 +1,6 @@
+package: openapi
+
+generate:
+  models: true
+
+output: "../../internal/infrastructure/http/openapi/openapi_types.gen.go"

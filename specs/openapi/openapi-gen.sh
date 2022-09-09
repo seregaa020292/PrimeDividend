@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -e
 
 readonly service="$1"
@@ -7,7 +8,6 @@ readonly path="../../internal/ports/http"
 mkdir -p "$path/$service"
 
 oapi-codegen -old-config-style \
-  -output-config \
   -generate "types,chi-server" \
   -include-tags "$service" \
   -package "$service" \

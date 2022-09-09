@@ -1,0 +1,13 @@
+package: openapi
+
+#additional-imports:
+#  - package: primedivident/internal/infrastructure/http/openapi/openapi_types
+#    alias: "."
+
+generate:
+  chi-server: true
+  models: false
+  strict-server: true
+  embedded-spec: true
+
+output: "../../internal/infrastructure/http/openapi/openapi.gen.go"
