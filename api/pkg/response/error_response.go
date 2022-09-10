@@ -16,52 +16,43 @@ type ErrorResponse struct {
 	Field   string `json:"field,omitempty"`
 }
 
+func NewErrorRespond(httpStatus int, e errorn.Errorn) ErrorRespond {
+	return ErrorRespond{
+		Errors:     makeErrors(e),
+		httpStatus: httpStatus,
+	}
+}
+
 func (e ErrorRespond) Render(w http.ResponseWriter, r *http.Request) error {
 	w.WriteHeader(e.httpStatus)
 	return nil
 }
 
 func BadRequest(e errorn.Errorn) ErrorRespond {
-	return ErrorRespond{
-		Errors:     makeErrors(e),
-		httpStatus: http.StatusBadRequest,
-	}
+	return NewErrorRespond(http.StatusBadRequest, e)
 }
 
 func Unauthorised(e errorn.Errorn) ErrorRespond {
-	return ErrorRespond{
-		Errors:     makeErrors(e),
-		httpStatus: http.StatusUnauthorized,
-	}
+	return NewErrorRespond(http.StatusUnauthorized, e)
 }
 
 func Forbidden(e errorn.Errorn) ErrorRespond {
-	return ErrorRespond{
-		Errors:     makeErrors(e),
-		httpStatus: http.StatusForbidden,
-	}
+	return NewErrorRespond(http.StatusForbidden, e)
 }
 
 func NotFound(e errorn.Errorn) ErrorRespond {
-	return ErrorRespond{
-		Errors:     makeErrors(e),
-		httpStatus: http.StatusNotFound,
-	}
+	return NewErrorRespond(http.StatusNotFound, e)
 }
 
 func UnprocessableEntity(e errorn.Errorn) ErrorRespond {
-	return ErrorRespond{
-		Errors:     makeErrors(e),
-		httpStatus: http.StatusUnprocessableEntity,
-	}
+	return NewErrorRespond(http.StatusUnprocessableEntity, e)
 }
 
 func InternalError(e error) ErrorRespond {
-	err := errorn.Unknown(errorn.Message{Error: e}).(errorn.Errorn)
-	return ErrorRespond{
-		Errors:     makeErrors(err),
-		httpStatus: http.StatusInternalServerError,
-	}
+	return NewErrorRespond(
+		http.StatusInternalServerError,
+		errorn.Unknown(errorn.Message{Error: e}).(errorn.Errorn),
+	)
 }
 
 func FindErrorType(e errorn.Errorn) ErrorRespond {

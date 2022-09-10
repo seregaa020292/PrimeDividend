@@ -49,6 +49,13 @@ func (h Respond) Decode(v interface{}) error {
 }
 
 func (h Respond) Err(err error) {
+	h.SetHeader("Content-Type", "application/json; charset=utf-8")
+	if err := render.Render(h.w, h.r, ErrRender(err)); err != nil {
+		panic(err)
+	}
+}
+
+func ErrRender(err error) ErrorRespond {
 	var errorRespond ErrorRespond
 
 	e, ok := err.(errorn.Errorn)
@@ -62,8 +69,5 @@ func (h Respond) Err(err error) {
 		ExtraError(err).
 		Errorf("%+v", errorRespond.Errors)
 
-	h.SetHeader("Content-Type", "application/json; charset=utf-8")
-	if err := render.Render(h.w, h.r, errorRespond); err != nil {
-		panic(err)
-	}
+	return errorRespond
 }

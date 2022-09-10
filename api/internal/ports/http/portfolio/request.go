@@ -8,8 +8,6 @@ import (
 	"primedivident/pkg/validator"
 )
 
-var _ openapi.ServerInterface = (*Request)(nil)
-
 type ctxKey int
 
 const (
@@ -17,18 +15,14 @@ const (
 )
 
 type Request struct {
-	openapi.ServerInterface
 	validator validator.Validator
 }
 
-func NewRequest(server openapi.ServerInterface) Request {
-	return Request{
-		ServerInterface: server,
-		validator:       validator.GetValidator(),
-	}
+func NewRequest(validator validator.Validator) Request {
+	return Request{validator: validator}
 }
 
-func (request Request) CreatePortfolio(w http.ResponseWriter, r *http.Request) {
+func (request Request) CreatePortfolio(next http.Handler, w http.ResponseWriter, r *http.Request) {
 	respond := response.New(w, r)
 
 	portfolio := openapi.PortfolioUpdate{}
@@ -44,5 +38,5 @@ func (request Request) CreatePortfolio(w http.ResponseWriter, r *http.Request) {
 
 	ctx := context.WithValue(r.Context(), portfolioUpdateKey, portfolio)
 
-	request.ServerInterface.CreatePortfolio(w, r.WithContext(ctx))
+	next.ServeHTTP(w, r.WithContext(ctx))
 }

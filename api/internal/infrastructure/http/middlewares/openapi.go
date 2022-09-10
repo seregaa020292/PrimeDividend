@@ -12,7 +12,6 @@ import (
 	"github.com/getkin/kin-openapi/openapi3filter"
 
 	"primedivident/internal/infrastructure/http/openapi"
-	"primedivident/pkg/errorn"
 	"primedivident/pkg/response"
 )
 
@@ -25,11 +24,11 @@ func newOpenapi() []middlewareFunc {
 	swagger.Servers = nil
 
 	return []middlewareFunc{
-		auth(swagger),
+		authValidator(swagger),
 	}
 }
 
-func auth(swagger *openapi3.T) middlewareFunc {
+func authValidator(swagger *openapi3.T) middlewareFunc {
 	return middleware.OapiRequestValidatorWithOptions(swagger, &middleware.Options{
 		Options: openapi3filter.Options{
 			AuthenticationFunc: func(ctx context.Context, input *openapi3filter.AuthenticationInput) error {
@@ -40,9 +39,9 @@ func auth(swagger *openapi3.T) middlewareFunc {
 			w.Header().Set("Content-Type", "application/json; charset=utf-8")
 			w.WriteHeader(statusCode)
 
-			_ = json.NewEncoder(w).Encode(response.Unauthorised(errorn.Authorization(errorn.Message{
-				Error: fmt.Errorf("%s", message),
-			}).(errorn.Errorn)))
+			_ = json.NewEncoder(w).Encode(
+				response.ErrRender(fmt.Errorf("%s", message)),
+			)
 		},
 	})
 }
