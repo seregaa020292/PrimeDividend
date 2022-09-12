@@ -10,11 +10,14 @@ import (
 	"primedivident/internal/config"
 	"primedivident/internal/infrastructure/http"
 	"primedivident/internal/infrastructure/http/handlers"
+	"primedivident/internal/modules/auth/interactor/command"
+	"primedivident/internal/modules/auth/repository"
+	"primedivident/internal/modules/auth/service/email"
 	"primedivident/internal/modules/instrument/interactor/query"
-	"primedivident/internal/modules/instrument/repository"
-	"primedivident/internal/modules/portfolio/interactor/command"
+	repository2 "primedivident/internal/modules/instrument/repository"
+	command2 "primedivident/internal/modules/portfolio/interactor/command"
 	query2 "primedivident/internal/modules/portfolio/interactor/query"
-	repository2 "primedivident/internal/modules/portfolio/repository"
+	repository3 "primedivident/internal/modules/portfolio/repository"
 	"primedivident/internal/ports/http/asset"
 	"primedivident/internal/ports/http/auth"
 	"primedivident/internal/ports/http/currency"
@@ -24,29 +27,34 @@ import (
 	"primedivident/internal/ports/http/provider"
 	"primedivident/internal/ports/http/register"
 	"primedivident/internal/ports/http/user"
-	"primedivident/internal/services/email"
+	email2 "primedivident/internal/services/email"
+	"primedivident/pkg/response"
 	"primedivident/pkg/validator"
 )
 
 // Injectors from wire.go:
 
 func Initialize(cfg config.Config) http.Server {
-	handlerAuth := auth.NewHandler()
-	handlerAsset := asset.NewHandler()
-	handlerCurrency := currency.NewHandler()
+	logger := ProvideLogger(cfg)
+	validatorValidator := validator.GetValidator()
+	responder := response.NewRespond(logger, validatorValidator)
 	postgres := ProvidePostgres(cfg)
 	repositoryRepository := repository.NewRepository(postgres)
-	instrumentAll := query.NewInstrumentAll(repositoryRepository)
-	handlerInstrument := instrument.NewHandler(instrumentAll)
-	handlerMarket := market.NewHandler()
-	validatorValidator := validator.GetValidator()
-	repository3 := repository2.NewRepository(postgres)
-	portfolioById := query2.NewPortfolioById(repository3)
-	logger := ProvideLogger(cfg)
 	sender := ProvideMailerObserver(cfg, logger)
-	firstTestSend := email.NewFirstTestSend(cfg, sender)
-	portfolioCreate := command.NewPortfolioCreate(firstTestSend, repository3)
-	handlerPortfolio := portfolio.NewHandler(validatorValidator, portfolioById, portfolioCreate)
+	joinConfirmUser := email.NewJoinConfirmUser(sender)
+	joinByEmail := command.NewJoinByEmail(repositoryRepository, joinConfirmUser)
+	handlerAuth := auth.NewHandler(responder, joinByEmail)
+	handlerAsset := asset.NewHandler()
+	handlerCurrency := currency.NewHandler()
+	repository4 := repository2.NewRepository(postgres)
+	instrumentAll := query.NewInstrumentAll(repository4)
+	handlerInstrument := instrument.NewHandler(responder, instrumentAll)
+	handlerMarket := market.NewHandler()
+	repository5 := repository3.NewRepository(postgres)
+	portfolioById := query2.NewPortfolioById(repository5)
+	firstTestSend := email2.NewFirstTestSend(cfg, sender)
+	portfolioCreate := command2.NewPortfolioCreate(firstTestSend, repository5)
+	handlerPortfolio := portfolio.NewHandler(responder, portfolioById, portfolioCreate)
 	handlerProvider := provider.NewHandler()
 	handlerRegister := register.NewHandler()
 	handlerUser := user.NewHandler()

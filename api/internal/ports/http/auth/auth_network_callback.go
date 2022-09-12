@@ -7,11 +7,10 @@ import (
 	"primedivident/internal/infrastructure/auth"
 	"primedivident/internal/infrastructure/http/openapi"
 	"primedivident/pkg/logger"
-	"primedivident/pkg/response"
 )
 
 func (h HandlerAuth) AuthNetworkCallback(w http.ResponseWriter, r *http.Request, network openapi.Network) {
-	respond := response.New(w, r)
+	respond := h.responder.Http(w, r)
 
 	oauthState, _ := r.Cookie(auth.OauthState)
 	state := r.FormValue("state")

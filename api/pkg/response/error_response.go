@@ -2,11 +2,12 @@ package response
 
 import (
 	"net/http"
+
 	"primedivident/pkg/errorn"
 )
 
 type ErrorRespond struct {
-	Data       *interface{}    `json:"data"`
+	Data       *any            `json:"data"`
 	Errors     []ErrorResponse `json:"errors"`
 	httpStatus int
 }

@@ -5,11 +5,13 @@ package wire
 
 import (
 	"github.com/google/wire"
+
 	"primedivident/internal/config"
 	serverHttp "primedivident/internal/infrastructure/http"
 	"primedivident/internal/infrastructure/http/handlers"
 	wireGroup "primedivident/internal/infrastructure/wire/wire_group"
 	"primedivident/internal/services/email"
+	"primedivident/pkg/response"
 	"primedivident/pkg/validator"
 )
 
@@ -20,6 +22,7 @@ func Initialize(cfg config.Config) serverHttp.Server {
 		ProvideMailerObserver,
 
 		validator.GetValidator,
+		response.NewRespond,
 
 		email.NewFirstTestSend,
 

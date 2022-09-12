@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -23,12 +22,8 @@ func authValidator(swagger *openapi3.T) func(next http.Handler) http.Handler {
 			},
 		},
 		ErrorHandler: func(w http.ResponseWriter, message string, statusCode int) {
-			w.Header().Set("Content-Type", "application/json; charset=utf-8")
-			w.WriteHeader(statusCode)
-
-			_ = json.NewEncoder(w).Encode(
-				response.ErrRender(fmt.Errorf("%s", message)),
-			)
+			respond := response.NewRespondBuilder(w, &http.Request{})
+			respond.Err(fmt.Errorf("%s", message))
 		},
 	})
 }

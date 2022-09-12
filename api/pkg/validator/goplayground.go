@@ -42,7 +42,7 @@ func NewGoPlayground() Validator {
 		return utils.If(name == "-", "", name)
 	})
 
-	validate.RegisterCustomTypeFunc(func(field reflect.Value) interface{} {
+	validate.RegisterCustomTypeFunc(func(field reflect.Value) any {
 		if valuer, ok := field.Interface().(uuid.UUID); ok {
 			return valuer.String()
 		}

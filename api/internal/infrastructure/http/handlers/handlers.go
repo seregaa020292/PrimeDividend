@@ -79,7 +79,7 @@ func (handlers Handlers) Setup(router chi.Router) {
 			custom(routerSwagger),
 		},
 		ErrorHandlerFunc: func(w http.ResponseWriter, r *http.Request, err error) {
-			respond := response.New(w, r)
+			respond := response.NewRespondBuilder(w, r)
 			respond.Err(err)
 		},
 	})

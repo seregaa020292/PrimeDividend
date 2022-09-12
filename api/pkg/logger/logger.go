@@ -7,15 +7,15 @@ import (
 
 type (
 	Logger interface {
-		Infof(format string, args ...interface{})
-		Warnf(format string, args ...interface{})
-		Errorf(format string, args ...interface{})
-		Fatalln(args ...interface{})
+		Infof(format string, args ...any)
+		Warnf(format string, args ...any)
+		Errorf(format string, args ...any)
+		Fatalln(args ...any)
 		ExtraFields(keyValues Fields) Logger
-		ExtraField(key string, value interface{}) Logger
+		ExtraField(key string, value any) Logger
 		ExtraError(err error) Logger
 	}
-	Fields map[string]interface{}
+	Fields map[string]any
 
 	Config struct {
 		Format  string

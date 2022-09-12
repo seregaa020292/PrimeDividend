@@ -13,6 +13,17 @@ const (
 	BearerAuthScopes = "BearerAuth.Scopes"
 )
 
+// AuthConfirm defines model for authConfirm.
+type AuthConfirm struct {
+	Token string `json:"token"`
+}
+
+// AuthUser defines model for authUser.
+type AuthUser struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=6"`
+}
+
 // Error defines model for error.
 type Error struct {
 	Data   *interface{} `json:"data"`
@@ -56,11 +67,26 @@ type Network = string
 // PortfolioId defines model for portfolioId.
 type PortfolioId = openapi_types.UUID
 
+// N400 defines model for 400.
+type N400 = Error
+
 // N500 defines model for 500.
 type N500 = Error
 
+// AuthEmailJSONBody defines parameters for AuthEmail.
+type AuthEmailJSONBody = AuthUser
+
+// AuthEmailConfirmJSONBody defines parameters for AuthEmailConfirm.
+type AuthEmailConfirmJSONBody = AuthConfirm
+
 // CreatePortfolioJSONBody defines parameters for CreatePortfolio.
 type CreatePortfolioJSONBody = PortfolioUpdate
+
+// AuthEmailJSONRequestBody defines body for AuthEmail for application/json ContentType.
+type AuthEmailJSONRequestBody = AuthEmailJSONBody
+
+// AuthEmailConfirmJSONRequestBody defines body for AuthEmailConfirm for application/json ContentType.
+type AuthEmailConfirmJSONRequestBody = AuthEmailConfirmJSONBody
 
 // CreatePortfolioJSONRequestBody defines body for CreatePortfolio for application/json ContentType.
 type CreatePortfolioJSONRequestBody = CreatePortfolioJSONBody

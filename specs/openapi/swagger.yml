@@ -36,6 +36,40 @@ tags:
     description: "Активы инвестора"
 
 paths:
+  /auth/email:
+    post:
+      tags: [ auth ]
+      operationId: authEmail
+      summary: Аутентификация по Email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/authUser"
+      responses:
+        201:
+          $ref: '#/components/responses/201'
+        400:
+          $ref: '#/components/responses/400'
+        500:
+          $ref: '#/components/responses/500'
+  /auth/email/confirm:
+    post:
+      tags: [ auth ]
+      operationId: authEmailConfirm
+      summary: Авторизация по Email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/authConfirm"
+      responses:
+        200:
+          $ref: '#/components/responses/200'
+        500:
+          $ref: '#/components/responses/500'
   /auth/{network}:
     get:
       tags: [ auth ]
@@ -142,6 +176,10 @@ components:
   responses:
     101:
       description: Switching Protocols
+    200:
+      description: OK
+    201:
+      description: Created
     202:
       description: Accepted
     204:
@@ -186,6 +224,25 @@ components:
             $ref: '#/components/schemas/error'
 
   schemas:
+    authUser:
+      type: object
+      required: [ email, password ]
+      properties:
+        email:
+          type: string
+          format: example@example.ru
+          x-oapi-codegen-extra-tags:
+            validate: required,email
+        password:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: required,min=6
+    authConfirm:
+      type: object
+      required: [ token ]
+      properties:
+        token:
+          type: string
     portfolio:
       type: object
       required: [ id, createdAt ]

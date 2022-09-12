@@ -21,6 +21,12 @@ import (
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// Аутентификация по Email
+	// (POST /auth/email)
+	AuthEmail(w http.ResponseWriter, r *http.Request)
+	// Авторизация по Email
+	// (POST /auth/email/confirm)
+	AuthEmailConfirm(w http.ResponseWriter, r *http.Request)
 	// Аутентификация в соц. сетях
 	// (GET /auth/{network})
 	AuthNetwork(w http.ResponseWriter, r *http.Request, network Network)
@@ -46,6 +52,36 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(http.HandlerFunc) http.HandlerFunc
+
+// AuthEmail operation middleware
+func (siw *ServerInterfaceWrapper) AuthEmail(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AuthEmail(w, r)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// AuthEmailConfirm operation middleware
+func (siw *ServerInterfaceWrapper) AuthEmailConfirm(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AuthEmailConfirm(w, r)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
 
 // AuthNetwork operation middleware
 func (siw *ServerInterfaceWrapper) AuthNetwork(w http.ResponseWriter, r *http.Request) {
@@ -271,6 +307,12 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/auth/email", wrapper.AuthEmail)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/auth/email/confirm", wrapper.AuthEmailConfirm)
+	})
+	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/auth/{network}", wrapper.AuthNetwork)
 	})
 	r.Group(func(r chi.Router) {
@@ -292,29 +334,32 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/9RXS2/bxhP/KsT+/0faVJr2olsebeGiDQykRQ+GD2tyLDMhuezu0okgCIiVR1skqIOc",
-	"emqQS8+OGteqHctfYfYbFbOkRFKkBatNDj3xsfP8zew8BswXcSoSSLRi3QFLueQxaJD2KwH9QMj79Bom",
-	"rMtSrveYyxIeA+vOT10m4YcslBCwrpYZuEz5exBzYtP9lEiVlmHSY8Ohy1Ih9a6IQrERXCK3SrFM9q6Q",
-	"Mdesy7IsJMpFXUNiVqlIFFhvPul8So8AlC/DVIeCVN8Rzi2RaEg0G7rseudak+QbsQ+Bswky5oRT1CfK",
-	"zzodovQL3u6A8TSNQp8Tk3dPEeegYuz/JeyyLvufV+Lt5afKAymFzA2ua74Lch+k83lxPnPeepMzUcik",
-	"SEHqMHcy4NrqS7Io4jsR5LAN3ZzekoQaYtXk3A0hCpre42uc4hkeOzh28BSnZoRT8win+N7BC/sywROc",
-	"mp/wDI8c+zLBt3iKR82QuCwGpXgPWtT8hhc4MQd4hOc4IXWlpElLcKuJsTUXuz0nFDv3wLcxLX5wKXm/",
-	"wVig0sYXJkrLLC6iW8fKl8A1BDd0LQ8DrmFNhzG0eV5zd9A8D4Mr5LTLdKgjaBWQpcFqNi1Akeuz4uvW",
-	"uhV3q2qWg1ZPtWXpXwG6Ea5KvfggUbgSym3AlLra3J4b+Z1Fp8XUTEpI/P7GFfS77OGa4Gm45osAepCs",
-	"wUMt+ZrmPStqn0dhrmRupWvlDC9Pj9VFWmmZAvlxLV6AepZ+hWK3ilsTdyqI4Gcy1P27lEs51DeBS5A3",
-	"Mr1HXzv264uZ+V99/y0ryihJyk9Lf/a0TnOr4KEGmfDotvBVS7V6gxd4bJ7hxDzBCRU7+37o3H3Aez0r",
-	"MZNRIVB1PU/l/9dD4akU/HC36BT5ndkVTRU3NjccfIdn5jCvsxM8wyn+icdUH82hsynDGG6H+2EASXlz",
-	"u2zx/z5IlUu8tt5Zv0YKRQoJT0PWZdfXO+sd5toGbN30eKb3vEHR2of0qwf2flE2W5MpIRjBe2fe/6tT",
-	"w1b7ZS9JvNncMNxeaNBF921jn9N5RFT23+W0RGSzJItjLvsUuJfmsRkRiGbUCB6OHXOAU/NsnZ7HZmQO",
-	"zVOC1ubxFiNs2DYJXIDJ83kU7XD//lXwujWj/W/hhuOi81O7/weI1dtpK0hfgt6o9I/G+LbaxNU+F12t",
-	"Eam8mC6Um8Z8hq/IawcneG4OzMg8Mo/xfZ5c5vnKaM9AqyCVQ1dvgUK1QHfLtqfNOWFeVkHpmyLof7BB",
-	"dbHNLdTvYtJsG7qXI0BEK+dmUfntzanW/K1tuiCV1H2DUzzBd+VkeUF5bEbmCR5Tfa3ka4n0AvLeoLKV",
-	"DJdl8DwGN/u2g612x6u7T+Oef/wbUPp/pfzXIhD/pqjY1cI8Nj/mXa0lNvaHs3H7shjZRKAlKUe3bt7X",
-	"wueRk5/XOnLX8yI62xNKe9QJCepCfqPVL+kYroNHbXXRpZLwrp2n3HNtcRy6DYW/4jmO8ZgqCgkuGWgq",
-	"amN4hUd4Zn4xI7tzFcSzyamN4TVOrXQy/mdr3GS2203sSjfGKZ5WNnIpaJ5oVf67jd25eX5pIXTzIOIp",
-	"bYjmwBzUIbHrXaGotgq0Dl20Ik7x1DHPZnrNUwffWn1H+EcpKubyPlwiZmwO8cS8cMxBnnB1LOxq20DD",
-	"wclcKU7xr4pS+iwVS+iFSreD9bqW3S8sYNVYVwNYuYtNQS/xlMzDsXm+VAhXikDYHv4dAAD//7u5jK7p",
-	"EQAA",
+	"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",
+	"AP//oV++quMWAAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

@@ -51,7 +51,7 @@ type StructuredLoggerEntry struct {
 	logger.Logger
 }
 
-func (l *StructuredLoggerEntry) Write(status, bytes int, header http.Header, elapsed time.Duration, extra interface{}) {
+func (l *StructuredLoggerEntry) Write(status, bytes int, header http.Header, elapsed time.Duration, extra any) {
 	if status >= http.StatusBadRequest {
 		l.Logger.ExtraFields(logger.Fields{
 			"resp_status":       status,
@@ -61,7 +61,7 @@ func (l *StructuredLoggerEntry) Write(status, bytes int, header http.Header, ela
 	}
 }
 
-func (l *StructuredLoggerEntry) Panic(v interface{}, stack []byte) {
+func (l *StructuredLoggerEntry) Panic(v any, stack []byte) {
 	l.Logger.ExtraFields(logger.Fields{
 		"stack": string(stack),
 		"panic": fmt.Sprintf("%+v", v),

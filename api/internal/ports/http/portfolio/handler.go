@@ -3,22 +3,22 @@ package portfolio
 import (
 	"primedivident/internal/modules/portfolio/interactor/command"
 	"primedivident/internal/modules/portfolio/interactor/query"
-	"primedivident/pkg/validator"
+	"primedivident/pkg/response"
 )
 
 type HandlerPortfolio struct {
-	validator          validator.Validator
+	responder          response.Responder
 	queryPortfolioById query.PortfolioById
 	cmdPortfolioCreate command.PortfolioCreate
 }
 
 func NewHandler(
-	validator validator.Validator,
+	responder response.Responder,
 	queryPortfolioById query.PortfolioById,
 	cmdPortfolioCreate command.PortfolioCreate,
 ) HandlerPortfolio {
 	return HandlerPortfolio{
-		validator:          validator,
+		responder:          responder,
 		queryPortfolioById: queryPortfolioById,
 		cmdPortfolioCreate: cmdPortfolioCreate,
 	}

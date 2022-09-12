@@ -8,35 +8,70 @@ import (
 	"primedivident/pkg/errorn"
 	"primedivident/pkg/logger"
 	"primedivident/pkg/utils"
+	"primedivident/pkg/validator"
 )
 
-type Response struct {
-	Data interface{} `json:"data"`
+type Responder interface {
+	Http(w http.ResponseWriter, r *http.Request) Responder
+	SetHeader(key string, value string) Responder
+	Json(httpStatus int, data any)
+	Any(httpStatus int, data any)
+	NoContent()
+	Redirect(url string, httpStatus ...int)
+	Decode(v any) error
+	DecodeValidate(v any) error
+	Err(err error)
 }
 
-type Respond struct {
-	w http.ResponseWriter
-	r *http.Request
-}
+type (
+	Response struct {
+		Data any `json:"data"`
+	}
+	Respond struct {
+		logger    logger.Logger
+		validator validator.Validator
 
-func New(w http.ResponseWriter, r *http.Request) Respond {
+		w http.ResponseWriter
+		r *http.Request
+	}
+)
+
+func NewRespond(
+	logger logger.Logger,
+	validator validator.Validator,
+) Responder {
 	return Respond{
+		logger:    logger,
+		validator: validator,
+	}
+}
+
+func NewRespondBuilder(w http.ResponseWriter, r *http.Request) Responder {
+	respond := NewRespond(logger.GetLogger(), validator.GetValidator())
+	return respond.Http(w, r)
+}
+
+func (h Respond) Http(w http.ResponseWriter, r *http.Request) Responder {
+	return Respond{
+		logger:    h.logger,
+		validator: h.validator,
+
 		w: w,
 		r: r,
 	}
 }
 
-func (h Respond) SetHeader(key string, value string) Respond {
+func (h Respond) SetHeader(key string, value string) Responder {
 	h.w.Header().Set(key, value)
 	return h
 }
 
-func (h Respond) Json(httpStatus int, data interface{}) {
+func (h Respond) Json(httpStatus int, data any) {
 	render.Status(h.r, httpStatus)
 	render.JSON(h.w, h.r, Response{Data: data})
 }
 
-func (h Respond) Any(httpStatus int, data interface{}) {
+func (h Respond) Any(httpStatus int, data any) {
 	render.Status(h.r, httpStatus)
 	render.Respond(h.w, h.r, Response{Data: data})
 }
@@ -49,18 +84,19 @@ func (h Respond) Redirect(url string, httpStatus ...int) {
 	http.Redirect(h.w, h.r, url, utils.ByDefault(http.StatusMovedPermanently, httpStatus...))
 }
 
-func (h Respond) Decode(v interface{}) error {
+func (h Respond) Decode(v any) error {
 	return render.Decode(h.r, v)
 }
 
-func (h Respond) Err(err error) {
-	h.SetHeader("Content-Type", "application/json; charset=utf-8")
-	if err := render.Render(h.w, h.r, ErrRender(err)); err != nil {
-		panic(err)
+func (h Respond) DecodeValidate(v any) error {
+	if err := render.Decode(h.r, v); err != nil {
+		return err
 	}
+
+	return h.validator.Struct(v)
 }
 
-func ErrRender(err error) ErrorRespond {
+func (h Respond) Err(err error) {
 	var errorRespond ErrorRespond
 
 	e, ok := err.(errorn.Errorn)
@@ -70,9 +106,10 @@ func ErrRender(err error) ErrorRespond {
 		errorRespond = InternalError(err)
 	}
 
-	logger.GetLogger().
-		ExtraError(err).
-		Errorf("%+v", errorRespond.Errors)
+	h.logger.ExtraError(err).Errorf("%+v", errorRespond.Errors)
 
-	return errorRespond
+	h.SetHeader("Content-Type", "application/json; charset=utf-8")
+	if err := render.Render(h.w, h.r, errorRespond); err != nil {
+		panic(err)
+	}
 }

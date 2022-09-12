@@ -36,22 +36,22 @@ func NewLogrus(config Config) Logger {
 	return logEntry
 }
 
-func (l *Logrus) Infof(format string, args ...interface{}) {
+func (l *Logrus) Infof(format string, args ...any) {
 	fields := callerPrettyfier(runtime.Caller(1))
 	l.Entry.WithFields(fields).Infof(format, args...)
 }
 
-func (l *Logrus) Warnf(format string, args ...interface{}) {
+func (l *Logrus) Warnf(format string, args ...any) {
 	fields := callerPrettyfier(runtime.Caller(1))
 	l.Entry.WithFields(fields).Warnf(format, args...)
 }
 
-func (l *Logrus) Errorf(format string, args ...interface{}) {
+func (l *Logrus) Errorf(format string, args ...any) {
 	fields := callerPrettyfier(runtime.Caller(1))
 	l.Entry.WithFields(fields).Errorf(format, args...)
 }
 
-func (l *Logrus) Fatalln(args ...interface{}) {
+func (l *Logrus) Fatalln(args ...any) {
 	fields := callerPrettyfier(runtime.Caller(1))
 	l.Entry.WithFields(fields).Fatalln(args...)
 }
@@ -60,7 +60,7 @@ func (l *Logrus) ExtraFields(fields Fields) Logger {
 	return &Logrus{l.Entry.WithFields(convertToFields(fields))}
 }
 
-func (l *Logrus) ExtraField(key string, value interface{}) Logger {
+func (l *Logrus) ExtraField(key string, value any) Logger {
 	return &Logrus{l.Entry.WithField(key, value)}
 }
 
