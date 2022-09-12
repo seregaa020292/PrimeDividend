@@ -14,13 +14,13 @@ import (
 type Responder interface {
 	Http(w http.ResponseWriter, r *http.Request) Responder
 	SetHeader(key string, value string) Responder
+	WriteHeader(httpStatus int)
 	Json(httpStatus int, data any)
 	Any(httpStatus int, data any)
-	NoContent()
+	Err(err error)
 	Redirect(url string, httpStatus ...int)
 	Decode(v any) error
 	DecodeValidate(v any) error
-	Err(err error)
 }
 
 type (
@@ -30,9 +30,8 @@ type (
 	Respond struct {
 		logger    logger.Logger
 		validator validator.Validator
-
-		w http.ResponseWriter
-		r *http.Request
+		writer    http.ResponseWriter
+		request   *http.Request
 	}
 )
 
@@ -47,49 +46,52 @@ func NewRespond(
 }
 
 func NewRespondBuilder(w http.ResponseWriter, r *http.Request) Responder {
-	respond := NewRespond(logger.GetLogger(), validator.GetValidator())
-	return respond.Http(w, r)
+	return Respond{
+		logger:    logger.GetLogger(),
+		validator: validator.GetValidator(),
+		writer:    w,
+		request:   r,
+	}
 }
 
 func (h Respond) Http(w http.ResponseWriter, r *http.Request) Responder {
 	return Respond{
 		logger:    h.logger,
 		validator: h.validator,
-
-		w: w,
-		r: r,
+		writer:    w,
+		request:   r,
 	}
 }
 
 func (h Respond) SetHeader(key string, value string) Responder {
-	h.w.Header().Set(key, value)
+	h.writer.Header().Set(key, value)
 	return h
 }
 
+func (h Respond) WriteHeader(httpStatus int) {
+	h.writer.WriteHeader(httpStatus)
+}
+
 func (h Respond) Json(httpStatus int, data any) {
-	render.Status(h.r, httpStatus)
-	render.JSON(h.w, h.r, Response{Data: data})
+	render.Status(h.request, httpStatus)
+	render.JSON(h.writer, h.request, Response{Data: data})
 }
 
 func (h Respond) Any(httpStatus int, data any) {
-	render.Status(h.r, httpStatus)
-	render.Respond(h.w, h.r, Response{Data: data})
-}
-
-func (h Respond) NoContent() {
-	render.NoContent(h.w, h.r)
+	render.Status(h.request, httpStatus)
+	render.Respond(h.writer, h.request, Response{Data: data})
 }
 
 func (h Respond) Redirect(url string, httpStatus ...int) {
-	http.Redirect(h.w, h.r, url, utils.ByDefault(http.StatusMovedPermanently, httpStatus...))
+	http.Redirect(h.writer, h.request, url, utils.ByDefault(http.StatusMovedPermanently, httpStatus...))
 }
 
 func (h Respond) Decode(v any) error {
-	return render.Decode(h.r, v)
+	return render.Decode(h.request, v)
 }
 
 func (h Respond) DecodeValidate(v any) error {
-	if err := render.Decode(h.r, v); err != nil {
+	if err := h.Decode(v); err != nil {
 		return err
 	}
 
@@ -109,7 +111,7 @@ func (h Respond) Err(err error) {
 	h.logger.ExtraError(err).Errorf("%+v", errorRespond.Errors)
 
 	h.SetHeader("Content-Type", "application/json; charset=utf-8")
-	if err := render.Render(h.w, h.r, errorRespond); err != nil {
+	if err := render.Render(h.writer, h.request, errorRespond); err != nil {
 		panic(err)
 	}
 }

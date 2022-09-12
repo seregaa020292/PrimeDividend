@@ -243,6 +243,8 @@ components:
       properties:
         token:
           type: string
+          x-oapi-codegen-extra-tags:
+            validate: required
     portfolio:
       type: object
       required: [ id, createdAt ]

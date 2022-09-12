@@ -7,6 +7,7 @@ import (
 
 type Repository interface {
 	Add(user entity.User) error
+	Confirm(token entity.Token) error
 }
 
 type repository struct {
@@ -18,5 +19,9 @@ func NewRepository(db *postgres.Postgres) Repository {
 }
 
 func (r repository) Add(user entity.User) error {
+	return nil
+}
+
+func (r repository) Confirm(token entity.Token) error {
 	return nil
 }

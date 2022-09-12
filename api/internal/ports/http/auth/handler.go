@@ -6,16 +6,19 @@ import (
 )
 
 type HandlerAuth struct {
-	responder      response.Responder
-	cmdJoinByEmail command.JoinByEmail
+	responder         response.Responder
+	cmdJoinByEmail    command.JoinByEmail
+	cmdConfirmByToken command.ConfirmByToken
 }
 
 func NewHandler(
 	responder response.Responder,
 	cmdJoinByEmail command.JoinByEmail,
+	cmdConfirmByToken command.ConfirmByToken,
 ) HandlerAuth {
 	return HandlerAuth{
-		responder:      responder,
-		cmdJoinByEmail: cmdJoinByEmail,
+		responder:         responder,
+		cmdJoinByEmail:    cmdJoinByEmail,
+		cmdConfirmByToken: cmdConfirmByToken,
 	}
 }

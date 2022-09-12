@@ -15,7 +15,7 @@ const (
 
 // AuthConfirm defines model for authConfirm.
 type AuthConfirm struct {
-	Token string `json:"token"`
+	Token string `json:"token" validate:"required"`
 }
 
 // AuthUser defines model for authUser.

@@ -11,6 +11,7 @@ func (h HandlerAuth) AuthEmail(w http.ResponseWriter, r *http.Request) {
 	respond := h.responder.Http(w, r)
 
 	user := openapi.AuthUser{}
+
 	if err := respond.DecodeValidate(&user); err != nil {
 		respond.Err(err)
 		return
@@ -21,5 +22,5 @@ func (h HandlerAuth) AuthEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	respond.WriteHeader(http.StatusCreated)
 }

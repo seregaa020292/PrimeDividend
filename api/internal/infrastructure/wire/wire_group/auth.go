@@ -13,5 +13,6 @@ var Auth = wire.NewSet(
 	email.NewJoinConfirmUser,
 	repository.NewRepository,
 	command.NewJoinByEmail,
+	command.NewConfirmByToken,
 	auth.NewHandler,
 )
