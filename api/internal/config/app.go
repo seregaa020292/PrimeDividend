@@ -2,7 +2,7 @@ package config
 
 type App struct {
 	Env        string `env:"APP_ENV" env-default:"development"`
-	SiteOrigin string `env:"SITE_ORIGIN" env-default:"http://localhost"`
+	SiteOrigin string `env:"SITE_ORIGIN" env-required:"true"`
 	LogLevel   string `env:"LOG_LEVEL" env-default:"debug"`
 }
 

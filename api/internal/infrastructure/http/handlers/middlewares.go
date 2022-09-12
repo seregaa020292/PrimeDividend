@@ -1,4 +1,4 @@
-package middlewares
+package handlers
 
 import (
 	"context"
@@ -10,25 +10,12 @@ import (
 	middleware "github.com/deepmap/oapi-codegen/pkg/chi-middleware"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/getkin/kin-openapi/openapi3filter"
+	"github.com/getkin/kin-openapi/routers"
 
-	"primedivident/internal/infrastructure/http/openapi"
 	"primedivident/pkg/response"
 )
 
-func newOpenapi() []middlewareFunc {
-	swagger, err := openapi.GetSwagger()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	swagger.Servers = nil
-
-	return []middlewareFunc{
-		authValidator(swagger),
-	}
-}
-
-func authValidator(swagger *openapi3.T) middlewareFunc {
+func authValidator(swagger *openapi3.T) func(next http.Handler) http.Handler {
 	return middleware.OapiRequestValidatorWithOptions(swagger, &middleware.Options{
 		Options: openapi3filter.Options{
 			AuthenticationFunc: func(ctx context.Context, input *openapi3filter.AuthenticationInput) error {
@@ -44,4 +31,19 @@ func authValidator(swagger *openapi3.T) middlewareFunc {
 			)
 		},
 	})
+}
+
+func custom(router routers.Router) func(next http.HandlerFunc) http.HandlerFunc {
+	return func(next http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			route, _, err := router.FindRoute(r)
+			if err != nil {
+				panic(err)
+			}
+
+			log.Print(route.Operation.OperationID)
+
+			next(w, r)
+		}
+	}
 }

@@ -16,6 +16,8 @@ servers:
 #  - BearerAuth: [ ]
 
 tags:
+  - name: auth
+    description: "Аутентификация, авторизация, идентификация"
   - name: user
     description: "Инвестор"
   - name: currency
@@ -34,6 +36,31 @@ tags:
     description: "Активы инвестора"
 
 paths:
+  /auth/{network}:
+    get:
+      tags: [ auth ]
+      operationId: authNetwork
+      summary: Аутентификация в соц. сетях
+      parameters:
+        - $ref: "#/components/parameters/network"
+      responses:
+        301:
+          $ref: '#/components/responses/301'
+        500:
+          $ref: '#/components/responses/500'
+  /auth/{network}/callback:
+    get:
+      tags: [ auth ]
+      operationId: authNetworkCallback
+      summary: Авторизация в соц. сетях
+      parameters:
+        - $ref: "#/components/parameters/network"
+      responses:
+        301:
+          $ref: '#/components/responses/301'
+        500:
+          $ref: '#/components/responses/500'
+
   /portfolio/{portfolioId}:
     get:
       tags: [ portfolio ]
@@ -105,6 +132,12 @@ components:
         type: string
         format: uuid
       required: true
+    network:
+      in: path
+      name: network
+      schema:
+        type: string
+      required: true
 
   responses:
     101:
@@ -113,6 +146,8 @@ components:
       description: Accepted
     204:
       description: No Content
+    301:
+      description: Moved Permanently
     400:
       description: Bad Request
       content:

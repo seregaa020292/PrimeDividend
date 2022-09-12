@@ -16,6 +16,7 @@ import (
 	query2 "primedivident/internal/modules/portfolio/interactor/query"
 	repository2 "primedivident/internal/modules/portfolio/repository"
 	"primedivident/internal/ports/http/asset"
+	"primedivident/internal/ports/http/auth"
 	"primedivident/internal/ports/http/currency"
 	"primedivident/internal/ports/http/instrument"
 	"primedivident/internal/ports/http/market"
@@ -30,6 +31,7 @@ import (
 // Injectors from wire.go:
 
 func Initialize(cfg config.Config) http.Server {
+	handlerAuth := auth.NewHandler()
 	handlerAsset := asset.NewHandler()
 	handlerCurrency := currency.NewHandler()
 	postgres := ProvidePostgres(cfg)
@@ -48,7 +50,7 @@ func Initialize(cfg config.Config) http.Server {
 	handlerProvider := provider.NewHandler()
 	handlerRegister := register.NewHandler()
 	handlerUser := user.NewHandler()
-	httpHandlers := handlers.NewHandlers(handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
+	httpHandlers := handlers.NewHandlers(handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
 	server := http.NewServer(httpHandlers)
 	return server
 }

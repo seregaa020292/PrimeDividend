@@ -2,12 +2,13 @@ package http
 
 import (
 	"context"
-	"github.com/go-chi/chi/v5"
 	"log"
 	"net/http"
-	"primedivident/internal/infrastructure/http/middlewares"
+
+	"github.com/go-chi/chi/v5"
 
 	"primedivident/internal/config/consts"
+	"primedivident/internal/infrastructure/http/middlewares"
 )
 
 type Handlers interface {
@@ -34,8 +35,9 @@ func (s *Server) Run() {
 	s.handlers.Setup(router)
 
 	s.server = &http.Server{
-		Addr:    consts.ServerAddr,
-		Handler: router,
+		ReadHeaderTimeout: consts.ServerReadHeaderTimeout,
+		Addr:              consts.ServerAddr,
+		Handler:           router,
 	}
 
 	if err := s.server.ListenAndServe(); err != nil {

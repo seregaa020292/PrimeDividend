@@ -1,4 +1,4 @@
-FROM golang:1.18-alpine AS build
+FROM golang:1.19-alpine AS build
 
 RUN apk add --no-cache git curl
 
@@ -8,7 +8,7 @@ RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/i
 RUN go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen@latest
 RUN go install github.com/google/wire/cmd/wire@latest
 
-FROM golang:1.18-alpine
+FROM golang:1.19-alpine
 
 ARG USER_ID
 ARG GROUP_ID

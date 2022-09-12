@@ -23,6 +23,7 @@ func Initialize(cfg config.Config) serverHttp.Server {
 
 		email.NewFirstTestSend,
 
+		wireGroup.Auth,
 		wireGroup.Asset,
 		wireGroup.Currency,
 		wireGroup.Instrument,

@@ -2,6 +2,7 @@ package query
 
 import (
 	"github.com/google/uuid"
+
 	"primedivident/internal/decorator"
 	"primedivident/internal/modules/portfolio/entity"
 	"primedivident/internal/modules/portfolio/repository"

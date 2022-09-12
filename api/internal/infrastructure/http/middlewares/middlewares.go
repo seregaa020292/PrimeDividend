@@ -28,6 +28,4 @@ func Setup(router *chi.Mux) {
 	)
 
 	router.Use(middleware.NoCache)
-
-	router.Use(newOpenapi()...)
 }

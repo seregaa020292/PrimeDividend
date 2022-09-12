@@ -49,18 +49,19 @@ func (a unencryptedAuth) Start(server *smtp.ServerInfo) (string, []byte, error) 
 // NewMailer
 //
 // For example:
-//  sender := NewMailer(config Config)
-//  m := NewMessage("Test", "Body message.")
-//  m.From = mail.Address{Name: "From", Address: "test@example.com"}
-//  m.To = []string{"test@example.com"}
-//  m.Bcc = []string{"test_bcc@example.com"}
-//  m.Cc = []string{"test_cc@example.com"}
-//  m.Subject = "Awesome Subject"
-//  m.Text = []byte("Text Body is, of course, supported!")
-//  m.HTML = []byte("<h1>Fancy HTML is supported, too!</h1>")
-//  m.AttachFile("/path/to/file", false)
 //
-//  fmt.Println(sender.Send(m))
+//	sender := NewMailer(config Config)
+//	m := NewMessage("Test", "Body message.")
+//	m.From = mail.Address{Name: "From", Address: "test@example.com"}
+//	m.To = []string{"test@example.com"}
+//	m.Bcc = []string{"test_bcc@example.com"}
+//	m.Cc = []string{"test_cc@example.com"}
+//	m.Subject = "Awesome Subject"
+//	m.Text = []byte("Text Body is, of course, supported!")
+//	m.HTML = []byte("<h1>Fancy HTML is supported, too!</h1>")
+//	m.AttachFile("/path/to/file", false)
+//
+//	fmt.Println(sender.Send(m))
 func NewMailer(config Config) Sender {
 	auth := unencryptedAuth{
 		Auth:   smtp.PlainAuth("", config.Username, config.Password, config.Host),

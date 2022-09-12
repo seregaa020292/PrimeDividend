@@ -1,8 +1,8 @@
 package config
 
 import (
-	"io/ioutil"
 	"net/mail"
+	"os"
 	"strings"
 )
 
@@ -23,6 +23,6 @@ func (m Mailer) From() mail.Address {
 }
 
 func (m Mailer) Password() string {
-	file, _ := ioutil.ReadFile(m.PasswordFile)
+	file, _ := os.ReadFile(m.PasswordFile)
 	return strings.TrimSpace(string(file))
 }

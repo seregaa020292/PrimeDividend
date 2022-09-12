@@ -1,9 +1,12 @@
 package mailer
 
 import (
-	"github.com/jordan-wright/email"
 	"net/mail"
 	"net/textproto"
+
+	"github.com/jordan-wright/email"
+
+	"primedivident/pkg/utils"
 )
 
 // Attachment represents an email attachment.
@@ -43,15 +46,10 @@ const (
 )
 
 func NewMessage(subject, body string, contentType ...ContentType) Message {
-	defContentType := TextPlain
-	if len(contentType) >= 1 {
-		defContentType = contentType[0]
-	}
-
 	return Message{
 		Subject:     subject,
 		Body:        body,
-		ContentType: defContentType,
+		ContentType: utils.ByDefault(TextPlain, contentType...),
 
 		email: new(email.Email),
 	}

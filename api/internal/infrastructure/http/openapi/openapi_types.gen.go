@@ -50,6 +50,9 @@ type PortfolioUpdate struct {
 	UserId     openapi_types.UUID `json:"userId" validate:"required,uuid"`
 }
 
+// Network defines model for network.
+type Network = string
+
 // PortfolioId defines model for portfolioId.
 type PortfolioId = openapi_types.UUID
 

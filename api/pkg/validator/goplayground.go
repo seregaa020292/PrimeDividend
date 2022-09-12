@@ -6,13 +6,14 @@ import (
 	"reflect"
 	"strings"
 
+	"primedivident/pkg/errorn"
+	"primedivident/pkg/utils"
+
 	"github.com/go-playground/locales/ru"
 	ut "github.com/go-playground/universal-translator"
 	goPlayground "github.com/go-playground/validator/v10"
 	ruTranslations "github.com/go-playground/validator/v10/translations/ru"
 	"github.com/google/uuid"
-	"primedivident/pkg/errorn"
-	"primedivident/pkg/utils"
 )
 
 type playgroundValidator struct {

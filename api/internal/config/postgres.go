@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -15,7 +15,7 @@ type Postgres struct {
 }
 
 func (p Postgres) Password() string {
-	file, _ := ioutil.ReadFile(p.PasswordFile)
+	file, _ := os.ReadFile(p.PasswordFile)
 	return strings.TrimSpace(string(file))
 }
 

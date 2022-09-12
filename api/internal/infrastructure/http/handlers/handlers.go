@@ -1,6 +1,12 @@
 package handlers
 
 import (
+	"log"
+	"net/http"
+
+	"primedivident/internal/ports/http/auth"
+
+	"github.com/getkin/kin-openapi/routers/gorillamux"
 	"github.com/go-chi/chi/v5"
 
 	serverHttp "primedivident/internal/infrastructure/http"
@@ -13,11 +19,14 @@ import (
 	"primedivident/internal/ports/http/provider"
 	"primedivident/internal/ports/http/register"
 	"primedivident/internal/ports/http/user"
+	"primedivident/pkg/response"
 )
 
+// Handlers implements openapi.ServerInterface
 var _ openapi.ServerInterface = (*Handlers)(nil)
 
 type Handlers struct {
+	auth.HandlerAuth
 	asset.HandlerAsset
 	currency.HandlerCurrency
 	instrument.HandlerInstrument
@@ -29,6 +38,7 @@ type Handlers struct {
 }
 
 func NewHandlers(
+	auth auth.HandlerAuth,
 	asset asset.HandlerAsset,
 	currency currency.HandlerCurrency,
 	instrument instrument.HandlerInstrument,
@@ -39,6 +49,7 @@ func NewHandlers(
 	user user.HandlerUser,
 ) serverHttp.Handlers {
 	return Handlers{
+		HandlerAuth:       auth,
 		HandlerAsset:      asset,
 		HandlerCurrency:   currency,
 		HandlerInstrument: instrument,
@@ -50,6 +61,26 @@ func NewHandlers(
 	}
 }
 
-func (h Handlers) Setup(router chi.Router) {
-	openapi.HandlerFromMux(h, router)
+func (handlers Handlers) Setup(router chi.Router) {
+	swagger, err := openapi.GetSwagger()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	swagger.Servers = nil
+
+	router.Use(authValidator(swagger))
+
+	routerSwagger, _ := gorillamux.NewRouter(swagger)
+
+	openapi.HandlerWithOptions(handlers, openapi.ChiServerOptions{
+		BaseRouter: router,
+		Middlewares: []openapi.MiddlewareFunc{
+			custom(routerSwagger),
+		},
+		ErrorHandlerFunc: func(w http.ResponseWriter, r *http.Request, err error) {
+			respond := response.New(w, r)
+			respond.Err(err)
+		},
+	})
 }

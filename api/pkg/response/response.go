@@ -7,6 +7,7 @@ import (
 
 	"primedivident/pkg/errorn"
 	"primedivident/pkg/logger"
+	"primedivident/pkg/utils"
 )
 
 type Response struct {
@@ -42,6 +43,10 @@ func (h Respond) Any(httpStatus int, data interface{}) {
 
 func (h Respond) NoContent() {
 	render.NoContent(h.w, h.r)
+}
+
+func (h Respond) Redirect(url string, httpStatus ...int) {
+	http.Redirect(h.w, h.r, url, utils.ByDefault(http.StatusMovedPermanently, httpStatus...))
 }
 
 func (h Respond) Decode(v interface{}) error {

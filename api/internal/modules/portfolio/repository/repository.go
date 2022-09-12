@@ -1,10 +1,12 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/google/uuid"
+
 	"primedivident/internal/modules/portfolio/entity"
 	"primedivident/pkg/db/postgres"
-	"time"
 )
 
 type Repository interface {

@@ -20,7 +20,7 @@ func DownloadFile(filepath string, url string) error {
 	}
 	defer out.Close()
 
-	resp, err := http.Get(url)
+	resp, err := http.Get(url) //nolint:gosec
 	if err != nil {
 		return err
 	}
@@ -87,4 +87,39 @@ func WaitForService(host string) {
 
 		time.Sleep(time.Millisecond * 500)
 	}
+}
+
+func GenCookie(key string, value string, opts *http.Cookie) *http.Cookie {
+	if opts == nil {
+		opts = &http.Cookie{}
+	}
+
+	if opts.Path == "" {
+		opts.Path = "/"
+	}
+	if opts.SameSite == http.SameSiteDefaultMode || opts.SameSite == 0 {
+		opts.SameSite = http.SameSiteNoneMode
+	}
+
+	return &http.Cookie{
+		Name:     key,
+		Value:    value,
+		Domain:   opts.Domain,
+		HttpOnly: opts.HttpOnly,
+		Expires:  opts.Expires,
+		MaxAge:   opts.MaxAge,
+		Path:     opts.Path,
+		SameSite: opts.SameSite,
+		Secure:   opts.Secure,
+	}
+}
+
+func ByDefault[T any](first T, optional ...T) T {
+	defFirst := first
+
+	if len(optional) >= 1 {
+		defFirst = optional[0]
+	}
+
+	return defFirst
 }
