@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"primedivident/internal/infrastructure/http/openapi"
-	"primedivident/internal/modules/auth/interactor/command"
+	"primedivident/internal/modules/auth/command"
 )
 
 func (h HandlerAuth) AuthEmail(w http.ResponseWriter, r *http.Request) {

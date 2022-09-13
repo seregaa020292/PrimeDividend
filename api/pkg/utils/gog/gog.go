@@ -1,8 +1,8 @@
-package utils
+package gog
 
 //https://github.com/icza/gog
 
-// If returns vtrue if cond is true, vfalse otherwise.
+// If returns vtrue is cond is true, vfalse otherwise.
 //
 // Useful to avoid an if statement when initializing variables, for example:
 //

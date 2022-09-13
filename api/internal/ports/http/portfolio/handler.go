@@ -1,8 +1,8 @@
 package portfolio
 
 import (
-	"primedivident/internal/modules/portfolio/interactor/command"
-	"primedivident/internal/modules/portfolio/interactor/query"
+	"primedivident/internal/modules/portfolio/command"
+	"primedivident/internal/modules/portfolio/query"
 	"primedivident/pkg/response"
 )
 

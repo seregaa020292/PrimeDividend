@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"primedivident/internal/infrastructure/http/openapi"
-	"primedivident/internal/modules/portfolio/interactor/command"
+	"primedivident/internal/modules/portfolio/command"
 )
 
 func (h HandlerPortfolio) CreatePortfolio(w http.ResponseWriter, r *http.Request) {

@@ -1,7 +1,7 @@
 package instrument
 
 import (
-	"primedivident/internal/modules/instrument/interactor/query"
+	"primedivident/internal/modules/instrument/query"
 	"primedivident/pkg/response"
 )
 

@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"primedivident/internal/modules/auth/interactor/command"
+	"primedivident/internal/modules/auth/command"
 	"primedivident/pkg/response"
 )
 

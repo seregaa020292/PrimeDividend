@@ -5,7 +5,7 @@ import (
 
 	"primedivident/internal/infrastructure/http/openapi"
 	"primedivident/internal/modules/portfolio/entity"
-	"primedivident/internal/modules/portfolio/interactor/query"
+	"primedivident/internal/modules/portfolio/query"
 )
 
 func (h HandlerPortfolio) GetPortfolioById(w http.ResponseWriter, r *http.Request, portfolioId openapi.PortfolioId) {

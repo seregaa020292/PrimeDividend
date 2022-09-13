@@ -10,6 +10,7 @@ import (
 )
 
 type Repository interface {
+	Add(entity.Portfolio) error
 	FindById(id uuid.UUID) (entity.Portfolio, error)
 }
 
@@ -19,6 +20,10 @@ type repository struct {
 
 func NewRepository(db *postgres.Postgres) Repository {
 	return repository{db: db}
+}
+
+func (r repository) Add(portfolio entity.Portfolio) error {
+	return nil
 }
 
 func (r repository) FindById(id uuid.UUID) (entity.Portfolio, error) {

@@ -3,8 +3,8 @@ package wire_group
 import (
 	"github.com/google/wire"
 
-	"primedivident/internal/modules/portfolio/interactor/command"
-	"primedivident/internal/modules/portfolio/interactor/query"
+	"primedivident/internal/modules/portfolio/command"
+	"primedivident/internal/modules/portfolio/query"
 	"primedivident/internal/modules/portfolio/repository"
 	"primedivident/internal/ports/http/portfolio"
 )

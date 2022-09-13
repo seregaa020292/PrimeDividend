@@ -5,7 +5,7 @@ import (
 
 	"primedivident/internal/infrastructure/http/openapi"
 	"primedivident/internal/modules/instrument/entity"
-	"primedivident/internal/modules/instrument/interactor/query"
+	"primedivident/internal/modules/instrument/query"
 )
 
 func (h HandlerInstrument) GetInstruments(w http.ResponseWriter, r *http.Request) {

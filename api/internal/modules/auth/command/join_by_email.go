@@ -8,7 +8,7 @@ import (
 	"primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/email"
 	"primedivident/pkg/errorn"
-	"primedivident/pkg/utils"
+	"primedivident/pkg/utils/gog"
 )
 
 type (
@@ -38,14 +38,17 @@ func (c joinByEmail) Exec(cmd Credential) error {
 	user := entity.User{
 		Email:     cmd.Email,
 		Password:  cmd.Password,
-		Confirmed: utils.Ptr(uuid.New()),
+		Confirmed: gog.Ptr(uuid.New()),
 	}
 
 	if err := c.repository.Add(user); err != nil {
 		return errorn.Authorization(errorn.Message{Error: err})
 	}
 
-	if err := c.email.Send(user.Email, user.Confirmed.String()); err != nil {
+	if err := c.email.Send(email.ConfirmData{
+		Email: user.Email,
+		Token: user.Confirmed.String(),
+	}); err != nil {
 		return errorn.Authorization(errorn.Message{Error: err})
 	}
 

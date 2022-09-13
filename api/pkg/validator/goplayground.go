@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"primedivident/pkg/errorn"
-	"primedivident/pkg/utils"
+	"primedivident/pkg/utils/gog"
 
 	"github.com/go-playground/locales/ru"
 	ut "github.com/go-playground/universal-translator"
@@ -39,7 +39,7 @@ func NewGoPlayground() Validator {
 
 	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
 		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
-		return utils.If(name == "-", "", name)
+		return gog.If(name == "-", "", name)
 	})
 
 	validate.RegisterCustomTypeFunc(func(field reflect.Value) any {
