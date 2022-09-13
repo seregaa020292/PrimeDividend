@@ -98,7 +98,7 @@ func (h Respond) DecodeValidate(v any) error {
 }
 
 func (h Respond) Err(err error) {
-	errorResponse := ErrDefined(err)
+	errorResponse := NewByError(err)
 
 	h.logger.Errorf("%s", errorResponse.Error)
 

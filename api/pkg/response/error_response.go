@@ -13,12 +13,7 @@ type ErrorResponse struct {
 	status int
 }
 
-func (e ErrorResponse) Render(w http.ResponseWriter, r *http.Request) error {
-	w.WriteHeader(e.status)
-	return nil
-}
-
-func ErrDefined(err error) ErrorResponse {
+func NewByError(err error) ErrorResponse {
 	e, ok := err.(errorn.Error)
 	if !ok {
 		e = errorn.ErrorUnknown.Wrap(e)
@@ -28,4 +23,9 @@ func ErrDefined(err error) ErrorResponse {
 		Error:  e,
 		status: e.Status(),
 	}
+}
+
+func (e ErrorResponse) Render(w http.ResponseWriter, r *http.Request) error {
+	w.WriteHeader(e.status)
+	return nil
 }
