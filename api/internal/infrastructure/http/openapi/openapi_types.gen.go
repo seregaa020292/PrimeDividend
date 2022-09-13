@@ -26,14 +26,28 @@ type AuthUser struct {
 
 // Error defines model for error.
 type Error struct {
-	Data   *interface{} `json:"data"`
-	Errors []struct {
-		// Поле в котором произошла ошибка
-		Field *string `json:"field,omitempty"`
+	Data *interface{} `json:"data"`
+
+	// Объект ошибки
+	Error *struct {
+		// В каком поле произошла ошибка
+		Details *[]struct {
+			// Описание ошибки
+			Message string `json:"message"`
+
+			// Поле в котором произошла ошибка
+			Target *string `json:"target,omitempty"`
+		} `json:"details,omitempty"`
 
 		// Описание ошибки
 		Message string `json:"message"`
-	} `json:"errors"`
+
+		// HTTP код ошибки
+		Status float32 `json:"status"`
+
+		// Место где произошла ошибка
+		Target float32 `json:"target"`
+	} `json:"error,omitempty"`
 }
 
 // Instrument defines model for instrument.

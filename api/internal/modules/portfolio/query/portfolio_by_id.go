@@ -29,7 +29,7 @@ func NewPortfolioById(
 func (q portfolioById) Fetch(portfolioId PortfolioId) (entity.Portfolio, error) {
 	portfolio, err := q.repository.FindById(uuid.UUID(portfolioId))
 	if err != nil {
-		return entity.Portfolio{}, errorn.Unknown(errorn.Message{Error: err})
+		return entity.Portfolio{}, errorn.ErrorSelect.Wrap(err)
 	}
 
 	return portfolio, nil

@@ -42,14 +42,14 @@ func (c joinByEmail) Exec(cmd Credential) error {
 	}
 
 	if err := c.repository.Add(user); err != nil {
-		return errorn.Authorization(errorn.Message{Error: err})
+		return errorn.ErrorAuthorization.Wrap(err)
 	}
 
 	if err := c.email.Send(email.ConfirmData{
 		Email: user.Email,
 		Token: user.Confirmed.String(),
 	}); err != nil {
-		return errorn.Authorization(errorn.Message{Error: err})
+		return errorn.ErrorAuthorization.Wrap(err)
 	}
 
 	return nil

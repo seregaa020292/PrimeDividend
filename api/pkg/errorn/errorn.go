@@ -1,62 +1,102 @@
 package errorn
 
-var (
-	ErrorTypeUnknown        = Type{"unknown"}
-	ErrorTypeAuthorization  = Type{"authorization"}
-	ErrorTypeForbidden      = Type{"forbidden"}
-	ErrorTypeNotFound       = Type{"not-found"}
-	ErrorTypeIncorrectInput = Type{"incorrect-input"}
+import (
+	"encoding/json"
+	"fmt"
+
+	"primedivident/pkg/utils/gog"
 )
 
-type Errorn struct {
-	errorType Type
-	messages  []Message
-}
+const (
+	TargetValidate Target = 1 + iota
+	TargetDb
+	TargetParse
+	TargetEmail
+	TargetAuth
+	TargetUnknown
+)
 
-type Type struct {
-	t string
-}
-
-type Message struct {
-	Error error
-	Field string
-}
-
-func New(errorType Type, messages ...Message) error {
-	return Errorn{
-		errorType: errorType,
-		messages:  messages,
+type (
+	// Error
+	//
+	//	error - оригинальная ошибка
+	//	status - код ошибки HTTP, указанный в ответе
+	//	target — идентификатор, который классифицирует ошибку
+	//	message - краткое, удобочитаемое сообщение об ошибке
+	Error struct {
+		error   error
+		status  int
+		target  Target
+		message string
+		details []DetailError
 	}
+	// DetailError
+	//
+	//	Target – ошибка поля
+	//	Message – краткое сообщение, понятное человеку
+	DetailError struct {
+		Target  string `json:"target"`
+		Message string `json:"message"`
+	}
+	// Target классификация ошибки
+	Target int
+)
+
+func (e Error) Wrap(err error) Error {
+	newErr := e.Clone()
+	newErr.error = err
+	return newErr
 }
 
-func (e Errorn) Error() string {
-	return e.errorType.t
+func (e Error) Additional(errors ...DetailError) Error {
+	newErr := e.Clone()
+	newErr.details = append(e.details, errors...)
+	return newErr
 }
 
-func (e Errorn) ErrorType() Type {
-	return e.errorType
+func (e Error) Clone() Error {
+	err := NewError(e.target, e.status, e.message, e.details...)
+	err.error = e.error
+	return err
 }
 
-func (e Errorn) Messages() []Message {
-	return e.messages
+func (e Error) Error() string {
+	err := gog.If(e.error != nil, e.error, fmt.Errorf("%s", "_"))
+
+	return fmt.Sprintf(
+		"Error: %s; Status: %d; Target: %d; Message: %s; Details: %+v",
+		err, e.status, e.target, e.message, e.details,
+	)
 }
 
-func Unknown(messages ...Message) error {
-	return New(ErrorTypeUnknown, messages...)
+func (e Error) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Status  int           `json:"status"`
+		Target  Target        `json:"target"`
+		Message string        `json:"message"`
+		Details []DetailError `json:"details"`
+	}{
+		Status:  e.status,
+		Target:  e.target,
+		Message: e.message,
+		Details: e.details,
+	})
 }
 
-func Authorization(messages ...Message) error {
-	return New(ErrorTypeAuthorization, messages...)
+func (e Error) Status() int {
+	return e.status
 }
 
-func Forbidden(messages ...Message) error {
-	return New(ErrorTypeForbidden, messages...)
-}
-
-func NotFound(messages ...Message) error {
-	return New(ErrorTypeNotFound, messages...)
-}
-
-func IncorrectInput(messages ...Message) error {
-	return New(ErrorTypeIncorrectInput, messages...)
+func NewError(
+	target Target,
+	status int,
+	message string,
+	details ...DetailError,
+) Error {
+	return Error{
+		status:  status,
+		target:  target,
+		message: message,
+		details: append([]DetailError{}, details...),
+	}
 }

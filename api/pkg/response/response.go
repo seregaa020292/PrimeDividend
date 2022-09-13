@@ -5,7 +5,6 @@ import (
 
 	"github.com/go-chi/render"
 
-	"primedivident/pkg/errorn"
 	"primedivident/pkg/logger"
 	"primedivident/pkg/utils"
 	"primedivident/pkg/validator"
@@ -99,19 +98,12 @@ func (h Respond) DecodeValidate(v any) error {
 }
 
 func (h Respond) Err(err error) {
-	var errorRespond ErrorRespond
+	errorResponse := ErrDefined(err)
 
-	e, ok := err.(errorn.Errorn)
-	if ok {
-		errorRespond = FindErrorType(e)
-	} else {
-		errorRespond = InternalError(err)
-	}
-
-	h.logger.ExtraError(err).Errorf("%+v", errorRespond.Errors)
+	h.logger.Errorf("%s", errorResponse.Error)
 
 	h.SetHeader("Content-Type", "application/json; charset=utf-8")
-	if err := render.Render(h.writer, h.request, errorRespond); err != nil {
+	if err := render.Render(h.writer, h.request, errorResponse); err != nil {
 		panic(err)
 	}
 }

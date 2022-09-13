@@ -29,7 +29,7 @@ func NewConfirmByToken(
 
 func (c confirmByToken) Exec(cmd string) error {
 	if err := c.repository.Confirm(entity.Token(cmd)); err != nil {
-		return errorn.IncorrectInput(errorn.Message{Error: err})
+		return errorn.ErrorUpdate.Wrap(err)
 	}
 
 	return nil

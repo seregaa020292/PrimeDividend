@@ -12,10 +12,7 @@ import (
 func (h HandlerAuth) AuthNetwork(w http.ResponseWriter, r *http.Request, network openapi.Network) {
 	respond := h.responder.Http(w, r)
 
-	url := auth.VkOAuth2Config.AuthCodeURL(
-		auth.GenStateOauthCookie(w, r),
-		oauth2.AccessTypeOnline,
-	)
+	url := auth.VkOAuth2Config.AuthCodeURL(auth.GenStateOauthCookie(w, r), oauth2.AccessTypeOnline)
 
 	respond.Redirect(url)
 }
