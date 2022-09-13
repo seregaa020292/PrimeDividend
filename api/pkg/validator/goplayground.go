@@ -3,7 +3,6 @@ package validator
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"reflect"
 	"strings"
 
@@ -83,11 +82,14 @@ func (v playgroundValidator) Var(field any, tag string) error {
 		return err
 	}
 
-	return errorn.NewError(errorn.TargetValidate, http.StatusBadRequest, fmt.Sprintf(
-		"Ошибка %s%s",
-		fieldErrors[0].Value(),
-		fieldErrors[0].Translate(v.translator),
-	))
+	return errorn.ErrorValidate.Additional(errorn.DetailError{
+		Target: "variable",
+		Message: fmt.Sprintf(
+			"Ошибка %s%s",
+			fieldErrors[0].Value(),
+			fieldErrors[0].Translate(v.translator),
+		),
+	})
 }
 
 func (v playgroundValidator) messages(fieldErrors goPlayground.ValidationErrors) error {
@@ -95,8 +97,8 @@ func (v playgroundValidator) messages(fieldErrors goPlayground.ValidationErrors)
 
 	for _, fieldErr := range fieldErrors {
 		messages = append(messages, errorn.DetailError{
-			Message: fieldErr.Translate(v.translator),
 			Target:  fieldErr.Field(),
+			Message: fieldErr.Translate(v.translator),
 		})
 	}
 

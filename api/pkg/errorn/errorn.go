@@ -7,15 +7,6 @@ import (
 	"primedivident/pkg/utils/gog"
 )
 
-const (
-	TargetValidate Target = 1 + iota
-	TargetDb
-	TargetParse
-	TargetEmail
-	TargetAuth
-	TargetUnknown
-)
-
 type (
 	// Error
 	//
