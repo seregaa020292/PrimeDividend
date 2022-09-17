@@ -3,7 +3,7 @@ package portfolio
 import (
 	"primedivident/internal/modules/portfolio/command"
 	"primedivident/internal/modules/portfolio/query"
-	"primedivident/internal/presenter/portfolio"
+	"primedivident/internal/presenters/portfolio"
 	"primedivident/pkg/response"
 )
 

@@ -27,8 +27,8 @@ import (
 	"primedivident/internal/ports/http/provider"
 	"primedivident/internal/ports/http/register"
 	"primedivident/internal/ports/http/user"
-	"primedivident/internal/presenter/instrument"
-	"primedivident/internal/presenter/portfolio"
+	"primedivident/internal/presenters/instrument"
+	"primedivident/internal/presenters/portfolio"
 	"primedivident/pkg/response"
 	"primedivident/pkg/validator"
 )

@@ -7,7 +7,7 @@ import (
 	"primedivident/internal/modules/portfolio/query"
 	"primedivident/internal/modules/portfolio/repository"
 	port "primedivident/internal/ports/http/portfolio"
-	presenter "primedivident/internal/presenter/portfolio"
+	presenter "primedivident/internal/presenters/portfolio"
 )
 
 var Portfolio = wire.NewSet(

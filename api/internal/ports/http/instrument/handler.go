@@ -2,7 +2,7 @@ package instrument
 
 import (
 	"primedivident/internal/modules/instrument/query"
-	"primedivident/internal/presenter/instrument"
+	"primedivident/internal/presenters/instrument"
 	"primedivident/pkg/response"
 )
 

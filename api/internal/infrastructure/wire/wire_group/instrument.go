@@ -6,7 +6,7 @@ import (
 	"primedivident/internal/modules/instrument/query"
 	"primedivident/internal/modules/instrument/repository"
 	port "primedivident/internal/ports/http/instrument"
-	presenter "primedivident/internal/presenter/instrument"
+	presenter "primedivident/internal/presenters/instrument"
 )
 
 var Instrument = wire.NewSet(
