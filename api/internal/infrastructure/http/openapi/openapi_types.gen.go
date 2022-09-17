@@ -52,11 +52,9 @@ type Error struct {
 
 // Instrument defines model for instrument.
 type Instrument struct {
-	CreatedAt   time.Time          `json:"createdAt"`
 	Description string             `json:"description"`
 	Id          openapi_types.UUID `json:"id"`
 	Title       string             `json:"title"`
-	UpdatedAt   time.Time          `json:"updatedAt"`
 }
 
 // Instruments defines model for instruments.

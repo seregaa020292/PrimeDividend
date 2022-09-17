@@ -1,13 +1,13 @@
 package command
 
 import (
-	"primedivident/internal/config/consts"
 	"primedivident/internal/decorator"
+	"primedivident/internal/models/app/public/model"
 	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/email"
 	"primedivident/pkg/errorn"
-	"primedivident/pkg/utils/hash"
+	"primedivident/pkg/utils/gog"
 )
 
 type (
@@ -42,13 +42,17 @@ func (c joinByEmail) Exec(cmd Credential) error {
 		return errorn.ErrorExistEmail
 	}
 
-	user := entity.User{
-		Email:    cmd.Email,
-		Password: hash.Password(cmd.Password),
-		Token:    entity.NewToken(consts.TokenTTL),
+	user, err := entity.NewUser(cmd.Email, cmd.Password)
+	if err != nil {
+		return errorn.ErrorUnknown.Wrap(err)
 	}
 
-	if err := c.repository.Add(user); err != nil {
+	if err := c.repository.Add(model.Users{
+		Email:            user.Email,
+		Password:         user.PassHash,
+		TokenJoinValue:   gog.Ptr(user.Token.Value),
+		TokenJoinExpires: gog.Ptr(user.Token.Expires),
+	}); err != nil {
 		return errorn.ErrorInsert.Wrap(err)
 	}
 

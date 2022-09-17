@@ -20,7 +20,7 @@ const (
 
 	TimeoutShutdown = 10 * time.Second
 
-	TokenTTL = 1 * time.Hour
+	TokenJoinTTL = 1 * time.Hour
 
 	VkOauthRedirectUrl     = "/api/auth/vk/callback"
 	OkOauthRedirectUrl     = "/api/auth/ok/callback"

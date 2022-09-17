@@ -20,8 +20,8 @@ RUN apk add --no-cache gcc g++ make bash coreutils unzip apache2-utils ca-certif
 
 COPY ./common/wait-for-it.sh $BINPATH/wait-for-it
 COPY ./common/migrate.sh $BINPATH/migrate
-COPY ./common/gosql.sh $BINPATH/gosql
-RUN chmod 555 $BINPATH/wait-for-it $BINPATH/migrate $BINPATH/gosql
+COPY ./common/gojet.sh $BINPATH/gojet
+RUN chmod 555 $BINPATH/wait-for-it $BINPATH/migrate $BINPATH/gojet
 
 COPY --from=build $GOBINPATH/air $BINPATH/air
 COPY --from=build $GOBINPATH/goose $BINPATH/goose

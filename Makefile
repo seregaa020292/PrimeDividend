@@ -76,13 +76,16 @@ api-test-coverage:
 	docker-compose exec api-go go test --short -coverprofile=./tmp/test/cover.out -v ./...
 	docker-compose exec api-go go tool cover -func=./tmp/test/cover.out
 
-api-gen-full: api-gen-oapi api-gen-wire
+api-gen-full: api-gen-oapi api-gen-wire api-gen-gojet
 
 api-gen-wire:
 	docker-compose exec api-go wire ./internal/infrastructure/wire/
 
 api-gen-oapi:
 	docker-compose exec api-go go generate ./specs/openapi/
+
+api-gen-gojet:
+	docker-compose exec api-go gojet -path=./internal/models
 
 # ==============================================================================
 # Migrate postgresql

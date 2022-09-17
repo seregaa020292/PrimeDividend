@@ -5,11 +5,13 @@ import (
 
 	"primedivident/internal/modules/instrument/query"
 	"primedivident/internal/modules/instrument/repository"
-	"primedivident/internal/ports/http/instrument"
+	port "primedivident/internal/ports/http/instrument"
+	presenter "primedivident/internal/presenter/instrument"
 )
 
 var Instrument = wire.NewSet(
+	presenter.NewPresenter,
 	repository.NewRepository,
 	query.NewInstrumentAll,
-	instrument.NewHandler,
+	port.NewHandler,
 )

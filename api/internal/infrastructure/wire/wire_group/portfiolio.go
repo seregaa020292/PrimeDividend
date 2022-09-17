@@ -6,12 +6,14 @@ import (
 	"primedivident/internal/modules/portfolio/command"
 	"primedivident/internal/modules/portfolio/query"
 	"primedivident/internal/modules/portfolio/repository"
-	"primedivident/internal/ports/http/portfolio"
+	port "primedivident/internal/ports/http/portfolio"
+	presenter "primedivident/internal/presenter/portfolio"
 )
 
 var Portfolio = wire.NewSet(
+	presenter.NewPresenter,
 	repository.NewRepository,
 	query.NewPortfolioById,
 	command.NewPortfolioCreate,
-	portfolio.NewHandler,
+	port.NewHandler,
 )

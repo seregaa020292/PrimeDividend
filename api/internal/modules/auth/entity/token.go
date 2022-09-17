@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"primedivident/pkg/utils/gog"
 	"time"
 
 	"github.com/google/uuid"
@@ -10,19 +9,19 @@ import (
 )
 
 type Token struct {
-	Value   *string   `db:"token_join_value"`
-	Expires time.Time `db:"token_join_expires"`
+	Value   uuid.UUID
+	Expires time.Time
 }
 
 func NewToken(d time.Duration) Token {
 	return Token{
-		Value:   gog.Ptr(uuid.New().String()),
+		Value:   uuid.New(),
 		Expires: datetime.GetNow().Add(d),
 	}
 }
 
 func (t Token) String() string {
-	return *t.Value
+	return t.Value.String()
 }
 
 func (t Token) GetExpires() time.Time {

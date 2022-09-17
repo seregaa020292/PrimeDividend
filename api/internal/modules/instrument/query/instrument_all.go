@@ -2,14 +2,14 @@ package query
 
 import (
 	"primedivident/internal/decorator"
-	"primedivident/internal/modules/instrument/entity"
+	"primedivident/internal/models/app/public/model"
 	"primedivident/internal/modules/instrument/repository"
 	"primedivident/pkg/errorn"
 )
 
 type (
 	FilterOrderInstruments struct{}
-	InstrumentAll          decorator.QueryHandler[FilterOrderInstruments, entity.Instruments]
+	InstrumentAll          decorator.QueryHandler[FilterOrderInstruments, []model.Instruments]
 )
 
 type instrumentAll struct {
@@ -24,10 +24,10 @@ func NewInstrumentAll(
 	}
 }
 
-func (q instrumentAll) Fetch(_ FilterOrderInstruments) (entity.Instruments, error) {
+func (q instrumentAll) Fetch(_ FilterOrderInstruments) ([]model.Instruments, error) {
 	instruments, err := q.repository.GetAll()
 	if err != nil {
-		return entity.Instruments{}, errorn.ErrorSelect.Wrap(err)
+		return []model.Instruments{}, errorn.ErrorSelect.Wrap(err)
 	}
 
 	return instruments, nil

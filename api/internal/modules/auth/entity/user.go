@@ -1,21 +1,25 @@
 package entity
 
 import (
-	"time"
-
-	"github.com/google/uuid"
-
+	"primedivident/internal/config/consts"
 	"primedivident/pkg/utils/hash"
 )
 
 type User struct {
-	ID       uuid.UUID     `db:"id"`
-	Name     string        `db:"name"`
-	Email    string        `db:"email"`
-	Password hash.Password `db:"password"`
-	Role     string        `db:"role"`
-	Avatar   string        `db:"avatar"`
-	Token
-	CreatedAt time.Time `db:"created_at"`
-	UpdatedAt time.Time `db:"updated_at"`
+	Email    string
+	PassHash string
+	Token    Token
+}
+
+func NewUser(email, password string) (User, error) {
+	pass, err := hash.Password(password).Hash()
+	if err != nil {
+		return User{}, err
+	}
+
+	return User{
+		Email:    email,
+		PassHash: pass,
+		Token:    NewToken(consts.TokenJoinTTL),
+	}, nil
 }

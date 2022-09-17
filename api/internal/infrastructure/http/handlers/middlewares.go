@@ -11,6 +11,7 @@ import (
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/getkin/kin-openapi/routers"
 
+	"primedivident/pkg/errorn"
 	"primedivident/pkg/response"
 )
 
@@ -23,7 +24,15 @@ func authValidator(swagger *openapi3.T) func(next http.Handler) http.Handler {
 		},
 		ErrorHandler: func(w http.ResponseWriter, message string, statusCode int) {
 			respond := response.NewRespondBuilder(w, &http.Request{})
-			respond.Err(fmt.Errorf("%s", message))
+
+			var err error
+			if statusCode == 400 {
+				err = errorn.ErrorNotFoundElement
+			} else {
+				err = errorn.ErrorAccess.Wrap(fmt.Errorf("%s", message))
+			}
+
+			respond.Err(err)
 		},
 	})
 }

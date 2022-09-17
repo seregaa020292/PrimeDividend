@@ -1,13 +1,13 @@
 package repository
 
 import (
-	"primedivident/internal/modules/instrument/entity"
-	"primedivident/internal/modules/instrument/model"
+	"primedivident/internal/models/app/public/model"
+	table "primedivident/internal/models/app/public/table"
 	"primedivident/pkg/db/postgres"
 )
 
 type Repository interface {
-	GetAll() (entity.Instruments, error)
+	GetAll() ([]model.Instruments, error)
 }
 
 type repository struct {
@@ -18,10 +18,13 @@ func NewRepository(db *postgres.Postgres) Repository {
 	return repository{db: db}
 }
 
-func (r repository) GetAll() (entity.Instruments, error) {
-	var instruments entity.Instruments
+func (r repository) GetAll() ([]model.Instruments, error) {
+	var instruments []model.Instruments
 
-	err := r.db.Select(&instruments, model.Instrument.SelectAll())
+	err := table.Instruments.
+		SELECT(table.Instruments.AllColumns).
+		FROM(table.Instruments).
+		Query(r.db, &instruments)
 
 	return instruments, err
 }

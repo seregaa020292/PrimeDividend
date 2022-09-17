@@ -4,14 +4,13 @@ import (
 	"log"
 	"net/http"
 
-	"primedivident/internal/ports/http/auth"
-
 	"github.com/getkin/kin-openapi/routers/gorillamux"
 	"github.com/go-chi/chi/v5"
 
 	serverHttp "primedivident/internal/infrastructure/http"
 	"primedivident/internal/infrastructure/http/openapi"
 	"primedivident/internal/ports/http/asset"
+	"primedivident/internal/ports/http/auth"
 	"primedivident/internal/ports/http/currency"
 	"primedivident/internal/ports/http/instrument"
 	"primedivident/internal/ports/http/market"

@@ -8,7 +8,7 @@ CREATE
 CREATE TABLE users
 (
     id                 UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
-    name               VARCHAR(32)              NOT NULL CHECK ( name <> '' ),
+    name               VARCHAR(32)              NOT NULL DEFAULT '',
     email              VARCHAR(64) UNIQUE       NOT NULL CHECK ( email <> '' ),
     password           VARCHAR(250)             NOT NULL CHECK ( octet_length(password) <> 0 ),
     role               VARCHAR(10)              NOT NULL DEFAULT 'user',

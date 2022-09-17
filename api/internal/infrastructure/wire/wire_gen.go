@@ -21,12 +21,14 @@ import (
 	"primedivident/internal/ports/http/asset"
 	"primedivident/internal/ports/http/auth"
 	"primedivident/internal/ports/http/currency"
-	"primedivident/internal/ports/http/instrument"
+	instrument2 "primedivident/internal/ports/http/instrument"
 	"primedivident/internal/ports/http/market"
-	"primedivident/internal/ports/http/portfolio"
+	portfolio2 "primedivident/internal/ports/http/portfolio"
 	"primedivident/internal/ports/http/provider"
 	"primedivident/internal/ports/http/register"
 	"primedivident/internal/ports/http/user"
+	"primedivident/internal/presenter/instrument"
+	"primedivident/internal/presenter/portfolio"
 	"primedivident/pkg/response"
 	"primedivident/pkg/validator"
 )
@@ -46,14 +48,16 @@ func Initialize(cfg config.Config) http.Server {
 	handlerAuth := auth.NewHandler(responder, joinByEmail, confirmByToken)
 	handlerAsset := asset.NewHandler()
 	handlerCurrency := currency.NewHandler()
+	presenter := instrument.NewPresenter()
 	repository4 := repository2.NewRepository(postgres)
 	instrumentAll := query.NewInstrumentAll(repository4)
-	handlerInstrument := instrument.NewHandler(responder, instrumentAll)
+	handlerInstrument := instrument2.NewHandler(responder, presenter, instrumentAll)
 	handlerMarket := market.NewHandler()
+	portfolioPresenter := portfolio.NewPresenter()
 	repository5 := repository3.NewRepository(postgres)
 	portfolioById := query2.NewPortfolioById(repository5)
 	portfolioCreate := command2.NewPortfolioCreate(repository5)
-	handlerPortfolio := portfolio.NewHandler(responder, portfolioById, portfolioCreate)
+	handlerPortfolio := portfolio2.NewHandler(responder, portfolioPresenter, portfolioById, portfolioCreate)
 	handlerProvider := provider.NewHandler()
 	handlerRegister := register.NewHandler()
 	handlerUser := user.NewHandler()

@@ -3,8 +3,6 @@ package instrument
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/http/openapi"
-	"primedivident/internal/modules/instrument/entity"
 	"primedivident/internal/modules/instrument/query"
 )
 
@@ -17,21 +15,5 @@ func (h HandlerInstrument) GetInstruments(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	respond.Json(http.StatusOK, presenterGetAll(instruments))
-}
-
-func presenterGetAll(instruments entity.Instruments) openapi.Instruments {
-	result := make(openapi.Instruments, len(instruments))
-
-	for i, item := range instruments {
-		result[i] = openapi.Instrument{
-			Id:          item.ID,
-			Title:       item.Title,
-			Description: item.Description,
-			CreatedAt:   item.CreatedAt,
-			UpdatedAt:   item.UpdatedAt,
-		}
-	}
-
-	return result
+	respond.Json(http.StatusOK, h.presenter.GetInstruments(instruments))
 }
