@@ -1,10 +1,10 @@
 package middlewares
 
 import (
-	"github.com/go-chi/cors"
-
 	"os"
 	"strings"
+
+	"github.com/go-chi/cors"
 )
 
 func corsHandler() middlewareFunc {

@@ -46,7 +46,7 @@ api-install: api-mod-download api-mod-vendor
 api-check: api-lint api-test
 
 api-clear:
-	docker run --rm -v ${PWD}/api:/app -w /app alpine sh -c 'rm -rf .done bin tmp'
+	docker run --rm -v ${PWD}/api:/app -w /app alpine sh -c 'rm -rf .done bin'
 
 api-done:
 	docker run --rm -v ${PWD}/api:/app -w /app alpine touch .done

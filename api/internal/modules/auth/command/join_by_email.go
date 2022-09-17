@@ -1,14 +1,13 @@
 package command
 
 import (
-	"github.com/google/uuid"
-
+	"primedivident/internal/config/consts"
 	"primedivident/internal/decorator"
 	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/email"
 	"primedivident/pkg/errorn"
-	"primedivident/pkg/utils/gog"
+	"primedivident/pkg/utils/hash"
 )
 
 type (
@@ -35,21 +34,29 @@ func NewJoinByEmail(
 }
 
 func (c joinByEmail) Exec(cmd Credential) error {
+	hasEmail, err := c.repository.HasByEmail(cmd.Email)
+	if err != nil {
+		return errorn.ErrorSelect.Wrap(err)
+	}
+	if hasEmail {
+		return errorn.ErrorExistEmail
+	}
+
 	user := entity.User{
-		Email:     cmd.Email,
-		Password:  cmd.Password,
-		Confirmed: gog.Ptr(uuid.New()),
+		Email:    cmd.Email,
+		Password: hash.Password(cmd.Password),
+		Token:    entity.NewToken(consts.TokenTTL),
 	}
 
 	if err := c.repository.Add(user); err != nil {
-		return errorn.ErrorAuthorization.Wrap(err)
+		return errorn.ErrorInsert.Wrap(err)
 	}
 
 	if err := c.email.Send(email.ConfirmData{
 		Email: user.Email,
-		Token: user.Confirmed.String(),
+		Token: user.Token.String(),
 	}); err != nil {
-		return errorn.ErrorAuthorization.Wrap(err)
+		return errorn.ErrorSendEmail.Wrap(err)
 	}
 
 	return nil

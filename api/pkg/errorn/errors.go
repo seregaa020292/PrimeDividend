@@ -15,13 +15,17 @@ const (
 var (
 	ErrorAuthorization = NewError(TargetAuth, http.StatusBadRequest, "Ошибка авторизации")
 	ErrorAccess        = NewError(TargetAuth, http.StatusForbidden, "Ошибка доступа")
+	ErrorUnAuthorized  = NewError(TargetAuth, http.StatusUnauthorized, "Ошибка требуется авторизация")
 
-	ErrorFoundElement = NewError(TargetFound, http.StatusNotFound, "Не удалось найти элемент")
+	ErrorNotFoundElement = NewError(TargetFound, http.StatusNotFound, "Не удалось найти элемент")
 
 	ErrorSelect = NewError(TargetDb, http.StatusBadRequest, "Ошибка получения данных")
 	ErrorInsert = NewError(TargetDb, http.StatusBadRequest, "Ошибка добавления данных")
 	ErrorUpdate = NewError(TargetDb, http.StatusBadRequest, "Ошибка обновления данных")
 	ErrorDelete = NewError(TargetDb, http.StatusBadRequest, "Ошибка удаления данных")
+
+	ErrorSendEmail  = NewError(TargetEmail, http.StatusBadRequest, "Ошибка отправки email сообщения")
+	ErrorExistEmail = NewError(TargetEmail, http.StatusBadRequest, "Такой email уже существует")
 
 	ErrorValidate = NewError(TargetValidate, http.StatusBadRequest, "Ошибка валидации")
 

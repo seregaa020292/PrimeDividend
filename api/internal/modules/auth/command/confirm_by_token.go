@@ -2,7 +2,6 @@ package command
 
 import (
 	"primedivident/internal/decorator"
-	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/email"
 	"primedivident/pkg/errorn"
@@ -28,7 +27,7 @@ func NewConfirmByToken(
 }
 
 func (c confirmByToken) Exec(cmd string) error {
-	if err := c.repository.Confirm(entity.Token(cmd)); err != nil {
+	if err := c.repository.Confirm(cmd); err != nil {
 		return errorn.ErrorUpdate.Wrap(err)
 	}
 

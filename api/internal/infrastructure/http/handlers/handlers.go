@@ -23,7 +23,7 @@ import (
 )
 
 // Handlers implements openapi.ServerInterface
-var _ openapi.ServerInterface = (*Handlers)(nil)
+var _ openapi.ServerInterface = (*Handlers)(nil) //nolint:typecheck
 
 type Handlers struct {
 	auth.HandlerAuth
@@ -73,7 +73,7 @@ func (handlers Handlers) Setup(router chi.Router) {
 
 	routerSwagger, _ := gorillamux.NewRouter(swagger)
 
-	openapi.HandlerWithOptions(handlers, openapi.ChiServerOptions{
+	openapi.HandlerWithOptions(handlers, openapi.ChiServerOptions{ //nolint:typecheck
 		BaseRouter: router,
 		Middlewares: []openapi.MiddlewareFunc{
 			custom(routerSwagger),

@@ -7,15 +7,16 @@ CREATE
 
 CREATE TABLE users
 (
-    id         UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
-    name       VARCHAR(32)              NOT NULL CHECK ( name <> '' ),
-    email      VARCHAR(64) UNIQUE       NOT NULL CHECK ( email <> '' ),
-    password   VARCHAR(250)             NOT NULL CHECK ( octet_length(password) <> 0 ),
-    role       VARCHAR(10)              NOT NULL DEFAULT 'user',
-    avatar     VARCHAR(512),
-    confirmed  UUID                              DEFAULT uuid_generate_v4(),
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
+    id                 UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
+    name               VARCHAR(32)              NOT NULL CHECK ( name <> '' ),
+    email              VARCHAR(64) UNIQUE       NOT NULL CHECK ( email <> '' ),
+    password           VARCHAR(250)             NOT NULL CHECK ( octet_length(password) <> 0 ),
+    role               VARCHAR(10)              NOT NULL DEFAULT 'user',
+    avatar             VARCHAR(512),
+    token_join_value   UUID                              DEFAULT uuid_generate_v4(),
+    token_join_expires TIMESTAMP                         DEFAULT (NOW() + interval '1 hour'),
+    created_at         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at         TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE currencies
@@ -91,6 +92,7 @@ CREATE TABLE assets
     updated_at   TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE INDEX IF NOT EXISTS users_token_join_value_id_idx ON users (token_join_value);
 CREATE INDEX IF NOT EXISTS markets_title_id_idx ON markets (title);
 CREATE INDEX IF NOT EXISTS markets_ticker_id_idx ON markets (ticker);
 CREATE INDEX IF NOT EXISTS registers_identify_id_idx ON registers (identify);

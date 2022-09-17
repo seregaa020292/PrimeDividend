@@ -2,6 +2,7 @@ package config
 
 import (
 	"net/url"
+
 	"primedivident/internal/config/consts"
 )
 

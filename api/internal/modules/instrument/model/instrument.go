@@ -6,8 +6,8 @@ import (
 )
 
 type (
-	instrument decorator.Model[fields]
-	fields     struct {
+	instrument decorator.Model[columns]
+	columns    struct {
 		ID          string
 		Title       string
 		Description string
@@ -18,7 +18,7 @@ type (
 
 var Instrument = instrument{
 	Table: "instruments",
-	Fields: fields{
+	Columns: columns{
 		ID:          "id",
 		Title:       "title",
 		Description: "description",

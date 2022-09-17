@@ -23,6 +23,13 @@ linters:
     - unconvert
     - unparam
     - whitespace
+    - lll
+
+linters-settings:
+  lll:
+    line-length: 120
+  goimports:
+    custom-order: true
 
 issues:
   exclude:

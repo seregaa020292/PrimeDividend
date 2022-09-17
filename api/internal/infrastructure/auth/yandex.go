@@ -1,10 +1,10 @@
 package auth
 
 import (
-	"primedivident/internal/config"
-
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/yandex"
+
+	"primedivident/internal/config"
 )
 
 func YandexOAuth2Config(cfg config.YandexOAuth2) *oauth2.Config {

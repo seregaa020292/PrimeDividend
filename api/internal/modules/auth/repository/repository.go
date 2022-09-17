@@ -7,7 +7,8 @@ import (
 
 type Repository interface {
 	Add(user entity.User) error
-	Confirm(token entity.Token) error
+	Confirm(tokenValue string) error
+	HasByEmail(email string) (bool, error)
 }
 
 type repository struct {
@@ -22,6 +23,10 @@ func (r repository) Add(user entity.User) error {
 	return nil
 }
 
-func (r repository) Confirm(token entity.Token) error {
+func (r repository) Confirm(tokenValue string) error {
 	return nil
+}
+
+func (r repository) HasByEmail(email string) (bool, error) {
+	return false, nil
 }
