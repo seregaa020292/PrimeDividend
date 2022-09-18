@@ -11,6 +11,7 @@ import (
 
 var Auth = wire.NewSet(
 	email.NewJoinConfirmUser,
+	email.NewConfirmUser,
 	repository.NewRepository,
 	command.NewJoinByEmail,
 	command.NewConfirmByToken,

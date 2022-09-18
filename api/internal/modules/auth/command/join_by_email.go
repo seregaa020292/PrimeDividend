@@ -57,7 +57,7 @@ func (c joinByEmail) Exec(cmd Credential) error {
 		return errorn.ErrorInsert.Wrap(err)
 	}
 
-	if err := c.email.Send(email.ConfirmData{
+	if err := c.email.Send(email.JoinData{
 		Email: user.Email,
 		Token: user.Token.String(),
 	}); err != nil {

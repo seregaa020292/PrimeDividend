@@ -12,7 +12,7 @@ import (
 
 type Repository interface {
 	Add(user model.Users) error
-	FindByTokenJoin(tokenValue uuid.UUID) (entity.Token, error)
+	FindByTokenJoin(tokenValue uuid.UUID) (entity.User, error)
 	Confirm(tokenValue uuid.UUID) error
 	HasByEmail(email string) (bool, error)
 }
@@ -39,23 +39,28 @@ func (r repository) Add(user model.Users) error {
 	return err
 }
 
-func (r repository) FindByTokenJoin(tokenValue uuid.UUID) (entity.Token, error) {
+func (r repository) FindByTokenJoin(tokenValue uuid.UUID) (entity.User, error) {
 	var user model.Users
 
 	stmt := table.Users.
-		SELECT(table.Users.TokenJoinValue, table.Users.TokenJoinExpires).
+		SELECT(table.Users.AllColumns).
 		FROM(table.Users).
 		WHERE(table.Users.TokenJoinValue.EQ(jet.UUID(tokenValue))).
 		LIMIT(1)
 
 	err := stmt.Query(r.db, &user)
 	if err != nil {
-		return entity.Token{}, err
+		return entity.User{}, err
 	}
 
-	return entity.Token{
-		Value:   *user.TokenJoinValue,
-		Expires: *user.TokenJoinExpires,
+	return entity.User{
+		Email:    user.Email,
+		PassHash: user.Password,
+		Status:   entity.Status(user.Status),
+		Token: entity.Token{
+			Value:   *user.TokenJoinValue,
+			Expires: *user.TokenJoinExpires,
+		},
 	}, nil
 }
 

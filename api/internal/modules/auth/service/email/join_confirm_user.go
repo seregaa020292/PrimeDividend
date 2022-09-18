@@ -8,11 +8,11 @@ import (
 )
 
 type (
-	ConfirmData struct {
+	JoinData struct {
 		Email string
 		Token string
 	}
-	JoinConfirmUser decorator.Sender[ConfirmData]
+	JoinConfirmUser decorator.Sender[JoinData]
 )
 
 type joinConfirmUser struct {
@@ -25,7 +25,7 @@ func NewJoinConfirmUser(mailer mailer.Sender) JoinConfirmUser {
 	}
 }
 
-func (s joinConfirmUser) Send(data ConfirmData) error {
+func (s joinConfirmUser) Send(data JoinData) error {
 	msg := mailer.NewMessage(
 		"Подтвердите ваш адрес электронной почты",
 		fmt.Sprintf(`Token: <a href="/">%s</a>`, data.Token),
