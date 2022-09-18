@@ -19,6 +19,7 @@ func Initialize(cfg config.Config) serverHttp.Server {
 		ProvideLogger,
 		ProvidePostgres,
 		ProvideMailerObserver,
+		ProvideTemplate,
 
 		validator.GetValidator,
 		response.NewRespond,

@@ -13,6 +13,10 @@ const (
 	MailerPoolConn    = 4
 	MailerPoolTimeout = 10 * time.Second
 
+	TemplateCache         = true
+	TemplateBaseDir       = "templates"
+	TemplateMailConfirmed = "mail/views/confirmed.html"
+
 	TimestampFormat = "02.01.2006 15:04:05"
 	Timezone        = "Europe/Moscow"
 

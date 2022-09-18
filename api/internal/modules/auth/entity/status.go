@@ -7,11 +7,11 @@ const (
 
 type Status string
 
-func (s Status) isWait() bool {
+func (s Status) IsWait() bool {
 	return s == Wait
 }
 
-func (s Status) isActive() bool {
+func (s Status) IsActive() bool {
 	return s == Active
 }
 

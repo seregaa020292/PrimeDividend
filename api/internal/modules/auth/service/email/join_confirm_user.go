@@ -1,10 +1,10 @@
 package email
 
 import (
-	"fmt"
-
+	"primedivident/internal/config/consts"
 	"primedivident/internal/decorator"
 	"primedivident/pkg/mailer"
+	"primedivident/pkg/tpl"
 )
 
 type (
@@ -16,19 +16,28 @@ type (
 )
 
 type joinConfirmUser struct {
-	mailer mailer.Sender
+	mailer   mailer.Sender
+	template tpl.Templater
 }
 
-func NewJoinConfirmUser(mailer mailer.Sender) JoinConfirmUser {
+func NewJoinConfirmUser(mailer mailer.Sender, template tpl.Templater) JoinConfirmUser {
 	return joinConfirmUser{
-		mailer: mailer,
+		mailer:   mailer,
+		template: template,
 	}
 }
 
 func (s joinConfirmUser) Send(data JoinData) error {
+	html, err := s.template.Render(consts.TemplateMailConfirmed, map[string]any{
+		"token": data.Token,
+	})
+	if err != nil {
+		return err
+	}
+
 	msg := mailer.NewMessage(
-		"Подтвердите ваш адрес электронной почты",
-		fmt.Sprintf(`Token: <a href="/">%s</a>`, data.Token),
+		"Подтвердите вашу почту",
+		string(html),
 		mailer.TextHtml,
 	)
 	msg.To = []string{data.Email}

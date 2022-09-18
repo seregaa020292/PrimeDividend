@@ -6,6 +6,7 @@ import (
 	"primedivident/pkg/db/postgres"
 	"primedivident/pkg/logger"
 	"primedivident/pkg/mailer"
+	"primedivident/pkg/tpl"
 )
 
 func ProvideLogger(cfg config.Config) logger.Logger {
@@ -35,4 +36,10 @@ func ProvideMailer(cfg config.Config) mailer.Sender {
 
 func ProvideMailerObserver(cfg config.Config, l logger.Logger) mailer.Sender {
 	return mailer.NewObserver(ProvideMailer(cfg), consts.MailerPoolConn, l)
+}
+
+func ProvideTemplate(cfg config.Config) tpl.Templater {
+	return tpl.NewTemplate(consts.TemplateBaseDir, consts.TemplateCache, map[string]any{
+		"siteOrigin": cfg.App.SiteOrigin,
+	})
 }

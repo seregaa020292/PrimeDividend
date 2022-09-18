@@ -1,0 +1,12 @@
+{% extends "mail/layouts/default.html" %}
+
+{% block body %}
+<h1 style="margin: 0; text-align: center;">Спасибо за регистрацию!</h1>
+<br>
+<p style="margin: 0;">
+  Чтобы подтвердить свой аккаунт,
+  <a style="color: #1a8aee; text-decoration: none" href="{{siteOrigin}}/auth/join/{{token}}">
+    <span style="color: #1a8aee; text-decoration: underline">перейдите по ссылке</span>
+  </a>
+</p>
+{% endblock %}
