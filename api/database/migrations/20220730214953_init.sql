@@ -9,10 +9,11 @@ CREATE TABLE users
 (
     id                 UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
     name               VARCHAR(32)              NOT NULL DEFAULT '',
-    email              VARCHAR(64) UNIQUE       NOT NULL CHECK ( email <> '' ),
-    password           VARCHAR(250)             NOT NULL CHECK ( octet_length(password) <> 0 ),
+    email              VARCHAR(64) UNIQUE       NOT NULL CHECK (email <> ''),
+    password           VARCHAR(250)             NOT NULL CHECK (octet_length(password) <> 0),
     role               VARCHAR(10)              NOT NULL DEFAULT 'user',
     avatar             VARCHAR(512),
+    status             VARCHAR(250)             NOT NULL CHECK (status <> ''),
     token_join_value   UUID                              DEFAULT uuid_generate_v4(),
     token_join_expires TIMESTAMP                         DEFAULT (NOW() + interval '1 hour'),
     created_at         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -22,8 +23,8 @@ CREATE TABLE users
 CREATE TABLE currencies
 (
     id          UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
-    title       VARCHAR(10) UNIQUE       NOT NULL CHECK ( title <> '' ),
-    description VARCHAR(100)             NOT NULL CHECK ( description <> '' ),
+    title       VARCHAR(10) UNIQUE       NOT NULL CHECK (title <> ''),
+    description VARCHAR(100)             NOT NULL CHECK (description <> ''),
     created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at  TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
 );
@@ -31,7 +32,7 @@ CREATE TABLE currencies
 CREATE TABLE providers
 (
     id          UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
-    title       VARCHAR(100) UNIQUE      NOT NULL CHECK ( title <> '' ),
+    title       VARCHAR(100) UNIQUE      NOT NULL CHECK (title <> ''),
     description VARCHAR(250)                      DEFAULT '',
     created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at  TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
@@ -40,8 +41,8 @@ CREATE TABLE providers
 CREATE TABLE instruments
 (
     id          UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
-    title       VARCHAR(100) UNIQUE      NOT NULL CHECK ( title <> '' ),
-    description VARCHAR(250)             NOT NULL CHECK ( description <> '' ),
+    title       VARCHAR(100) UNIQUE      NOT NULL CHECK (title <> ''),
+    description VARCHAR(250)             NOT NULL CHECK (description <> ''),
     created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at  TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
 );
@@ -49,10 +50,10 @@ CREATE TABLE instruments
 CREATE TABLE markets
 (
     id            UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
-    title         VARCHAR(250)             NOT NULL CHECK ( title <> '' ),
-    ticker        VARCHAR(50) UNIQUE       NOT NULL CHECK ( ticker <> '' ),
+    title         VARCHAR(250)             NOT NULL CHECK (title <> ''),
+    ticker        VARCHAR(50) UNIQUE       NOT NULL CHECK (ticker <> ''),
     content       TEXT                              DEFAULT '',
-    image_url     VARCHAR(1024) CHECK ( image_url <> '' ),
+    image_url     VARCHAR(1024) CHECK (image_url <> ''),
     currency_id   UUID                     NOT NULL REFERENCES currencies (id) ON DELETE CASCADE,
     instrument_id UUID                     NOT NULL REFERENCES instruments (id) ON DELETE CASCADE,
     created_at    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -62,7 +63,7 @@ CREATE TABLE markets
 CREATE TABLE registers
 (
     id          UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
-    identify    VARCHAR(250) UNIQUE      NOT NULL CHECK ( identify <> '' ),
+    identify    VARCHAR(250) UNIQUE      NOT NULL CHECK (identify <> ''),
     provider_id UUID                     NOT NULL REFERENCES providers (id) ON DELETE CASCADE,
     market_id   UUID                     NOT NULL REFERENCES markets (id) ON DELETE CASCADE,
     created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),

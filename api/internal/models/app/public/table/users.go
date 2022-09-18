@@ -23,6 +23,7 @@ type usersTable struct {
 	Password         postgres.ColumnString
 	Role             postgres.ColumnString
 	Avatar           postgres.ColumnString
+	Status           postgres.ColumnString
 	TokenJoinValue   postgres.ColumnString
 	TokenJoinExpires postgres.ColumnTimestamp
 	CreatedAt        postgres.ColumnTimestampz
@@ -73,12 +74,13 @@ func newUsersTableImpl(schemaName, tableName, alias string) usersTable {
 		PasswordColumn         = postgres.StringColumn("password")
 		RoleColumn             = postgres.StringColumn("role")
 		AvatarColumn           = postgres.StringColumn("avatar")
+		StatusColumn           = postgres.StringColumn("status")
 		TokenJoinValueColumn   = postgres.StringColumn("token_join_value")
 		TokenJoinExpiresColumn = postgres.TimestampColumn("token_join_expires")
 		CreatedAtColumn        = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn        = postgres.TimestampzColumn("updated_at")
-		allColumns             = postgres.ColumnList{IDColumn, NameColumn, EmailColumn, PasswordColumn, RoleColumn, AvatarColumn, TokenJoinValueColumn, TokenJoinExpiresColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns         = postgres.ColumnList{NameColumn, EmailColumn, PasswordColumn, RoleColumn, AvatarColumn, TokenJoinValueColumn, TokenJoinExpiresColumn, CreatedAtColumn, UpdatedAtColumn}
+		allColumns             = postgres.ColumnList{IDColumn, NameColumn, EmailColumn, PasswordColumn, RoleColumn, AvatarColumn, StatusColumn, TokenJoinValueColumn, TokenJoinExpiresColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns         = postgres.ColumnList{NameColumn, EmailColumn, PasswordColumn, RoleColumn, AvatarColumn, StatusColumn, TokenJoinValueColumn, TokenJoinExpiresColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return usersTable{
@@ -91,6 +93,7 @@ func newUsersTableImpl(schemaName, tableName, alias string) usersTable {
 		Password:         PasswordColumn,
 		Role:             RoleColumn,
 		Avatar:           AvatarColumn,
+		Status:           StatusColumn,
 		TokenJoinValue:   TokenJoinValueColumn,
 		TokenJoinExpires: TokenJoinExpiresColumn,
 		CreatedAt:        CreatedAtColumn,

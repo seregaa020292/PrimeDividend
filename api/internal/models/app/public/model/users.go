@@ -19,6 +19,7 @@ type Users struct {
 	Password         string
 	Role             string
 	Avatar           *string
+	Status           string
 	TokenJoinValue   *uuid.UUID
 	TokenJoinExpires *time.Time
 	CreatedAt        time.Time

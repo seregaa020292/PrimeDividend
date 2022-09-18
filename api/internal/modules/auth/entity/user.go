@@ -8,6 +8,7 @@ import (
 type User struct {
 	Email    string
 	PassHash string
+	Status   Status
 	Token    Token
 }
 
@@ -20,6 +21,7 @@ func NewUser(email, password string) (User, error) {
 	return User{
 		Email:    email,
 		PassHash: pass,
+		Status:   Wait,
 		Token:    NewToken(consts.TokenJoinTTL),
 	}, nil
 }

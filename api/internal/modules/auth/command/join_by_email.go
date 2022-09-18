@@ -50,6 +50,7 @@ func (c joinByEmail) Exec(cmd Credential) error {
 	if err := c.repository.Add(model.Users{
 		Email:            user.Email,
 		Password:         user.PassHash,
+		Status:           user.Status.String(),
 		TokenJoinValue:   gog.Ptr(user.Token.Value),
 		TokenJoinExpires: gog.Ptr(user.Token.Expires),
 	}); err != nil {

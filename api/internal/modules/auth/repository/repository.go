@@ -1,14 +1,19 @@
 package repository
 
 import (
+	jet "github.com/go-jet/jet/v2/postgres"
+	"github.com/google/uuid"
+
 	"primedivident/internal/models/app/public/model"
 	"primedivident/internal/models/app/public/table"
+	"primedivident/internal/modules/auth/entity"
 	"primedivident/pkg/db/postgres"
 )
 
 type Repository interface {
 	Add(user model.Users) error
-	Confirm(tokenValue string) error
+	FindByTokenJoin(tokenValue uuid.UUID) (entity.Token, error)
+	Confirm(tokenValue uuid.UUID) error
 	HasByEmail(email string) (bool, error)
 }
 
@@ -21,25 +26,65 @@ func NewRepository(db *postgres.Postgres) Repository {
 }
 
 func (r repository) Add(user model.Users) error {
-	_, err := table.Users.INSERT(
+	stmt := table.Users.INSERT(
 		table.Users.Email,
 		table.Users.Password,
+		table.Users.Status,
 		table.Users.TokenJoinValue,
 		table.Users.TokenJoinExpires,
-	).VALUES(
-		user.Email,
-		user.Password,
-		user.TokenJoinValue,
-		user.TokenJoinExpires,
-	).Exec(r.db)
+	).MODEL(user)
+
+	_, err := stmt.Exec(r.db)
 
 	return err
 }
 
-func (r repository) Confirm(tokenValue string) error {
-	return nil
+func (r repository) FindByTokenJoin(tokenValue uuid.UUID) (entity.Token, error) {
+	var user model.Users
+
+	stmt := table.Users.
+		SELECT(table.Users.TokenJoinValue, table.Users.TokenJoinExpires).
+		FROM(table.Users).
+		WHERE(table.Users.TokenJoinValue.EQ(jet.UUID(tokenValue))).
+		LIMIT(1)
+
+	err := stmt.Query(r.db, &user)
+	if err != nil {
+		return entity.Token{}, err
+	}
+
+	return entity.Token{
+		Value:   *user.TokenJoinValue,
+		Expires: *user.TokenJoinExpires,
+	}, nil
+}
+
+func (r repository) Confirm(tokenValue uuid.UUID) error {
+	stmt := table.Users.
+		UPDATE(table.Users.Status, table.Users.TokenJoinValue, table.Users.TokenJoinExpires).
+		SET(entity.Active, nil, nil).
+		WHERE(table.Users.TokenJoinValue.EQ(jet.UUID(tokenValue)))
+
+	_, err := stmt.Exec(r.db)
+
+	return err
 }
 
 func (r repository) HasByEmail(email string) (bool, error) {
-	return false, nil
+	var dest struct {
+		Exists bool
+	}
+
+	stmt := jet.SELECT(
+		jet.EXISTS(
+			table.Users.SELECT(table.Users.ID).
+				FROM(table.Users).
+				WHERE(table.Users.Email.EQ(jet.String(email))).
+				LIMIT(1),
+		),
+	)
+
+	err := stmt.Query(r.db, &dest)
+
+	return dest.Exists, err
 }

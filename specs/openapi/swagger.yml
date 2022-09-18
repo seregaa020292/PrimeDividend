@@ -243,6 +243,7 @@ components:
       properties:
         token:
           type: string
+          format: uuid
           x-oapi-codegen-extra-tags:
             validate: required
     portfolio:

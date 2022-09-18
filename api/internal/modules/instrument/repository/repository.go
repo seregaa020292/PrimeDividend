@@ -21,10 +21,11 @@ func NewRepository(db *postgres.Postgres) Repository {
 func (r repository) GetAll() ([]model.Instruments, error) {
 	var instruments []model.Instruments
 
-	err := table.Instruments.
+	stmt := table.Instruments.
 		SELECT(table.Instruments.AllColumns).
-		FROM(table.Instruments).
-		Query(r.db, &instruments)
+		FROM(table.Instruments)
+
+	err := stmt.Query(r.db, &instruments)
 
 	return instruments, err
 }

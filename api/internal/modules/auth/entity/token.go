@@ -29,13 +29,17 @@ func (t Token) GetExpires() time.Time {
 }
 
 func (t Token) Valid(value string, expires time.Time) bool {
-	return t.isEqual(value) && !t.isExpired(expires)
+	return t.IsEqual(value) && !t.IsExpired(expires)
 }
 
-func (t Token) isEqual(value string) bool {
+func (t Token) IsEqual(value string) bool {
 	return t.String() == value
 }
 
-func (t Token) isExpired(expires time.Time) bool {
-	return t.Expires.After(expires)
+func (t Token) IsExpired(expires time.Time) bool {
+	return t.Expires.Before(expires)
+}
+
+func (t Token) IsExpiredByNow() bool {
+	return t.IsExpired(time.Now().UTC())
 }
