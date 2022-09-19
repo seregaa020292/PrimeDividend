@@ -1,11 +1,13 @@
 package tpl
 
 import (
+	"github.com/aymerick/douceur/inliner"
 	"github.com/flosch/pongo2/v6"
 )
 
 type Templater interface {
-	Render(filepath string, vars map[string]any) ([]byte, error)
+	Render(filepath string, vars map[string]any) (string, error)
+	RenderInline(filepath string, vars map[string]any) (string, error)
 }
 
 type template struct {
@@ -25,7 +27,7 @@ func NewTemplate(baseDir string, useCache bool, globalVars map[string]any) Templ
 	}
 }
 
-func (t template) Render(filepath string, vars map[string]any) ([]byte, error) {
+func (t template) Render(filepath string, vars map[string]any) (string, error) {
 	var (
 		template *pongo2.Template
 		err      error
@@ -37,7 +39,7 @@ func (t template) Render(filepath string, vars map[string]any) ([]byte, error) {
 		template, err = t.templates.FromFile(filepath)
 	}
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	outputVars := t.copyGlobalVars()
@@ -45,7 +47,21 @@ func (t template) Render(filepath string, vars map[string]any) ([]byte, error) {
 		outputVars[k] = v
 	}
 
-	return template.ExecuteBytes(outputVars)
+	bytes, err := template.ExecuteBytes(outputVars)
+	if err != nil {
+		return "", err
+	}
+
+	return string(bytes), nil
+}
+
+func (t template) RenderInline(filepath string, vars map[string]any) (string, error) {
+	render, err := t.Render(filepath, vars)
+	if err != nil {
+		return "", err
+	}
+
+	return inliner.Inline(render)
 }
 
 func (t template) copyGlobalVars() map[string]any {

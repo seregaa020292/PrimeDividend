@@ -28,7 +28,7 @@ func NewJoinConfirmUser(mailer mailer.Sender, template tpl.Templater) JoinConfir
 }
 
 func (s joinConfirmUser) Send(data JoinData) error {
-	html, err := s.template.Render(consts.TemplateMailConfirmed, map[string]any{
+	html, err := s.template.RenderInline(consts.TemplateMailConfirmed, map[string]any{
 		"token": data.Token,
 	})
 	if err != nil {
@@ -37,7 +37,7 @@ func (s joinConfirmUser) Send(data JoinData) error {
 
 	msg := mailer.NewMessage(
 		"Подтвердите вашу почту",
-		string(html),
+		html,
 		mailer.TextHtml,
 	)
 	msg.To = []string{data.Email}

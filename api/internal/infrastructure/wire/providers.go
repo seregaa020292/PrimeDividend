@@ -41,5 +41,6 @@ func ProvideMailerObserver(cfg config.Config, l logger.Logger) mailer.Sender {
 func ProvideTemplate(cfg config.Config) tpl.Templater {
 	return tpl.NewTemplate(consts.TemplateBaseDir, consts.TemplateCache, map[string]any{
 		"siteOrigin": cfg.App.SiteOrigin,
+		"appName":    cfg.App.Name,
 	})
 }

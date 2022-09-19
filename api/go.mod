@@ -3,6 +3,7 @@ module primedivident
 go 1.19
 
 require (
+	github.com/aymerick/douceur v0.2.0
 	github.com/deepmap/oapi-codegen v1.11.0
 	github.com/flosch/pongo2/v6 v6.0.0
 	github.com/getkin/kin-openapi v0.94.0
@@ -29,7 +30,9 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.2.0 // indirect
+	github.com/PuerkitoBio/goquery v1.8.0 // indirect
 	github.com/ajg/form v1.5.1 // indirect
+	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
@@ -39,6 +42,7 @@ require (
 	github.com/go-openapi/swag v0.21.1 // indirect
 	github.com/gofrs/uuid v4.2.0+incompatible // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/gorilla/css v1.0.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/jackc/fake v0.0.0-20150926172116-812a484cc733 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
