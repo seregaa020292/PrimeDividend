@@ -1,0 +1,23 @@
+{% block title %}
+<style type="text/css">
+    .powered-by a {
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+<div class="footer">
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      <td class="content-block">
+        Надоело получать письма?
+        <a href="{{siteOrigin}}/unsubscribe">Отписаться</a>.
+      </td>
+    </tr>
+    <tr>
+      <td class="content-block powered-by">
+        Powered by <a href="{{siteOrigin}}">&copy; {{appName}}</a>.
+      </td>
+    </tr>
+  </table>
+</div>

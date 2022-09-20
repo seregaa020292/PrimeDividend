@@ -19,7 +19,6 @@
           -ms-interpolation-mode: bicubic;
           max-width: 100%;
       }
-
       body {
           background-color: #f6f6f6;
           font-family: sans-serif;
@@ -31,12 +30,12 @@
           -ms-text-size-adjust: 100%;
           -webkit-text-size-adjust: 100%;
       }
-
       table {
           border-collapse: separate;
           mso-table-lspace: 0pt;
           mso-table-rspace: 0pt;
-          width: 100%; }
+          width: 100%;
+      }
       table td {
           font-family: sans-serif;
           font-size: 14px;
@@ -79,17 +78,14 @@
           border-radius: 3px;
           width: 100%;
       }
-
       .wrapper {
           box-sizing: border-box;
           padding: 20px;
       }
-
       .content-block {
           padding-bottom: 10px;
           padding-top: 10px;
       }
-
       .footer {
           clear: both;
           margin-top: 10px;
@@ -119,14 +115,12 @@
           margin: 0;
           margin-bottom: 30px;
       }
-
       h1 {
           font-size: 35px;
           font-weight: 300;
           text-align: center;
           text-transform: capitalize;
       }
-
       p,
       ul,
       ol {
@@ -142,7 +136,6 @@
           list-style-position: inside;
           margin-left: 5px;
       }
-
       a {
           color: #3498db;
           text-decoration: underline;
@@ -153,9 +146,11 @@
       ------------------------------------- */
       .btn {
           box-sizing: border-box;
-          width: 100%; }
+          width: 100%;
+      }
       .btn > tbody > tr > td {
-          padding-bottom: 15px; }
+          padding-bottom: 15px;
+      }
       .btn table {
           width: auto;
       }
@@ -179,11 +174,9 @@
           text-decoration: none;
           text-transform: capitalize;
       }
-
       .btn-primary table td {
           background-color: #3498db;
       }
-
       .btn-primary a {
           background-color: #3498db;
           border-color: #3498db;
@@ -196,31 +189,24 @@
       .last {
           margin-bottom: 0;
       }
-
       .first {
           margin-top: 0;
       }
-
       .align-center {
           text-align: center;
       }
-
       .align-right {
           text-align: right;
       }
-
       .align-left {
           text-align: left;
       }
-
       .clear {
           clear: both;
       }
-
       .mt0 {
           margin-top: 0;
       }
-
       .mb0 {
           margin-bottom: 0;
       }
@@ -237,11 +223,6 @@
           visibility: hidden;
           width: 0;
       }
-
-      .powered-by a {
-          text-decoration: none;
-      }
-
       hr {
           border: 0;
           border-bottom: 1px solid #f6f6f6;
@@ -336,23 +317,21 @@
   <style type="text/css">
 
   </style>
+  {% block title %}{% endblock %}
 </head>
 <body>
+<span class="preheader">
+  {% block preheader %}
+  Вам пришло новое соощение.
+  {% endblock %}
+</span>
 <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
   <tr>
     <td>&nbsp;</td>
     <td class="container">
       <div class="content">
         <!-- START LOGO -->
-        <table role="presentation" border="0" cellspacing="0" cellpadding="0" align="center">
-          <tr>
-            <td class="align-center">
-              <a href="{{siteOrigin}}" target="_blank">
-                <img src="{{siteOrigin}}/metadata/android-chrome-192x192.png" width="100" border="0" alt="Логотип" />
-              </a>
-            </td>
-          </tr>
-        </table>
+        {% include "mail/partials/default/logo.html" %}
         <!-- END LOGO -->
 
         <!-- START CENTERED WHITE CONTAINER -->
@@ -369,21 +348,7 @@
         <!-- END CENTERED WHITE CONTAINER -->
 
         <!-- START FOOTER -->
-        <div class="footer">
-          <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-            <tr>
-              <td class="content-block">
-                Надоело получать письма?
-                <a href="{{siteOrigin}}/unsubscribe">Отписаться</a>.
-              </td>
-            </tr>
-            <tr>
-              <td class="content-block powered-by">
-                Powered by <a href="{{siteOrigin}}">&copy; {{appName}}</a>.
-              </td>
-            </tr>
-          </table>
-        </div>
+        {% include "mail/partials/default/footer.html" %}
         <!-- END FOOTER -->
 
       </div>
