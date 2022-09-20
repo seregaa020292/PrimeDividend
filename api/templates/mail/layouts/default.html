@@ -320,18 +320,14 @@
   {% block title %}{% endblock %}
 </head>
 <body>
-<span class="preheader">
-  {% block preheader %}
-  Вам пришло новое соощение.
-  {% endblock %}
-</span>
+<span class="preheader">{% block preheader %}Вам пришло новое соощение.{% endblock %}</span>
 <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">
   <tr>
     <td>&nbsp;</td>
     <td class="container">
       <div class="content">
         <!-- START LOGO -->
-        {% include "mail/partials/default/logo.html" %}
+        {% include "mail/partials/logo.html" %}
         <!-- END LOGO -->
 
         <!-- START CENTERED WHITE CONTAINER -->
@@ -348,7 +344,7 @@
         <!-- END CENTERED WHITE CONTAINER -->
 
         <!-- START FOOTER -->
-        {% include "mail/partials/default/footer.html" %}
+        {% include "mail/partials/footer.html" %}
         <!-- END FOOTER -->
 
       </div>
