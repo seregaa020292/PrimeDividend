@@ -66,6 +66,10 @@ func (v vkStrategy) Login(code string) (auth.Tokens, error) {
 	}, nil
 }
 
+func (v vkStrategy) Validate(token string) error {
+	return nil
+}
+
 func (v vkStrategy) Refresh(refreshToken string) (auth.Tokens, error) {
 	return auth.Tokens{}, nil
 }

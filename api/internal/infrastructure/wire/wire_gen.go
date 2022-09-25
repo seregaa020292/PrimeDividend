@@ -37,18 +37,18 @@ import (
 // Injectors from wire.go:
 
 func Initialize(cfg config.Config) http.Server {
+	postgres := ProvidePostgres(cfg)
+	repositoryRepository := repository.NewRepository(postgres)
+	strategies := wire_group.ProvideStrategies(cfg, repositoryRepository)
 	logger := ProvideLogger(cfg)
 	validatorValidator := validator.GetValidator()
 	responder := response.NewRespond(logger, validatorValidator)
-	postgres := ProvidePostgres(cfg)
-	repositoryRepository := repository.NewRepository(postgres)
 	sender := ProvideMailerObserver(cfg, logger)
 	templater := ProvideTemplate(cfg)
 	joinConfirmUser := email.NewJoinConfirmUser(sender, templater)
 	joinByEmail := command.NewJoinByEmail(repositoryRepository, joinConfirmUser)
 	confirmUser := email.NewConfirmUser(sender)
 	confirmByToken := command.NewConfirmByToken(repositoryRepository, confirmUser)
-	strategies := wire_group.ProvideStrategies(cfg, repositoryRepository)
 	handlerAuth := auth.NewHandler(responder, joinByEmail, confirmByToken, strategies)
 	handlerAsset := asset.NewHandler()
 	handlerCurrency := currency.NewHandler()
@@ -65,7 +65,7 @@ func Initialize(cfg config.Config) http.Server {
 	handlerProvider := provider.NewHandler()
 	handlerRegister := register.NewHandler()
 	handlerUser := user.NewHandler()
-	httpHandlers := handlers.NewHandlers(handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
+	httpHandlers := handlers.NewHandlers(strategies, handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
 	server := http.NewServer(httpHandlers)
 	return server
 }

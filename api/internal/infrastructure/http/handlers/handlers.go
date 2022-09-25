@@ -9,6 +9,7 @@ import (
 
 	serverHttp "primedivident/internal/infrastructure/http"
 	"primedivident/internal/infrastructure/http/openapi"
+	"primedivident/internal/modules/auth/service/auth/strategies"
 	"primedivident/internal/ports/http/asset"
 	"primedivident/internal/ports/http/auth"
 	"primedivident/internal/ports/http/currency"
@@ -25,6 +26,8 @@ import (
 var _ openapi.ServerInterface = (*Handlers)(nil) //nolint:typecheck
 
 type Handlers struct {
+	strategies strategies.Strategies
+
 	auth.HandlerAuth
 	asset.HandlerAsset
 	currency.HandlerCurrency
@@ -37,6 +40,7 @@ type Handlers struct {
 }
 
 func NewHandlers(
+	strategies strategies.Strategies,
 	auth auth.HandlerAuth,
 	asset asset.HandlerAsset,
 	currency currency.HandlerCurrency,
@@ -48,6 +52,8 @@ func NewHandlers(
 	user user.HandlerUser,
 ) serverHttp.Handlers {
 	return Handlers{
+		strategies: strategies,
+
 		HandlerAuth:       auth,
 		HandlerAsset:      asset,
 		HandlerCurrency:   currency,
@@ -68,7 +74,7 @@ func (handlers Handlers) Setup(router chi.Router) {
 
 	swagger.Servers = nil
 
-	router.Use(authValidator(swagger))
+	router.Use(authValidator(swagger, handlers.strategies))
 
 	routerSwagger, _ := gorillamux.NewRouter(swagger)
 

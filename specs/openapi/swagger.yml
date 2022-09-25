@@ -87,7 +87,7 @@ paths:
         500:
           $ref: '#/components/responses/500'
   /auth/{network}:
-    post:
+    get:
       tags: [ auth ]
       operationId: joinNetwork
       summary: Аутентификация в соц. сетях

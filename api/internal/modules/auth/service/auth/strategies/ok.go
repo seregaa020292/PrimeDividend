@@ -39,6 +39,10 @@ func (o okStrategy) Login(code string) (auth.Tokens, error) {
 	panic("implement me")
 }
 
+func (o okStrategy) Validate(token string) error {
+	return nil
+}
+
 func (o okStrategy) Refresh(refreshToken string) (auth.Tokens, error) {
 	return auth.Tokens{}, nil
 }

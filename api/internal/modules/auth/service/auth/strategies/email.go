@@ -45,6 +45,12 @@ func (e emailStrategy) Login(email, password string) (auth.Tokens, error) {
 	return genTokens, nil
 }
 
+func (e emailStrategy) Validate(token string) error {
+	_, err := e.jwtTokens.ValidateAccessToken(token)
+
+	return err
+}
+
 func (e emailStrategy) Refresh(refreshToken string) (auth.Tokens, error) {
 	return auth.Tokens{}, nil
 }

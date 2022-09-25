@@ -39,6 +39,10 @@ func (y yandexStrategy) Login(code string) (auth.Tokens, error) {
 	panic("implement me")
 }
 
+func (y yandexStrategy) Validate(token string) error {
+	return nil
+}
+
 func (y yandexStrategy) Refresh(refreshToken string) (auth.Tokens, error) {
 	return auth.Tokens{}, nil
 }

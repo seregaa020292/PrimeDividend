@@ -24,6 +24,7 @@ func Initialize(cfg config.Config) serverHttp.Server {
 		validator.GetValidator,
 		response.NewRespond,
 
+		wireGroup.ProvideStrategies,
 		wireGroup.Auth,
 		wireGroup.Asset,
 		wireGroup.Currency,

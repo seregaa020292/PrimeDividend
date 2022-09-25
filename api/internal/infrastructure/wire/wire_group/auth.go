@@ -19,7 +19,6 @@ func ProvideStrategies(cfg config.Config, repository repository.Repository) stra
 
 var Auth = wire.NewSet(
 	repository.NewRepository,
-	ProvideStrategies,
 	email.NewJoinConfirmUser,
 	email.NewConfirmUser,
 	command.NewJoinByEmail,

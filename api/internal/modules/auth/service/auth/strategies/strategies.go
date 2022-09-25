@@ -19,18 +19,15 @@ type (
 	NetworkStrategy interface {
 		Callback(state string) string
 		Login(code string) (auth.Tokens, error)
-		Refresh
-		Logout
+		Strategy
 	}
 	EmailStrategy interface {
 		Login(email, password string) (auth.Tokens, error)
-		Refresh
-		Logout
+		Strategy
 	}
-	Refresh interface {
+	Strategy interface {
+		Validate(token string) error
 		Refresh(refreshToken string) (auth.Tokens, error)
-	}
-	Logout interface {
 		Logout(refreshToken string) error
 	}
 )
