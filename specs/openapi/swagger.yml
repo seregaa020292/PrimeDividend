@@ -39,7 +39,7 @@ paths:
   /auth/email:
     post:
       tags: [ auth ]
-      operationId: authEmail
+      operationId: joinEmail
       summary: Аутентификация по Email
       requestBody:
         required: true
@@ -57,7 +57,7 @@ paths:
   /auth/email/confirm:
     post:
       tags: [ auth ]
-      operationId: authEmailConfirm
+      operationId: confirmEmail
       summary: Авторизация по Email
       requestBody:
         required: true
@@ -70,10 +70,26 @@ paths:
           $ref: '#/components/responses/200'
         500:
           $ref: '#/components/responses/500'
-  /auth/{network}:
-    get:
+  /auth/email/login:
+    post:
       tags: [ auth ]
-      operationId: authNetwork
+      operationId: loginEmail
+      summary: Логин по Email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/loginUser"
+      responses:
+        200:
+          $ref: '#/components/responses/200'
+        500:
+          $ref: '#/components/responses/500'
+  /auth/{network}:
+    post:
+      tags: [ auth ]
+      operationId: joinNetwork
       summary: Аутентификация в соц. сетях
       parameters:
         - $ref: "#/components/parameters/network"
@@ -85,7 +101,7 @@ paths:
   /auth/{network}/callback:
     get:
       tags: [ auth ]
-      operationId: authNetworkCallback
+      operationId: confirmNetwork
       summary: Авторизация в соц. сетях
       parameters:
         - $ref: "#/components/parameters/network"
@@ -98,7 +114,7 @@ paths:
   /portfolio/{portfolioId}:
     get:
       tags: [ portfolio ]
-      operationId: getPortfolioById
+      operationId: getPortfolio
       summary: Получение портфеля по ID
       parameters:
         - $ref: "#/components/parameters/portfolioId"
@@ -225,6 +241,19 @@ components:
 
   schemas:
     authUser:
+      type: object
+      required: [ email, password ]
+      properties:
+        email:
+          type: string
+          format: example@example.ru
+          x-oapi-codegen-extra-tags:
+            validate: required,email
+        password:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: required,min=6
+    loginUser:
       type: object
       required: [ email, password ]
       properties:

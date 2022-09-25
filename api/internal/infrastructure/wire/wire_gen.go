@@ -10,6 +10,7 @@ import (
 	"primedivident/internal/config"
 	"primedivident/internal/infrastructure/http"
 	"primedivident/internal/infrastructure/http/handlers"
+	"primedivident/internal/infrastructure/wire/wire_group"
 	"primedivident/internal/modules/auth/command"
 	"primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/email"
@@ -47,7 +48,8 @@ func Initialize(cfg config.Config) http.Server {
 	joinByEmail := command.NewJoinByEmail(repositoryRepository, joinConfirmUser)
 	confirmUser := email.NewConfirmUser(sender)
 	confirmByToken := command.NewConfirmByToken(repositoryRepository, confirmUser)
-	handlerAuth := auth.NewHandler(responder, joinByEmail, confirmByToken)
+	strategies := wire_group.ProvideStrategies(cfg, repositoryRepository)
+	handlerAuth := auth.NewHandler(responder, joinByEmail, confirmByToken, strategies)
 	handlerAsset := asset.NewHandler()
 	handlerCurrency := currency.NewHandler()
 	presenter := instrument.NewPresenter()

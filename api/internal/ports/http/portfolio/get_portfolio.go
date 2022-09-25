@@ -7,7 +7,7 @@ import (
 	"primedivident/internal/modules/portfolio/query"
 )
 
-func (h HandlerPortfolio) GetPortfolioById(w http.ResponseWriter, r *http.Request, portfolioId openapi.PortfolioId) {
+func (h HandlerPortfolio) GetPortfolio(w http.ResponseWriter, r *http.Request, portfolioId openapi.PortfolioId) {
 	respond := h.responder.Http(w, r)
 
 	portfolio, err := h.queryPortfolioById.Fetch(query.PortfolioId(portfolioId))

@@ -6,7 +6,7 @@ import (
 
 type PasswordHasher interface {
 	Hash() (string, error)
-	Verify(hashed string) bool
+	Verify(hashed string) error
 }
 
 type Password string
@@ -20,9 +20,8 @@ func (password Password) Hash() (string, error) {
 	return string(hash), nil
 }
 
-func (password Password) Verify(hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(password), []byte(hash))
-	return err == nil
+func (password Password) Verify(hash string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }
 
 func (password Password) String() string {

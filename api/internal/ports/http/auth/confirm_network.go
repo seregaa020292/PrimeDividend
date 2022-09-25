@@ -4,15 +4,16 @@ import (
 	"fmt"
 	"net/http"
 
-	"primedivident/internal/infrastructure/auth"
+	"primedivident/internal/config/consts"
 	"primedivident/internal/infrastructure/http/openapi"
+	"primedivident/internal/modules/auth/service/auth/strategies"
 	"primedivident/pkg/logger"
 )
 
-func (h HandlerAuth) AuthNetworkCallback(w http.ResponseWriter, r *http.Request, network openapi.Network) {
+func (h HandlerAuth) ConfirmNetwork(w http.ResponseWriter, r *http.Request, network openapi.Network) {
 	respond := h.responder.Http(w, r)
 
-	oauthState, _ := r.Cookie(auth.OauthState)
+	oauthState, _ := r.Cookie(consts.OauthState)
 	state := r.FormValue("state")
 	code := r.FormValue("code")
 
@@ -22,7 +23,14 @@ func (h HandlerAuth) AuthNetworkCallback(w http.ResponseWriter, r *http.Request,
 		return
 	}
 
-	data, err := auth.GetUser(code, auth.VkOAuth2Config)
+	strategy := h.strategies.Networks.GetStrategy(strategies.Key(network))
+	if strategy == nil {
+		logger.GetLogger().Errorf("%s", "Invalid oauth google state")
+		respond.Redirect("/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	data, err := strategy.Login(code)
 	if err != nil {
 		logger.GetLogger().Errorf("%s", err)
 		respond.Redirect("/", http.StatusTemporaryRedirect)

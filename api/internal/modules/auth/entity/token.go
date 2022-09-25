@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
+	"primedivident/internal/config/consts"
 	"primedivident/pkg/datetime"
 )
 
@@ -18,6 +19,10 @@ func NewToken(d time.Duration) Token {
 		Value:   uuid.New(),
 		Expires: datetime.GetNow().Add(d),
 	}
+}
+
+func NewTokenTTL() Token {
+	return NewToken(consts.TokenJoinTTL)
 }
 
 func (t Token) String() string {

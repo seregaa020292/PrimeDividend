@@ -20,11 +20,6 @@ type VkOAuth2 struct {
 	SiteOrigin string `env:"SITE_ORIGIN" env-required:"true"`
 }
 
-func (a VkOAuth2) RedirectUrl() string {
-	path, _ := url.JoinPath(a.SiteOrigin, consts.VkOauthRedirectUrl)
-	return path
-}
-
 type YandexOAuth2 struct {
 	ClientID     string   `env:"YANDEX_OAUTH_CLIENT_ID" env-required:"true"`
 	ClientSecret string   `env:"YANDEX_OAUTH_CLIENT_SECRET" env-required:"true"`
@@ -33,17 +28,22 @@ type YandexOAuth2 struct {
 	SiteOrigin string `env:"SITE_ORIGIN" env-required:"true"`
 }
 
-func (a YandexOAuth2) RedirectUrl() string {
-	path, _ := url.JoinPath(a.SiteOrigin, consts.YandexOauthRedirectUrl)
-	return path
-}
-
 type OkOAuth2 struct {
 	ClientID     string   `env:"OK_OAUTH_CLIENT_ID" env-required:"true"`
 	ClientSecret string   `env:"OK_OAUTH_CLIENT_SECRET" env-required:"true"`
 	Scopes       []string `env:"OK_OAUTH_SCOPES"`
 
 	SiteOrigin string `env:"SITE_ORIGIN" env-required:"true"`
+}
+
+func (a VkOAuth2) RedirectUrl() string {
+	path, _ := url.JoinPath(a.SiteOrigin, consts.VkOauthRedirectUrl)
+	return path
+}
+
+func (a YandexOAuth2) RedirectUrl() string {
+	path, _ := url.JoinPath(a.SiteOrigin, consts.YandexOauthRedirectUrl)
+	return path
 }
 
 func (a OkOAuth2) RedirectUrl() string {

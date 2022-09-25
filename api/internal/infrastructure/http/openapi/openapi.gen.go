@@ -23,16 +23,19 @@ import (
 type ServerInterface interface {
 	// Аутентификация по Email
 	// (POST /auth/email)
-	AuthEmail(w http.ResponseWriter, r *http.Request)
+	JoinEmail(w http.ResponseWriter, r *http.Request)
 	// Авторизация по Email
 	// (POST /auth/email/confirm)
-	AuthEmailConfirm(w http.ResponseWriter, r *http.Request)
+	ConfirmEmail(w http.ResponseWriter, r *http.Request)
+	// Логин по Email
+	// (POST /auth/email/login)
+	LoginEmail(w http.ResponseWriter, r *http.Request)
 	// Аутентификация в соц. сетях
-	// (GET /auth/{network})
-	AuthNetwork(w http.ResponseWriter, r *http.Request, network Network)
+	// (POST /auth/{network})
+	JoinNetwork(w http.ResponseWriter, r *http.Request, network Network)
 	// Авторизация в соц. сетях
 	// (GET /auth/{network}/callback)
-	AuthNetworkCallback(w http.ResponseWriter, r *http.Request, network Network)
+	ConfirmNetwork(w http.ResponseWriter, r *http.Request, network Network)
 
 	// (GET /instrument)
 	GetInstruments(w http.ResponseWriter, r *http.Request)
@@ -41,7 +44,7 @@ type ServerInterface interface {
 	CreatePortfolio(w http.ResponseWriter, r *http.Request)
 	// Получение портфеля по ID
 	// (GET /portfolio/{portfolioId})
-	GetPortfolioById(w http.ResponseWriter, r *http.Request, portfolioId PortfolioId)
+	GetPortfolio(w http.ResponseWriter, r *http.Request, portfolioId PortfolioId)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -53,12 +56,12 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(http.HandlerFunc) http.HandlerFunc
 
-// AuthEmail operation middleware
-func (siw *ServerInterfaceWrapper) AuthEmail(w http.ResponseWriter, r *http.Request) {
+// JoinEmail operation middleware
+func (siw *ServerInterfaceWrapper) JoinEmail(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AuthEmail(w, r)
+		siw.Handler.JoinEmail(w, r)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -68,12 +71,12 @@ func (siw *ServerInterfaceWrapper) AuthEmail(w http.ResponseWriter, r *http.Requ
 	handler(w, r.WithContext(ctx))
 }
 
-// AuthEmailConfirm operation middleware
-func (siw *ServerInterfaceWrapper) AuthEmailConfirm(w http.ResponseWriter, r *http.Request) {
+// ConfirmEmail operation middleware
+func (siw *ServerInterfaceWrapper) ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AuthEmailConfirm(w, r)
+		siw.Handler.ConfirmEmail(w, r)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -83,8 +86,23 @@ func (siw *ServerInterfaceWrapper) AuthEmailConfirm(w http.ResponseWriter, r *ht
 	handler(w, r.WithContext(ctx))
 }
 
-// AuthNetwork operation middleware
-func (siw *ServerInterfaceWrapper) AuthNetwork(w http.ResponseWriter, r *http.Request) {
+// LoginEmail operation middleware
+func (siw *ServerInterfaceWrapper) LoginEmail(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.LoginEmail(w, r)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// JoinNetwork operation middleware
+func (siw *ServerInterfaceWrapper) JoinNetwork(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
@@ -99,7 +117,7 @@ func (siw *ServerInterfaceWrapper) AuthNetwork(w http.ResponseWriter, r *http.Re
 	}
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AuthNetwork(w, r, network)
+		siw.Handler.JoinNetwork(w, r, network)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -109,8 +127,8 @@ func (siw *ServerInterfaceWrapper) AuthNetwork(w http.ResponseWriter, r *http.Re
 	handler(w, r.WithContext(ctx))
 }
 
-// AuthNetworkCallback operation middleware
-func (siw *ServerInterfaceWrapper) AuthNetworkCallback(w http.ResponseWriter, r *http.Request) {
+// ConfirmNetwork operation middleware
+func (siw *ServerInterfaceWrapper) ConfirmNetwork(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
@@ -125,7 +143,7 @@ func (siw *ServerInterfaceWrapper) AuthNetworkCallback(w http.ResponseWriter, r 
 	}
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AuthNetworkCallback(w, r, network)
+		siw.Handler.ConfirmNetwork(w, r, network)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -167,8 +185,8 @@ func (siw *ServerInterfaceWrapper) CreatePortfolio(w http.ResponseWriter, r *htt
 	handler(w, r.WithContext(ctx))
 }
 
-// GetPortfolioById operation middleware
-func (siw *ServerInterfaceWrapper) GetPortfolioById(w http.ResponseWriter, r *http.Request) {
+// GetPortfolio operation middleware
+func (siw *ServerInterfaceWrapper) GetPortfolio(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var err error
@@ -183,7 +201,7 @@ func (siw *ServerInterfaceWrapper) GetPortfolioById(w http.ResponseWriter, r *ht
 	}
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetPortfolioById(w, r, portfolioId)
+		siw.Handler.GetPortfolio(w, r, portfolioId)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -307,16 +325,19 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/auth/email", wrapper.AuthEmail)
+		r.Post(options.BaseURL+"/auth/email", wrapper.JoinEmail)
 	})
 	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/auth/email/confirm", wrapper.AuthEmailConfirm)
+		r.Post(options.BaseURL+"/auth/email/confirm", wrapper.ConfirmEmail)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/auth/{network}", wrapper.AuthNetwork)
+		r.Post(options.BaseURL+"/auth/email/login", wrapper.LoginEmail)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/auth/{network}/callback", wrapper.AuthNetworkCallback)
+		r.Post(options.BaseURL+"/auth/{network}", wrapper.JoinNetwork)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/auth/{network}/callback", wrapper.ConfirmNetwork)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/instrument", wrapper.GetInstruments)
@@ -325,7 +346,7 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Post(options.BaseURL+"/portfolio", wrapper.CreatePortfolio)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/portfolio/{portfolioId}", wrapper.GetPortfolioById)
+		r.Get(options.BaseURL+"/portfolio/{portfolioId}", wrapper.GetPortfolio)
 	})
 
 	return r
@@ -334,33 +355,34 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
+	"/BEAAP//eg/aqcEaAAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

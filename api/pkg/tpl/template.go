@@ -1,6 +1,8 @@
 package tpl
 
 import (
+	"log"
+
 	"github.com/aymerick/douceur/inliner"
 	"github.com/flosch/pongo2/v6"
 )
@@ -17,7 +19,11 @@ type template struct {
 }
 
 func NewTemplate(baseDir string, useCache bool, globalVars map[string]any) Templater {
-	loader := pongo2.MustNewLocalFileSystemLoader(baseDir)
+	loader, err := pongo2.NewLocalFileSystemLoader(baseDir)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	templates := pongo2.NewSet("html", loader)
 
 	return template{
@@ -29,14 +35,14 @@ func NewTemplate(baseDir string, useCache bool, globalVars map[string]any) Templ
 
 func (t template) Render(filepath string, vars map[string]any) (string, error) {
 	var (
-		template *pongo2.Template
-		err      error
+		tpl *pongo2.Template
+		err error
 	)
 
 	if t.useCache {
-		template, err = t.templates.FromCache(filepath)
+		tpl, err = t.templates.FromCache(filepath)
 	} else {
-		template, err = t.templates.FromFile(filepath)
+		tpl, err = t.templates.FromFile(filepath)
 	}
 	if err != nil {
 		return "", err
@@ -47,7 +53,7 @@ func (t template) Render(filepath string, vars map[string]any) (string, error) {
 		outputVars[k] = v
 	}
 
-	bytes, err := template.ExecuteBytes(outputVars)
+	bytes, err := tpl.ExecuteBytes(outputVars)
 	if err != nil {
 		return "", err
 	}

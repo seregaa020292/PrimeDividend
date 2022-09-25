@@ -10,6 +10,8 @@ const (
 	TargetEmail
 	TargetAuth
 	TargetFound
+	TargetServer
+	TargetInvalid
 )
 
 var (
@@ -27,7 +29,11 @@ var (
 	ErrorSendEmail  = NewError(TargetEmail, http.StatusBadRequest, "Ошибка отправки email сообщения")
 	ErrorExistEmail = NewError(TargetEmail, http.StatusBadRequest, "Такой email уже существует")
 
+	ErrorUserNoConfirm = NewError(TargetInvalid, http.StatusBadRequest, "Пользователь не подтвержден")
+
 	ErrorValidate = NewError(TargetValidate, http.StatusBadRequest, "Ошибка валидации")
 
 	ErrorUnknown = NewError(TargetUnknown, http.StatusInternalServerError, "Неизвестная ошибка")
+
+	ErrorPasswordIncorrect = NewError(TargetInvalid, http.StatusBadRequest, "Пароль не верный")
 )

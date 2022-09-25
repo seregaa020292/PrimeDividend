@@ -34,12 +34,12 @@ func NewJoinByEmail(
 }
 
 func (c joinByEmail) Exec(cmd Credential) error {
-	hasEmail, err := c.repository.HasByEmail(cmd.Email)
-	if err != nil {
+	if user, err := c.repository.FindByEmail(cmd.Email); err != nil {
 		return errorn.ErrorSelect.Wrap(err)
-	}
-	if hasEmail {
-		return errorn.ErrorExistEmail
+	} else {
+		if user != (entity.User{}) {
+			return c.existedUser(user)
+		}
 	}
 
 	user, err := entity.NewUser(cmd.Email, cmd.Password)
@@ -57,9 +57,31 @@ func (c joinByEmail) Exec(cmd Credential) error {
 		return errorn.ErrorInsert.Wrap(err)
 	}
 
+	return c.sendEmail(user.Email, user.Token.String())
+}
+
+func (c joinByEmail) existedUser(user entity.User) error {
+	if !user.Status.IsWait() {
+		return errorn.ErrorUnknown
+	}
+
+	if !user.Token.IsExpiredByNow() {
+		return errorn.ErrorUserNoConfirm
+	}
+
+	token := entity.NewTokenTTL()
+
+	if err := c.repository.UpdateTokeJoin(user.ID, token); err != nil {
+		return errorn.ErrorUpdate.Wrap(err)
+	}
+
+	return c.sendEmail(user.Email, token.String())
+}
+
+func (c joinByEmail) sendEmail(emailAddr, token string) error {
 	if err := c.email.Send(email.JoinData{
-		Email: user.Email,
-		Token: user.Token.String(),
+		Email: emailAddr,
+		Token: token,
 	}); err != nil {
 		return errorn.ErrorSendEmail.Wrap(err)
 	}

@@ -6,7 +6,7 @@ import (
 	"primedivident/internal/infrastructure/http/openapi"
 )
 
-func (h HandlerAuth) AuthEmailConfirm(w http.ResponseWriter, r *http.Request) {
+func (h HandlerAuth) ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 	respond := h.responder.Http(w, r)
 
 	confirm := openapi.AuthConfirm{}

@@ -7,11 +7,10 @@ import (
 	"primedivident/internal/modules/auth/command"
 )
 
-func (h HandlerAuth) AuthEmail(w http.ResponseWriter, r *http.Request) {
+func (h HandlerAuth) JoinEmail(w http.ResponseWriter, r *http.Request) {
 	respond := h.responder.Http(w, r)
 
-	user := openapi.AuthUser{}
-
+	var user openapi.AuthUser
 	if err := respond.DecodeValidate(&user); err != nil {
 		respond.Err(err)
 		return

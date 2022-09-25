@@ -60,6 +60,12 @@ type Instrument struct {
 // Instruments defines model for instruments.
 type Instruments = []Instrument
 
+// LoginUser defines model for loginUser.
+type LoginUser struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=6"`
+}
+
 // Portfolio defines model for portfolio.
 type Portfolio struct {
 	CreatedAt time.Time          `json:"createdAt"`
@@ -85,20 +91,26 @@ type N400 = Error
 // N500 defines model for 500.
 type N500 = Error
 
-// AuthEmailJSONBody defines parameters for AuthEmail.
-type AuthEmailJSONBody = AuthUser
+// JoinEmailJSONBody defines parameters for JoinEmail.
+type JoinEmailJSONBody = AuthUser
 
-// AuthEmailConfirmJSONBody defines parameters for AuthEmailConfirm.
-type AuthEmailConfirmJSONBody = AuthConfirm
+// ConfirmEmailJSONBody defines parameters for ConfirmEmail.
+type ConfirmEmailJSONBody = AuthConfirm
+
+// LoginEmailJSONBody defines parameters for LoginEmail.
+type LoginEmailJSONBody = LoginUser
 
 // CreatePortfolioJSONBody defines parameters for CreatePortfolio.
 type CreatePortfolioJSONBody = PortfolioUpdate
 
-// AuthEmailJSONRequestBody defines body for AuthEmail for application/json ContentType.
-type AuthEmailJSONRequestBody = AuthEmailJSONBody
+// JoinEmailJSONRequestBody defines body for JoinEmail for application/json ContentType.
+type JoinEmailJSONRequestBody = JoinEmailJSONBody
 
-// AuthEmailConfirmJSONRequestBody defines body for AuthEmailConfirm for application/json ContentType.
-type AuthEmailConfirmJSONRequestBody = AuthEmailConfirmJSONBody
+// ConfirmEmailJSONRequestBody defines body for ConfirmEmail for application/json ContentType.
+type ConfirmEmailJSONRequestBody = ConfirmEmailJSONBody
+
+// LoginEmailJSONRequestBody defines body for LoginEmail for application/json ContentType.
+type LoginEmailJSONRequestBody = LoginEmailJSONBody
 
 // CreatePortfolioJSONRequestBody defines body for CreatePortfolio for application/json ContentType.
 type CreatePortfolioJSONRequestBody = CreatePortfolioJSONBody

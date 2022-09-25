@@ -12,6 +12,7 @@ type Config struct {
 	Mailer   Mailer
 	Postgres Postgres
 	Networks Networks
+	Jwt      Jwt
 }
 
 var (

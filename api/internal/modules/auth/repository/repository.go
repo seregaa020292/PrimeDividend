@@ -12,9 +12,11 @@ import (
 
 type Repository interface {
 	Add(user model.Users) error
-	FindByTokenJoin(tokenValue uuid.UUID) (entity.User, error)
 	Confirm(tokenValue uuid.UUID) error
+	FindByTokenJoin(tokenValue uuid.UUID) (entity.User, error)
+	FindByEmail(email string) (entity.User, error)
 	HasByEmail(email string) (bool, error)
+	UpdateTokeJoin(id uuid.UUID, token entity.Token) error
 }
 
 type repository struct {
@@ -53,15 +55,7 @@ func (r repository) FindByTokenJoin(tokenValue uuid.UUID) (entity.User, error) {
 		return entity.User{}, err
 	}
 
-	return entity.User{
-		Email:    user.Email,
-		PassHash: user.Password,
-		Status:   entity.Status(user.Status),
-		Token: entity.Token{
-			Value:   *user.TokenJoinValue,
-			Expires: *user.TokenJoinExpires,
-		},
-	}, nil
+	return entityUser(user), nil
 }
 
 func (r repository) Confirm(tokenValue uuid.UUID) error {
@@ -73,6 +67,23 @@ func (r repository) Confirm(tokenValue uuid.UUID) error {
 	_, err := stmt.Exec(r.db)
 
 	return err
+}
+
+func (r repository) FindByEmail(email string) (entity.User, error) {
+	var user model.Users
+
+	stmt := table.Users.
+		SELECT(table.Users.AllColumns).
+		FROM(table.Users).
+		WHERE(table.Users.Email.EQ(jet.String(email))).
+		LIMIT(1)
+
+	err := stmt.Query(r.db, &user)
+	if err != nil {
+		return entity.User{}, err
+	}
+
+	return entityUser(user), nil
 }
 
 func (r repository) HasByEmail(email string) (bool, error) {
@@ -92,4 +103,34 @@ func (r repository) HasByEmail(email string) (bool, error) {
 	err := stmt.Query(r.db, &dest)
 
 	return dest.Exists, err
+}
+
+func (r repository) UpdateTokeJoin(id uuid.UUID, token entity.Token) error {
+	stmt := table.Users.
+		UPDATE(table.Users.TokenJoinValue, table.Users.TokenJoinExpires).
+		SET(token.Value, token.Expires).
+		WHERE(table.Users.ID.EQ(jet.UUID(id)))
+
+	_, err := stmt.Exec(r.db)
+
+	return err
+}
+
+func entityUser(user model.Users) entity.User {
+	var token entity.Token
+	if user.TokenJoinValue != nil {
+		token.Value = *user.TokenJoinValue
+	}
+	if user.TokenJoinExpires != nil {
+		token.Expires = *user.TokenJoinExpires
+	}
+
+	return entity.User{
+		ID:       user.ID,
+		Name:     user.Name,
+		Email:    user.Email,
+		PassHash: user.Password,
+		Status:   entity.Status(user.Status),
+		Token:    token,
+	}
 }
