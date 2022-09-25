@@ -24,37 +24,23 @@ func NewEmailStrategy(
 func (e emailStrategy) Login(email, password string) (auth.Tokens, error) {
 	user, err := e.repository.FindByEmail(email)
 	if err != nil {
-		return auth.Tokens{}, errorn.ErrorSelect.Wrap(err)
+		return auth.Tokens{}, errorn.ErrSelect.Wrap(err)
 	}
 
 	if !user.Status.IsActive() {
-		return auth.Tokens{}, errorn.ErrorAccess
+		return auth.Tokens{}, errorn.ErrForbidden
 	}
 
 	if err := user.ComparePasswordHash(password); err != nil {
-		return auth.Tokens{}, errorn.ErrorPasswordIncorrect.Wrap(err)
+		return auth.Tokens{}, errorn.ErrPasswordIncorrect.Wrap(err)
 	}
 
 	genTokens, err := e.jwtTokens.GenTokens(user.JwtPayload())
 	if err != nil {
-		return auth.Tokens{}, errorn.ErrorUnknown.Wrap(err)
+		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
 	}
 
 	// TODO: save db refresh token
 
 	return genTokens, nil
-}
-
-func (e emailStrategy) Validate(token string) error {
-	_, err := e.jwtTokens.ValidateAccessToken(token)
-
-	return err
-}
-
-func (e emailStrategy) Refresh(refreshToken string) (auth.Tokens, error) {
-	return auth.Tokens{}, nil
-}
-
-func (e emailStrategy) Logout(refreshToken string) error {
-	return nil
 }

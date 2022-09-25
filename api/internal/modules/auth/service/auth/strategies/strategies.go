@@ -16,28 +16,29 @@ const (
 )
 
 type (
+	Strategies interface {
+		Email() EmailStrategy
+		Networks() NetworkStrategies
+		Verify(accessToken string) error
+		Refresh(refreshToken string) (auth.Tokens, error)
+		Logout(refreshToken string) error
+	}
 	NetworkStrategy interface {
 		Callback(state string) string
 		Login(code string) (auth.Tokens, error)
-		Strategy
 	}
 	EmailStrategy interface {
 		Login(email, password string) (auth.Tokens, error)
-		Strategy
-	}
-	Strategy interface {
-		Validate(token string) error
-		Refresh(refreshToken string) (auth.Tokens, error)
-		Logout(refreshToken string) error
 	}
 )
 
 type (
 	Key               string
 	NetworkStrategies map[Key]NetworkStrategy
-	Strategies        struct {
-		Email    EmailStrategy
-		Networks NetworkStrategies
+	strategies        struct {
+		email     EmailStrategy
+		networks  NetworkStrategies
+		jwtTokens auth.JwtTokens
 	}
 )
 
@@ -46,14 +47,37 @@ func NewStrategies(
 	jwtTokens auth.JwtTokens,
 	repository repository.Repository,
 ) Strategies {
-	return Strategies{
-		Email: NewEmailStrategy(jwtTokens, repository),
-		Networks: NetworkStrategies{
-			Vk:     NewVkStrategy(cfg.VkOAuth2, repository),
-			Ok:     NewOkStrategy(cfg.OkOAuth2, repository),
-			Yandex: NewYandexStrategy(cfg.YandexOAuth2, repository),
+	return strategies{
+		email: NewEmailStrategy(jwtTokens, repository),
+		networks: NetworkStrategies{
+			Vk:     NewVkStrategy(cfg.VkOAuth2, jwtTokens, repository),
+			Ok:     NewOkStrategy(cfg.OkOAuth2, jwtTokens, repository),
+			Yandex: NewYandexStrategy(cfg.YandexOAuth2, jwtTokens, repository),
 		},
+		jwtTokens: jwtTokens,
 	}
+}
+
+func (s strategies) Email() EmailStrategy {
+	return s.email
+}
+
+func (s strategies) Networks() NetworkStrategies {
+	return s.networks
+}
+
+func (s strategies) Verify(accessToken string) error {
+	_, err := s.jwtTokens.ValidateAccessToken(accessToken)
+
+	return err
+}
+
+func (s strategies) Refresh(refreshToken string) (auth.Tokens, error) {
+	return auth.Tokens{}, nil
+}
+
+func (s strategies) Logout(refreshToken string) error {
+	return nil
 }
 
 func (n NetworkStrategies) Strategies() []NetworkStrategy {

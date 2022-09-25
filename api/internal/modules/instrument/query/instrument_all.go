@@ -27,7 +27,7 @@ func NewInstrumentAll(
 func (q instrumentAll) Fetch(_ FilterOrderInstruments) ([]model.Instruments, error) {
 	instruments, err := q.repository.GetAll()
 	if err != nil {
-		return []model.Instruments{}, errorn.ErrorSelect.Wrap(err)
+		return []model.Instruments{}, errorn.ErrSelect.Wrap(err)
 	}
 
 	return instruments, nil

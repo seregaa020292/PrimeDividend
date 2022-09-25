@@ -37,7 +37,7 @@ func (c portfolioCreate) Exec(cmd PortfolioNew) error {
 		CurrencyID: cmd.CurrencyId,
 		Active:     true,
 	}); err != nil {
-		return errorn.ErrorInsert.Wrap(err)
+		return errorn.ErrInsert.Wrap(err)
 	}
 
 	return nil

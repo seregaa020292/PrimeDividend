@@ -15,7 +15,7 @@ func (h HandlerAuth) LoginEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokens, err := h.strategies.Email.Login(user.Email, user.Password)
+	tokens, err := h.strategies.Email().Login(user.Email, user.Password)
 	if err != nil {
 		respond.Err(err)
 		return

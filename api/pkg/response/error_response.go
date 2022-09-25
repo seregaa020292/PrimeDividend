@@ -16,7 +16,7 @@ type ErrorResponse struct {
 func NewByError(err error) ErrorResponse {
 	e, ok := err.(errorn.Error)
 	if !ok {
-		e = errorn.ErrorUnknown.Wrap(err)
+		e = errorn.ErrUnknown.Wrap(err)
 	}
 
 	return ErrorResponse{

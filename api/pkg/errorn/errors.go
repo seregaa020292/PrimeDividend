@@ -15,25 +15,25 @@ const (
 )
 
 var (
-	ErrorAuthorization = NewError(TargetAuth, http.StatusBadRequest, "Ошибка авторизации")
-	ErrorAccess        = NewError(TargetAuth, http.StatusForbidden, "Ошибка доступа")
-	ErrorUnAuthorized  = NewError(TargetAuth, http.StatusUnauthorized, "Ошибка требуется авторизация")
+	ErrForbidden    = NewError(TargetAuth, http.StatusForbidden, "Доступ запрещен")
+	ErrUnauthorized = NewError(TargetAuth, http.StatusUnauthorized, "Требуется авторизация")
 
-	ErrorNotFoundElement = NewError(TargetFound, http.StatusNotFound, "Не удалось найти элемент")
+	ErrMethodNotAllowed = NewError(TargetFound, http.StatusMethodNotAllowed, "Метод не разрешен")
+	ErrNotFound         = NewError(TargetFound, http.StatusNotFound, "Не удалось найти")
 
-	ErrorSelect = NewError(TargetDb, http.StatusBadRequest, "Ошибка получения данных")
-	ErrorInsert = NewError(TargetDb, http.StatusBadRequest, "Ошибка добавления данных")
-	ErrorUpdate = NewError(TargetDb, http.StatusBadRequest, "Ошибка обновления данных")
-	ErrorDelete = NewError(TargetDb, http.StatusBadRequest, "Ошибка удаления данных")
+	ErrSelect = NewError(TargetDb, http.StatusBadRequest, "Ошибка получения данных")
+	ErrInsert = NewError(TargetDb, http.StatusBadRequest, "Ошибка добавления данных")
+	ErrUpdate = NewError(TargetDb, http.StatusBadRequest, "Ошибка обновления данных")
+	ErrDelete = NewError(TargetDb, http.StatusBadRequest, "Ошибка удаления данных")
 
-	ErrorSendEmail  = NewError(TargetEmail, http.StatusBadRequest, "Ошибка отправки email сообщения")
-	ErrorExistEmail = NewError(TargetEmail, http.StatusBadRequest, "Такой email уже существует")
+	ErrSendEmail  = NewError(TargetEmail, http.StatusBadRequest, "Ошибка отправки email сообщения")
+	ErrExistEmail = NewError(TargetEmail, http.StatusBadRequest, "Такой email уже существует")
 
-	ErrorUserNoConfirm = NewError(TargetInvalid, http.StatusBadRequest, "Пользователь не подтвержден")
+	ErrUserNoConfirm = NewError(TargetInvalid, http.StatusBadRequest, "Пользователь не подтвержден")
 
-	ErrorValidate = NewError(TargetValidate, http.StatusBadRequest, "Ошибка валидации")
+	ErrValidate = NewError(TargetValidate, http.StatusBadRequest, "Ошибка валидации")
 
-	ErrorUnknown = NewError(TargetUnknown, http.StatusInternalServerError, "Неизвестная ошибка")
+	ErrUnknown = NewError(TargetUnknown, http.StatusInternalServerError, "Неизвестная ошибка")
 
-	ErrorPasswordIncorrect = NewError(TargetInvalid, http.StatusBadRequest, "Пароль не верный")
+	ErrPasswordIncorrect = NewError(TargetInvalid, http.StatusBadRequest, "Пароль не верный")
 )

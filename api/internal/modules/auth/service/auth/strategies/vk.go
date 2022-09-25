@@ -2,25 +2,30 @@ package strategies
 
 import (
 	"context"
-	"io"
+	"encoding/json"
+	"fmt"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/vk"
 
 	"primedivident/internal/config"
+	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/auth"
+	"primedivident/pkg/errorn"
 )
 
 const OauthVkUrlAPI = "https://api.vk.com/method/users.get?v=5.131&album_id=wall"
 
 type vkStrategy struct {
 	oauth      *oauth2.Config
+	jwtTokens  auth.JwtTokens
 	repository repository.Repository
 }
 
 func NewVkStrategy(
 	cfg config.VkOAuth2,
+	jwtTokens auth.JwtTokens,
 	repository repository.Repository,
 ) NetworkStrategy {
 	return vkStrategy{
@@ -31,6 +36,7 @@ func NewVkStrategy(
 			Scopes:       cfg.Scopes,
 			Endpoint:     vk.Endpoint,
 		},
+		jwtTokens:  jwtTokens,
 		repository: repository,
 	}
 }
@@ -42,38 +48,32 @@ func (v vkStrategy) Callback(state string) string {
 func (v vkStrategy) Login(code string) (auth.Tokens, error) {
 	token, err := v.oauth.Exchange(context.Background(), code)
 	if err != nil {
-		return auth.Tokens{}, err
+		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
 	}
 
 	client := v.oauth.Client(context.Background(), token)
 
 	response, err := client.Get(OauthVkUrlAPI)
 	if err != nil {
-		return auth.Tokens{}, err
+		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
 	}
 
 	defer response.Body.Close()
 
-	if _, err = io.ReadAll(response.Body); err != nil {
-		return auth.Tokens{}, err
+	var body vkDTO
+	if err := json.NewDecoder(response.Body).Decode(&body); err != nil {
+		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
+	}
+
+	genTokens, err := v.jwtTokens.GenTokens(entity.JwtUser{
+		Email: token.Extra("email").(string),
+		Name:  fmt.Sprintf("%s %s", body.Response[0].LastName, body.Response[0].FirstName),
+	})
+	if err != nil {
+		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
 	}
 
 	// TODO: save db refresh token
 
-	return auth.Tokens{
-		AccessToken:  token.AccessToken,
-		RefreshToken: token.RefreshToken,
-	}, nil
-}
-
-func (v vkStrategy) Validate(token string) error {
-	return nil
-}
-
-func (v vkStrategy) Refresh(refreshToken string) (auth.Tokens, error) {
-	return auth.Tokens{}, nil
-}
-
-func (v vkStrategy) Logout(refreshToken string) error {
-	return nil
+	return genTokens, nil
 }

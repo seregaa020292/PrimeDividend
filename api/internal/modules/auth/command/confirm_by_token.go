@@ -33,19 +33,19 @@ func NewConfirmByToken(
 func (c confirmByToken) Exec(tokenValue uuid.UUID) error {
 	user, err := c.repository.FindByTokenJoin(tokenValue)
 	if err != nil {
-		return errorn.ErrorSelect.Wrap(err)
+		return errorn.ErrSelect.Wrap(err)
 	}
 
 	if user.Token.IsExpiredByNow() {
-		return errorn.ErrorAccess.Wrap(fmt.Errorf("%s", "token expired"))
+		return errorn.ErrForbidden.Wrap(fmt.Errorf("%s", "token expired"))
 	}
 
 	if err := c.repository.Confirm(user.Token.Value); err != nil {
-		return errorn.ErrorUpdate.Wrap(err)
+		return errorn.ErrUpdate.Wrap(err)
 	}
 
 	if err := c.email.Send(email.ConfirmData{Email: user.Email}); err != nil {
-		return errorn.ErrorSendEmail.Wrap(err)
+		return errorn.ErrSendEmail.Wrap(err)
 	}
 
 	return nil

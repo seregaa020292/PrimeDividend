@@ -1,9 +1,12 @@
 package auth
 
 import (
+	"github.com/google/uuid"
+
 	"primedivident/internal/config"
 	"primedivident/internal/modules/auth/entity"
 	"primedivident/pkg/token"
+	"primedivident/pkg/utils/gog"
 )
 
 type JwtTokens interface {
@@ -15,7 +18,7 @@ type JwtTokens interface {
 
 type jwtTokens struct {
 	accessTokenService  token.JwtService[entity.JwtUser]
-	refreshTokenService token.JwtService[any]
+	refreshTokenService token.JwtService[uuid.UUID]
 }
 
 type Tokens struct {
@@ -26,7 +29,7 @@ type Tokens struct {
 func NewJwtTokens(issuer string, jwt config.Jwt) JwtTokens {
 	return jwtTokens{
 		accessTokenService:  token.NewJwtService[entity.JwtUser](issuer, jwt.AccessSecretKey, jwt.AccessExpiresIn),
-		refreshTokenService: token.NewJwtService[any](issuer, jwt.RefreshSecretKey, jwt.RefreshExpiresIn),
+		refreshTokenService: token.NewJwtService[uuid.UUID](issuer, jwt.RefreshSecretKey, jwt.RefreshExpiresIn),
 	}
 }
 
@@ -44,7 +47,7 @@ func (t jwtTokens) ValidateAccessToken(token string) (entity.JwtUser, error) {
 }
 
 func (t jwtTokens) GenRefreshToken() (string, error) {
-	return t.refreshTokenService.GenerateToken(nil)
+	return t.refreshTokenService.GenerateToken(gog.Ptr(uuid.New()))
 }
 
 func (t jwtTokens) GenTokens(data entity.JwtUser) (Tokens, error) {

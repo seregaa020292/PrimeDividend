@@ -21,8 +21,11 @@ func authValidator(swagger *openapi3.T, strategies strategies.Strategies) func(n
 	return middleware.OapiRequestValidatorWithOptions(swagger, &middleware.Options{
 		Options: openapi3filter.Options{
 			AuthenticationFunc: func(ctx context.Context, input *openapi3filter.AuthenticationInput) error {
-				token := input.RequestValidationInput.Request.Header.Get("Authorization")
-				return strategies.Email.Validate(strings.TrimSpace(strings.TrimLeft(token, input.SecuritySchemeName)))
+				bearerToken := input.RequestValidationInput.Request.Header.Get("Authorization")
+				scheme := fmt.Sprintf("%s ", input.SecurityScheme.Scheme)
+				accessToken := strings.Replace(bearerToken, scheme, "", 1)
+
+				return strategies.Verify(accessToken)
 			},
 		},
 		ErrorHandler: func(w http.ResponseWriter, message string, statusCode int) {
@@ -30,9 +33,9 @@ func authValidator(swagger *openapi3.T, strategies strategies.Strategies) func(n
 
 			var err error
 			if statusCode == 400 {
-				err = errorn.ErrorNotFoundElement
+				err = errorn.ErrNotFound
 			} else {
-				err = errorn.ErrorAccess.Wrap(fmt.Errorf("%s", message))
+				err = errorn.ErrForbidden.Wrap(fmt.Errorf("%s", message))
 			}
 
 			respond.Err(err)

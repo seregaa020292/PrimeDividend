@@ -82,7 +82,7 @@ func (v playgroundValidator) Var(field any, tag string) error {
 		return err
 	}
 
-	return errorn.ErrorValidate.Additional(errorn.DetailError{
+	return errorn.ErrValidate.Additional(errorn.DetailError{
 		Target: "variable",
 		Message: fmt.Sprintf(
 			"Ошибка %s%s",
@@ -102,5 +102,5 @@ func (v playgroundValidator) messages(fieldErrors goPlayground.ValidationErrors)
 		})
 	}
 
-	return errorn.ErrorValidate.Additional(messages...)
+	return errorn.ErrValidate.Additional(messages...)
 }

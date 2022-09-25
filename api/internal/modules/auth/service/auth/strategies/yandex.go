@@ -11,11 +11,13 @@ import (
 
 type yandexStrategy struct {
 	oauth      *oauth2.Config
+	jwtTokens  auth.JwtTokens
 	repository repository.Repository
 }
 
 func NewYandexStrategy(
 	cfg config.YandexOAuth2,
+	jwtTokens auth.JwtTokens,
 	repository repository.Repository,
 ) NetworkStrategy {
 	return yandexStrategy{
@@ -26,6 +28,7 @@ func NewYandexStrategy(
 			RedirectURL:  cfg.RedirectUrl(),
 			Scopes:       cfg.Scopes,
 		},
+		jwtTokens:  jwtTokens,
 		repository: repository,
 	}
 }
@@ -37,16 +40,4 @@ func (y yandexStrategy) Callback(state string) string {
 func (y yandexStrategy) Login(code string) (auth.Tokens, error) {
 	//TODO implement me
 	panic("implement me")
-}
-
-func (y yandexStrategy) Validate(token string) error {
-	return nil
-}
-
-func (y yandexStrategy) Refresh(refreshToken string) (auth.Tokens, error) {
-	return auth.Tokens{}, nil
-}
-
-func (y yandexStrategy) Logout(refreshToken string) error {
-	return nil
 }

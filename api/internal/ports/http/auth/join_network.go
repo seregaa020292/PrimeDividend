@@ -16,10 +16,10 @@ import (
 func (h HandlerAuth) JoinNetwork(w http.ResponseWriter, r *http.Request, network openapi.Network) {
 	respond := h.responder.Http(w, r)
 
-	strategy := h.strategies.Networks.GetStrategy(strategies.Key(network))
+	strategy := h.strategies.Networks().GetStrategy(strategies.Key(network))
 
 	if strategy == nil {
-		respond.Err(errorn.ErrorNotFoundElement)
+		respond.Err(errorn.ErrNotFound)
 		return
 	}
 

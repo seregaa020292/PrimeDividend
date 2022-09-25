@@ -11,11 +11,13 @@ import (
 
 type okStrategy struct {
 	oauth      *oauth2.Config
+	jwtTokens  auth.JwtTokens
 	repository repository.Repository
 }
 
 func NewOkStrategy(
 	cfg config.OkOAuth2,
+	jwtTokens auth.JwtTokens,
 	repository repository.Repository,
 ) NetworkStrategy {
 	return okStrategy{
@@ -26,6 +28,7 @@ func NewOkStrategy(
 			Scopes:       cfg.Scopes,
 			Endpoint:     odnoklassniki.Endpoint,
 		},
+		jwtTokens:  jwtTokens,
 		repository: repository,
 	}
 }
@@ -37,16 +40,4 @@ func (o okStrategy) Callback(state string) string {
 func (o okStrategy) Login(code string) (auth.Tokens, error) {
 	//TODO implement me
 	panic("implement me")
-}
-
-func (o okStrategy) Validate(token string) error {
-	return nil
-}
-
-func (o okStrategy) Refresh(refreshToken string) (auth.Tokens, error) {
-	return auth.Tokens{}, nil
-}
-
-func (o okStrategy) Logout(refreshToken string) error {
-	return nil
 }

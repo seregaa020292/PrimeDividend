@@ -55,7 +55,7 @@ func (e Error) Error() string {
 	err := gog.If(e.error != nil, e.error, fmt.Errorf("%s", "_"))
 
 	return fmt.Sprintf(
-		`{"Error":"%s", "Status":%d, "Target":%d, "Message":"%s", "Details":"%+v"}`,
+		"error=%s, status=%d, target=%d, message=%s, details=%+v",
 		err, e.status, e.target, e.message, e.details,
 	)
 }
