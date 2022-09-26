@@ -1,6 +1,6 @@
 package auth
 
 type Authorization interface {
-	checkAccess() error
-	checkRole() error
+	CheckAccess() error
+	CheckRole() error
 }

@@ -19,7 +19,7 @@ func NewYandexStrategy(
 	cfg config.YandexOAuth2,
 	jwtTokens auth.JwtTokens,
 	repository repository.Repository,
-) NetworkStrategy {
+) auth.NetworkStrategy {
 	return yandexStrategy{
 		oauth: &oauth2.Config{
 			ClientID:     cfg.ClientID,

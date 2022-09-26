@@ -20,11 +20,12 @@ func Initialize(cfg config.Config) serverHttp.Server {
 		ProvidePostgres,
 		ProvideMailerObserver,
 		ProvideTemplate,
+		ProvideJwtTokens,
 
 		validator.GetValidator,
 		response.NewRespond,
 
-		wireGroup.ProvideStrategies,
+		wireGroup.ProvideAuth,
 		wireGroup.Auth,
 		wireGroup.Asset,
 		wireGroup.Currency,

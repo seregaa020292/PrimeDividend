@@ -6,7 +6,6 @@ import (
 	"primedivident/internal/config"
 	"primedivident/internal/modules/auth/entity"
 	"primedivident/pkg/token"
-	"primedivident/pkg/utils/gog"
 )
 
 type JwtTokens interface {
@@ -34,7 +33,7 @@ func NewJwtTokens(issuer string, jwt config.Jwt) JwtTokens {
 }
 
 func (t jwtTokens) GenAccessToken(data entity.JwtUser) (string, error) {
-	return t.accessTokenService.GenerateToken(&data)
+	return t.accessTokenService.GenerateToken(data)
 }
 
 func (t jwtTokens) ValidateAccessToken(token string) (entity.JwtUser, error) {
@@ -43,11 +42,11 @@ func (t jwtTokens) ValidateAccessToken(token string) (entity.JwtUser, error) {
 		return entity.JwtUser{}, err
 	}
 
-	return *data, nil
+	return data, nil
 }
 
 func (t jwtTokens) GenRefreshToken() (string, error) {
-	return t.refreshTokenService.GenerateToken(gog.Ptr(uuid.New()))
+	return t.refreshTokenService.GenerateToken(uuid.New())
 }
 
 func (t jwtTokens) GenTokens(data entity.JwtUser) (Tokens, error) {

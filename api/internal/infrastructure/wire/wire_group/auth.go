@@ -12,9 +12,15 @@ import (
 	port "primedivident/internal/ports/http/auth"
 )
 
-func ProvideStrategies(cfg config.Config, repository repository.Repository) strategies.Strategies {
-	jwtTokens := auth.NewJwtTokens(cfg.App.Name, cfg.Jwt)
-	return strategies.NewStrategies(cfg.Networks, jwtTokens, repository)
+func ProvideAuth(cfg config.Config, jwtTokens auth.JwtTokens, repository repository.Repository) auth.Auth {
+	strategy := auth.NewStrategy()
+
+	strategy.SetPassword(auth.Email, strategies.NewEmailStrategy(jwtTokens, repository))
+	strategy.SetNetwork(auth.Vk, strategies.NewVkStrategy(cfg.Networks.VkOAuth2, jwtTokens, repository))
+	strategy.SetNetwork(auth.Ok, strategies.NewOkStrategy(cfg.Networks.OkOAuth2, jwtTokens, repository))
+	strategy.SetNetwork(auth.Yandex, strategies.NewYandexStrategy(cfg.Networks.YandexOAuth2, jwtTokens, repository))
+
+	return auth.NewAuth(strategy, jwtTokens, repository)
 }
 
 var Auth = wire.NewSet(

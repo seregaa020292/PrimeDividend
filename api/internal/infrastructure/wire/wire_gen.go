@@ -37,9 +37,10 @@ import (
 // Injectors from wire.go:
 
 func Initialize(cfg config.Config) http.Server {
+	jwtTokens := ProvideJwtTokens(cfg)
 	postgres := ProvidePostgres(cfg)
 	repositoryRepository := repository.NewRepository(postgres)
-	strategies := wire_group.ProvideStrategies(cfg, repositoryRepository)
+	authAuth := wire_group.ProvideAuth(cfg, jwtTokens, repositoryRepository)
 	logger := ProvideLogger(cfg)
 	validatorValidator := validator.GetValidator()
 	responder := response.NewRespond(logger, validatorValidator)
@@ -49,7 +50,7 @@ func Initialize(cfg config.Config) http.Server {
 	joinByEmail := command.NewJoinByEmail(repositoryRepository, joinConfirmUser)
 	confirmUser := email.NewConfirmUser(sender)
 	confirmByToken := command.NewConfirmByToken(repositoryRepository, confirmUser)
-	handlerAuth := auth.NewHandler(responder, joinByEmail, confirmByToken, strategies)
+	handlerAuth := auth.NewHandler(responder, joinByEmail, confirmByToken, authAuth)
 	handlerAsset := asset.NewHandler()
 	handlerCurrency := currency.NewHandler()
 	presenter := instrument.NewPresenter()
@@ -65,7 +66,7 @@ func Initialize(cfg config.Config) http.Server {
 	handlerProvider := provider.NewHandler()
 	handlerRegister := register.NewHandler()
 	handlerUser := user.NewHandler()
-	httpHandlers := handlers.NewHandlers(strategies, handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
+	httpHandlers := handlers.NewHandlers(authAuth, handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
 	server := http.NewServer(httpHandlers)
 	return server
 }

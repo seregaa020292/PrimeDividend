@@ -7,7 +7,7 @@ import (
 
 	"primedivident/internal/config/consts"
 	"primedivident/internal/infrastructure/http/openapi"
-	"primedivident/internal/modules/auth/service/auth/strategies"
+	"primedivident/internal/modules/auth/service/auth"
 	"primedivident/pkg/datetime"
 	"primedivident/pkg/errorn"
 	"primedivident/pkg/utils"
@@ -16,7 +16,7 @@ import (
 func (h HandlerAuth) JoinNetwork(w http.ResponseWriter, r *http.Request, network openapi.Network) {
 	respond := h.responder.Http(w, r)
 
-	strategy := h.strategies.Networks().GetStrategy(strategies.Key(network))
+	strategy := h.authService.NetworkStrategy(auth.Key(network))
 
 	if strategy == nil {
 		respond.Err(errorn.ErrNotFound)

@@ -14,7 +14,7 @@ type emailStrategy struct {
 func NewEmailStrategy(
 	jwtTokens auth.JwtTokens,
 	repository repository.Repository,
-) EmailStrategy {
+) auth.PasswordStrategy {
 	return emailStrategy{
 		jwtTokens:  jwtTokens,
 		repository: repository,

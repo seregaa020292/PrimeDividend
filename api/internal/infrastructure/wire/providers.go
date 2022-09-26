@@ -3,6 +3,7 @@ package wire
 import (
 	"primedivident/internal/config"
 	"primedivident/internal/config/consts"
+	auth "primedivident/internal/modules/auth/service/auth"
 	"primedivident/pkg/db/postgres"
 	"primedivident/pkg/logger"
 	"primedivident/pkg/mailer"
@@ -36,6 +37,10 @@ func ProvideMailer(cfg config.Config) mailer.Sender {
 
 func ProvideMailerObserver(cfg config.Config, l logger.Logger) mailer.Sender {
 	return mailer.NewObserver(ProvideMailer(cfg), consts.MailerPoolConn, l)
+}
+
+func ProvideJwtTokens(cfg config.Config) auth.JwtTokens {
+	return auth.NewJwtTokens(cfg.App.Name, cfg.Jwt)
 }
 
 func ProvideTemplate(cfg config.Config) tpl.Templater {

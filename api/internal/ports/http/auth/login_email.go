@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"primedivident/internal/infrastructure/http/openapi"
+	"primedivident/internal/modules/auth/service/auth"
 )
 
 func (h HandlerAuth) LoginEmail(w http.ResponseWriter, r *http.Request) {
@@ -15,7 +16,7 @@ func (h HandlerAuth) LoginEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokens, err := h.strategies.Email().Login(user.Email, user.Password)
+	tokens, err := h.authService.PasswordStrategy(auth.Email).Login(user.Email, user.Password)
 	if err != nil {
 		respond.Err(err)
 		return

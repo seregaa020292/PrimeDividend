@@ -10,8 +10,8 @@ import (
 
 type (
 	JwtService[Data any] interface {
-		GenerateToken(data *Data) (string, error)
-		ValidateToken(token string) (*Data, error)
+		GenerateToken(data Data) (string, error)
+		ValidateToken(token string) (Data, error)
 	}
 )
 
@@ -22,7 +22,7 @@ type (
 		expiresIn time.Duration
 	}
 	JwtCustomClaims[Data any] struct {
-		Data *Data `json:"data,omitempty"`
+		Data Data `json:"data,omitempty"`
 		jwt.RegisteredClaims
 	}
 )
@@ -35,7 +35,7 @@ func NewJwtService[Data any](issuer string, secretKey string, expiresIn time.Dur
 	}
 }
 
-func (j *jwtService[Data]) GenerateToken(data *Data) (string, error) {
+func (j *jwtService[Data]) GenerateToken(data Data) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &JwtCustomClaims[Data]{
 		Data: data,
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -48,10 +48,12 @@ func (j *jwtService[Data]) GenerateToken(data *Data) (string, error) {
 	return token.SignedString(j.secretKey)
 }
 
-func (j *jwtService[Data]) ValidateToken(token string) (*Data, error) {
+func (j *jwtService[Data]) ValidateToken(token string) (Data, error) {
+	var data Data
+
 	verifySign := func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			return data, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
 		return j.secretKey, nil
@@ -59,7 +61,7 @@ func (j *jwtService[Data]) ValidateToken(token string) (*Data, error) {
 
 	jwtToken, err := jwt.ParseWithClaims(token, &JwtCustomClaims[Data]{}, verifySign)
 	if err != nil {
-		return nil, err
+		return data, err
 	}
 
 	claims, ok := jwtToken.Claims.(*JwtCustomClaims[Data])
@@ -68,5 +70,5 @@ func (j *jwtService[Data]) ValidateToken(token string) (*Data, error) {
 		return claims.Data, nil
 	}
 
-	return nil, errors.New("error validate token")
+	return data, errors.New("error validate token")
 }

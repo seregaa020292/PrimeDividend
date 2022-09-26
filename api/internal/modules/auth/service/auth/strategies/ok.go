@@ -19,7 +19,7 @@ func NewOkStrategy(
 	cfg config.OkOAuth2,
 	jwtTokens auth.JwtTokens,
 	repository repository.Repository,
-) NetworkStrategy {
+) auth.NetworkStrategy {
 	return okStrategy{
 		oauth: &oauth2.Config{
 			ClientID:     cfg.ClientID,

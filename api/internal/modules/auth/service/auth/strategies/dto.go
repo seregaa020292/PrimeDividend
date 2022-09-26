@@ -1,6 +1,6 @@
 package strategies
 
-type vkDTO struct {
+type vkBody struct {
 	Response []struct {
 		ID        int    `json:"id"`
 		FirstName string `json:"first_name"`
@@ -8,8 +8,8 @@ type vkDTO struct {
 	} `json:"response"`
 }
 
-type okDTO struct {
+type okBody struct {
 }
 
-type yandexDTO struct {
+type yandexBody struct {
 }

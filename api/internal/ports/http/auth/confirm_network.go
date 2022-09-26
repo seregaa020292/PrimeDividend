@@ -6,7 +6,7 @@ import (
 
 	"primedivident/internal/config/consts"
 	"primedivident/internal/infrastructure/http/openapi"
-	"primedivident/internal/modules/auth/service/auth/strategies"
+	"primedivident/internal/modules/auth/service/auth"
 	"primedivident/pkg/logger"
 )
 
@@ -23,7 +23,7 @@ func (h HandlerAuth) ConfirmNetwork(w http.ResponseWriter, r *http.Request, netw
 		return
 	}
 
-	strategy := h.strategies.Networks().GetStrategy(strategies.Key(network))
+	strategy := h.authService.NetworkStrategy(auth.Key(network))
 	if strategy == nil {
 		logger.GetLogger().Errorf("%s", "Invalid oauth google state")
 		respond.Redirect("/", http.StatusTemporaryRedirect)

@@ -27,7 +27,7 @@ func NewVkStrategy(
 	cfg config.VkOAuth2,
 	jwtTokens auth.JwtTokens,
 	repository repository.Repository,
-) NetworkStrategy {
+) auth.NetworkStrategy {
 	return vkStrategy{
 		oauth: &oauth2.Config{
 			ClientID:     cfg.ClientID,
@@ -60,7 +60,7 @@ func (v vkStrategy) Login(code string) (auth.Tokens, error) {
 
 	defer response.Body.Close()
 
-	var body vkDTO
+	var body vkBody
 	if err := json.NewDecoder(response.Body).Decode(&body); err != nil {
 		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
 	}

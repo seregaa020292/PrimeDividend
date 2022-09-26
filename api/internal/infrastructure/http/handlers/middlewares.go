@@ -12,12 +12,12 @@ import (
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/getkin/kin-openapi/routers"
 
-	"primedivident/internal/modules/auth/service/auth/strategies"
+	"primedivident/internal/modules/auth/service/auth"
 	"primedivident/pkg/errorn"
 	"primedivident/pkg/response"
 )
 
-func authValidator(swagger *openapi3.T, strategies strategies.Strategies) func(next http.Handler) http.Handler {
+func authValidator(swagger *openapi3.T, authService auth.Auth) func(next http.Handler) http.Handler {
 	return middleware.OapiRequestValidatorWithOptions(swagger, &middleware.Options{
 		Options: openapi3filter.Options{
 			AuthenticationFunc: func(ctx context.Context, input *openapi3filter.AuthenticationInput) error {
@@ -25,7 +25,7 @@ func authValidator(swagger *openapi3.T, strategies strategies.Strategies) func(n
 				scheme := fmt.Sprintf("%s ", input.SecurityScheme.Scheme)
 				accessToken := strings.Replace(bearerToken, scheme, "", 1)
 
-				return strategies.Verify(accessToken)
+				return authService.Verify(accessToken)
 			},
 		},
 		ErrorHandler: func(w http.ResponseWriter, message string, statusCode int) {

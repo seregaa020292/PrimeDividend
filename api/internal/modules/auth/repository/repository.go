@@ -2,7 +2,9 @@ package repository
 
 import (
 	jet "github.com/go-jet/jet/v2/postgres"
+	"github.com/go-jet/jet/v2/qrm"
 	"github.com/google/uuid"
+	"github.com/pkg/errors"
 
 	"primedivident/internal/models/app/public/model"
 	"primedivident/internal/models/app/public/table"
@@ -79,6 +81,11 @@ func (r repository) FindByEmail(email string) (entity.User, error) {
 		LIMIT(1)
 
 	err := stmt.Query(r.db, &user)
+
+	if errors.Is(err, qrm.ErrNoRows) {
+		return entity.User{}, nil
+	}
+
 	if err != nil {
 		return entity.User{}, err
 	}
