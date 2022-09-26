@@ -10,19 +10,19 @@ import (
 
 type JwtTokens interface {
 	GenTokens(entity.JwtUser) (Tokens, error)
-	GenAccessToken(entity.JwtUser) (string, error)
+	GenAccessToken(entity.JwtUser) (token.Token, error)
 	ValidateAccessToken(token string) (entity.JwtUser, error)
-	GenRefreshToken() (string, error)
+	GenRefreshToken() (token.Token, error)
+}
+
+type Tokens struct {
+	AccessToken  token.Token
+	RefreshToken token.Token
 }
 
 type jwtTokens struct {
 	accessTokenService  token.JwtService[entity.JwtUser]
 	refreshTokenService token.JwtService[uuid.UUID]
-}
-
-type Tokens struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
 }
 
 func NewJwtTokens(issuer string, jwt config.Jwt) JwtTokens {
@@ -32,7 +32,7 @@ func NewJwtTokens(issuer string, jwt config.Jwt) JwtTokens {
 	}
 }
 
-func (t jwtTokens) GenAccessToken(data entity.JwtUser) (string, error) {
+func (t jwtTokens) GenAccessToken(data entity.JwtUser) (token.Token, error) {
 	return t.accessTokenService.GenerateToken(data)
 }
 
@@ -45,7 +45,7 @@ func (t jwtTokens) ValidateAccessToken(token string) (entity.JwtUser, error) {
 	return data, nil
 }
 
-func (t jwtTokens) GenRefreshToken() (string, error) {
+func (t jwtTokens) GenRefreshToken() (token.Token, error) {
 	return t.refreshTokenService.GenerateToken(uuid.New())
 }
 

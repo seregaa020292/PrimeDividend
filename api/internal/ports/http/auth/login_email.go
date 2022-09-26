@@ -11,6 +11,7 @@ func (h HandlerAuth) LoginEmail(w http.ResponseWriter, r *http.Request) {
 	respond := h.responder.Http(w, r)
 
 	var user openapi.LoginUser
+
 	if err := respond.DecodeValidate(&user); err != nil {
 		respond.Err(err)
 		return
@@ -22,5 +23,7 @@ func (h HandlerAuth) LoginEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respond.Json(http.StatusOK, tokens)
+	auth.SetCookieRefreshToken(tokens.RefreshToken, w, r)
+
+	respond.Json(http.StatusOK, tokens.AccessToken)
 }

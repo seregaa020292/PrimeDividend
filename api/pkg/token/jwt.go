@@ -9,8 +9,12 @@ import (
 )
 
 type (
+	Token struct {
+		Value     string
+		ExpiresAt time.Time
+	}
 	JwtService[Data any] interface {
-		GenerateToken(data Data) (string, error)
+		GenerateToken(data Data) (Token, error)
 		ValidateToken(token string) (Data, error)
 	}
 )
@@ -35,17 +39,28 @@ func NewJwtService[Data any](issuer string, secretKey string, expiresIn time.Dur
 	}
 }
 
-func (j *jwtService[Data]) GenerateToken(data Data) (string, error) {
+func (j *jwtService[Data]) GenerateToken(data Data) (Token, error) {
+	nowAt := time.Now()
+	expiresAt := nowAt.Add(j.expiresIn)
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &JwtCustomClaims[Data]{
 		Data: data,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    j.issuer,
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(j.expiresIn)),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(expiresAt),
+			IssuedAt:  jwt.NewNumericDate(nowAt),
 		},
 	})
 
-	return token.SignedString(j.secretKey)
+	value, err := token.SignedString(j.secretKey)
+	if err != nil {
+		return Token{}, err
+	}
+
+	return Token{
+		Value:     value,
+		ExpiresAt: expiresAt,
+	}, nil
 }
 
 func (j *jwtService[Data]) ValidateToken(token string) (Data, error) {

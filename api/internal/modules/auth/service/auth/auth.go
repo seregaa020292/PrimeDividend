@@ -6,8 +6,8 @@ type Auth interface {
 	PasswordStrategy(key Key) PasswordStrategy
 	NetworkStrategy(key Key) NetworkStrategy
 	Verify(accessToken string) error
-	Refresh(refreshToken string) (Tokens, error)
 	Logout(refreshToken string) error
+	Refresh(refreshToken string) (Tokens, error)
 }
 
 type auth struct {
@@ -42,10 +42,10 @@ func (a auth) Verify(accessToken string) error {
 	return err
 }
 
-func (a auth) Refresh(refreshToken string) (Tokens, error) {
-	return Tokens{}, nil
-}
-
 func (a auth) Logout(refreshToken string) error {
 	return nil
+}
+
+func (a auth) Refresh(refreshToken string) (Tokens, error) {
+	return Tokens{}, nil
 }
