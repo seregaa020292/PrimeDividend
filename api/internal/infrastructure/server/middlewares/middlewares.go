@@ -12,6 +12,13 @@ import (
 
 type middlewareFunc = func(next http.Handler) http.Handler
 
+type middlewares struct {
+}
+
+func NewMiddlewares() Handlers {
+	return middlewares{}
+}
+
 func Setup(router *chi.Mux) {
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
