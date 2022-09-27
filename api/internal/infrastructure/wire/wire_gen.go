@@ -52,7 +52,7 @@ func Initialize(cfg config.Config) server.Server {
 	templater := ProvideTemplate(cfg)
 	joinConfirmUser := email.NewJoinConfirmUser(sender, templater)
 	joinByEmail := command.NewJoinByEmail(repository5, joinConfirmUser)
-	confirmUser := email.NewConfirmUser(sender)
+	confirmUser := email.NewConfirmUser(sender, templater)
 	confirmByToken := command.NewConfirmByToken(repository5, confirmUser)
 	handlerAuth := auth.NewHandler(responder, strategy, joinByEmail, confirmByToken)
 	handlerAsset := asset.NewHandler()

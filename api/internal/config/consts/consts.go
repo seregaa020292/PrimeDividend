@@ -15,6 +15,7 @@ const (
 
 	TemplateCache         = true
 	TemplateBaseDir       = "templates"
+	TemplateMailToken     = "mail/views/token.html"
 	TemplateMailConfirmed = "mail/views/confirmed.html"
 
 	TimestampFormat = "02.01.2006 15:04:05"

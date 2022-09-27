@@ -28,18 +28,14 @@ func NewJoinConfirmUser(mailer mailer.Sender, template tpl.Templater) JoinConfir
 }
 
 func (s joinConfirmUser) Send(data JoinData) error {
-	html, err := s.template.RenderInline(consts.TemplateMailConfirmed, map[string]any{
+	html, err := s.template.RenderInline(consts.TemplateMailToken, map[string]any{
 		"token": data.Token,
 	})
 	if err != nil {
 		return err
 	}
 
-	msg := mailer.NewMessage(
-		"Подтвердите вашу почту",
-		html,
-		mailer.TextHtml,
-	)
+	msg := mailer.NewMessage("Подтвердите вашу почту", html, mailer.TextHtml)
 	msg.To = []string{data.Email}
 
 	return s.mailer.Send(msg)

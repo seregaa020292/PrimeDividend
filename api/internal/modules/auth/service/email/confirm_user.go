@@ -1,8 +1,10 @@
 package email
 
 import (
+	"primedivident/internal/config/consts"
 	"primedivident/internal/decorator"
 	"primedivident/pkg/mailer"
+	"primedivident/pkg/tpl"
 )
 
 type (
@@ -13,20 +15,24 @@ type (
 )
 
 type confirmUser struct {
-	mailer mailer.Sender
+	mailer   mailer.Sender
+	template tpl.Templater
 }
 
-func NewConfirmUser(mailer mailer.Sender) ConfirmUser {
+func NewConfirmUser(mailer mailer.Sender, template tpl.Templater) ConfirmUser {
 	return confirmUser{
-		mailer: mailer,
+		mailer:   mailer,
+		template: template,
 	}
 }
 
 func (s confirmUser) Send(data ConfirmData) error {
-	msg := mailer.NewMessage(
-		"Поздравляем",
-		"Поздравляем Вы успешно зарегистрировались",
-	)
+	html, err := s.template.RenderInline(consts.TemplateMailConfirmed, nil)
+	if err != nil {
+		return err
+	}
+
+	msg := mailer.NewMessage("Поздравляем", html, mailer.TextHtml)
 	msg.To = []string{data.Email}
 
 	return s.mailer.Send(msg)
