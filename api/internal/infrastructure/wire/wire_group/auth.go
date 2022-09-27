@@ -5,7 +5,6 @@ import (
 
 	"primedivident/internal/config"
 	"primedivident/internal/modules/auth/command"
-	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/email"
 	"primedivident/internal/modules/auth/service/strategy"
@@ -15,7 +14,7 @@ import (
 	port "primedivident/internal/ports/http/auth"
 )
 
-func ProvideStrategy(cfg config.Config, jwtTokens entity.JwtTokens, repository sr.Repository) strategy.Strategy {
+func ProvideStrategy(cfg config.Config, jwtTokens auth.JwtTokens, repository sr.Repository) strategy.Strategy {
 	s := strategy.NewStrategy(jwtTokens, repository)
 
 	s.Password().Set(auth.Email, strategies.NewEmailStrategy(jwtTokens, repository))

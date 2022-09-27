@@ -3,7 +3,7 @@ package wire
 import (
 	"primedivident/internal/config"
 	"primedivident/internal/config/consts"
-	auth "primedivident/internal/modules/auth/entity"
+	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/pkg/db/postgres"
 	"primedivident/pkg/logger"
 	"primedivident/pkg/mailer"

@@ -1,7 +1,7 @@
 package strategy
 
 import (
-	"primedivident/internal/modules/auth/entity"
+	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/categorize"
 	"primedivident/internal/modules/auth/service/strategy/repository"
 )
@@ -11,16 +11,16 @@ type Strategy interface {
 	Password() categorize.PasswordStrategies
 	Verify(accessToken string) error
 	Logout(refreshToken string) error
-	Refresh(refreshToken string) (entity.Tokens, error)
+	Refresh(refreshToken string) (auth.Tokens, error)
 }
 
 type strategy struct {
 	categorize categorize.Categorize
-	jwtTokens  entity.JwtTokens
+	jwtTokens  auth.JwtTokens
 	repository repository.Repository
 }
 
-func NewStrategy(jwtTokens entity.JwtTokens, repository repository.Repository) Strategy {
+func NewStrategy(jwtTokens auth.JwtTokens, repository repository.Repository) Strategy {
 	return &strategy{
 		categorize: categorize.NewCategorize(),
 		jwtTokens:  jwtTokens,
@@ -46,6 +46,6 @@ func (s strategy) Logout(refreshToken string) error {
 	return nil
 }
 
-func (s strategy) Refresh(refreshToken string) (entity.Tokens, error) {
-	return entity.Tokens{}, nil
+func (s strategy) Refresh(refreshToken string) (auth.Tokens, error) {
+	return auth.Tokens{}, nil
 }
