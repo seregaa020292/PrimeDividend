@@ -1,7 +1,5 @@
 package auth
 
-import "primedivident/internal/modules/auth/repository"
-
 type Auth interface {
 	PasswordStrategy(key Key) PasswordStrategy
 	NetworkStrategy(key Key) NetworkStrategy
@@ -13,13 +11,13 @@ type Auth interface {
 type auth struct {
 	strategy   Strategy
 	jwtTokens  JwtTokens
-	repository repository.Repository
+	repository TokenRepository
 }
 
 func NewAuth(
 	strategy Strategy,
 	jwtTokens JwtTokens,
-	repository repository.Repository,
+	repository TokenRepository,
 ) Auth {
 	return auth{
 		strategy:   strategy,

@@ -8,6 +8,7 @@ import (
 
 	"primedivident/internal/models/app/public/model"
 	"primedivident/internal/models/app/public/table"
+	"primedivident/internal/modules/auth/dto"
 	"primedivident/internal/modules/auth/entity"
 	"primedivident/pkg/db/postgres"
 )
@@ -57,7 +58,7 @@ func (r repository) FindByTokenJoin(tokenValue uuid.UUID) (entity.User, error) {
 		return entity.User{}, err
 	}
 
-	return entityUser(user), nil
+	return dto.EntityUserByModel(user), nil
 }
 
 func (r repository) Confirm(tokenValue uuid.UUID) error {
@@ -90,7 +91,7 @@ func (r repository) FindByEmail(email string) (entity.User, error) {
 		return entity.User{}, err
 	}
 
-	return entityUser(user), nil
+	return dto.EntityUserByModel(user), nil
 }
 
 func (r repository) HasByEmail(email string) (bool, error) {
@@ -121,23 +122,4 @@ func (r repository) UpdateTokeJoin(id uuid.UUID, token entity.Token) error {
 	_, err := stmt.Exec(r.db)
 
 	return err
-}
-
-func entityUser(user model.Users) entity.User {
-	var token entity.Token
-	if user.TokenJoinValue != nil {
-		token.Value = *user.TokenJoinValue
-	}
-	if user.TokenJoinExpires != nil {
-		token.Expires = *user.TokenJoinExpires
-	}
-
-	return entity.User{
-		ID:       user.ID,
-		Name:     user.Name,
-		Email:    user.Email,
-		PassHash: user.Password,
-		Status:   entity.Status(user.Status),
-		Token:    token,
-	}
 }

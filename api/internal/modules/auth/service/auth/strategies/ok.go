@@ -5,20 +5,19 @@ import (
 	"golang.org/x/oauth2/odnoklassniki"
 
 	"primedivident/internal/config"
-	"primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/auth"
 )
 
 type okStrategy struct {
 	oauth      *oauth2.Config
 	jwtTokens  auth.JwtTokens
-	repository repository.Repository
+	repository auth.TokenRepository
 }
 
 func NewOkStrategy(
 	cfg config.OkOAuth2,
 	jwtTokens auth.JwtTokens,
-	repository repository.Repository,
+	repository auth.TokenRepository,
 ) auth.NetworkStrategy {
 	return okStrategy{
 		oauth: &oauth2.Config{

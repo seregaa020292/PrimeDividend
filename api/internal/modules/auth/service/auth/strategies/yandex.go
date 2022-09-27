@@ -5,20 +5,19 @@ import (
 	"golang.org/x/oauth2/yandex"
 
 	"primedivident/internal/config"
-	"primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/auth"
 )
 
 type yandexStrategy struct {
 	oauth      *oauth2.Config
 	jwtTokens  auth.JwtTokens
-	repository repository.Repository
+	repository auth.TokenRepository
 }
 
 func NewYandexStrategy(
 	cfg config.YandexOAuth2,
 	jwtTokens auth.JwtTokens,
-	repository repository.Repository,
+	repository auth.TokenRepository,
 ) auth.NetworkStrategy {
 	return yandexStrategy{
 		oauth: &oauth2.Config{

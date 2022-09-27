@@ -88,6 +88,9 @@ type PortfolioId = openapi_types.UUID
 // N400 defines model for 400.
 type N400 = Error
 
+// N403 defines model for 403.
+type N403 = Error
+
 // N500 defines model for 500.
 type N500 = Error
 

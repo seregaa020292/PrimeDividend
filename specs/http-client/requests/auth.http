@@ -1,0 +1,5 @@
+##### Аутентификация, авторизация, идентификация #####
+
+#### Выйти из аккаунта
+POST {{host}}/auth/logout
+Cookie: refresh-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiNzhkZTlmOGUtZDE1ZC00YWRlLTg0ZjYtNjMxNTNkZTk3YzU1IiwiaXNzIjoiUHJpbWVEaXZpZGVuZCIsImV4cCI6MTY2OTM5NTMyMywiaWF0IjoxNjY0MjExMzIzfQ.COdqCfJBTZ_23Sy0N6-Yq9wlCfk0RcGYeoWiGFOcMWM

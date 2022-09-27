@@ -13,6 +13,7 @@ import (
 	"primedivident/internal/infrastructure/wire/wire_group"
 	"primedivident/internal/modules/auth/command"
 	"primedivident/internal/modules/auth/repository"
+	"primedivident/internal/modules/auth/service/auth"
 	"primedivident/internal/modules/auth/service/email"
 	"primedivident/internal/modules/instrument/query"
 	repository2 "primedivident/internal/modules/instrument/repository"
@@ -20,7 +21,7 @@ import (
 	query2 "primedivident/internal/modules/portfolio/query"
 	repository3 "primedivident/internal/modules/portfolio/repository"
 	"primedivident/internal/ports/http/asset"
-	"primedivident/internal/ports/http/auth"
+	auth2 "primedivident/internal/ports/http/auth"
 	"primedivident/internal/ports/http/currency"
 	instrument2 "primedivident/internal/ports/http/instrument"
 	"primedivident/internal/ports/http/market"
@@ -39,18 +40,19 @@ import (
 func Initialize(cfg config.Config) http.Server {
 	jwtTokens := ProvideJwtTokens(cfg)
 	postgres := ProvidePostgres(cfg)
-	repositoryRepository := repository.NewRepository(postgres)
-	authAuth := wire_group.ProvideAuth(cfg, jwtTokens, repositoryRepository)
+	tokenRepository := auth.NewTokenRepository(postgres)
+	authAuth := wire_group.ProvideAuth(cfg, jwtTokens, tokenRepository)
 	logger := ProvideLogger(cfg)
 	validatorValidator := validator.GetValidator()
 	responder := response.NewRespond(logger, validatorValidator)
+	repositoryRepository := repository.NewRepository(postgres)
 	sender := ProvideMailerObserver(cfg, logger)
 	templater := ProvideTemplate(cfg)
 	joinConfirmUser := email.NewJoinConfirmUser(sender, templater)
 	joinByEmail := command.NewJoinByEmail(repositoryRepository, joinConfirmUser)
 	confirmUser := email.NewConfirmUser(sender)
 	confirmByToken := command.NewConfirmByToken(repositoryRepository, confirmUser)
-	handlerAuth := auth.NewHandler(responder, joinByEmail, confirmByToken, authAuth)
+	handlerAuth := auth2.NewHandler(responder, joinByEmail, confirmByToken, authAuth)
 	handlerAsset := asset.NewHandler()
 	handlerCurrency := currency.NewHandler()
 	presenter := instrument.NewPresenter()

@@ -35,7 +35,7 @@ func authValidator(swagger *openapi3.T, authService auth.Auth) func(next http.Ha
 			if statusCode == 400 {
 				err = errorn.ErrNotFound
 			} else {
-				err = errorn.ErrForbidden.Wrap(fmt.Errorf("%s", message))
+				err = errorn.ErrForbidden.Wrap(fmt.Errorf(message))
 			}
 
 			respond.Err(err)

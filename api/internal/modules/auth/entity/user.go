@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"errors"
+
 	"github.com/google/uuid"
 
 	"primedivident/pkg/utils/hash"
@@ -44,4 +46,16 @@ func (u User) JwtPayload() JwtUser {
 		Email: u.Email,
 		Name:  u.Name,
 	}
+}
+
+func (u User) JwtPayloadValidPassword(password string) (JwtUser, error) {
+	if !u.Status.IsActive() {
+		return JwtUser{}, errors.New("user is not active")
+	}
+
+	if err := u.ComparePasswordHash(password); err != nil {
+		return JwtUser{}, err
+	}
+
+	return u.JwtPayload(), nil
 }

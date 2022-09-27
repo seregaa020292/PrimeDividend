@@ -28,3 +28,13 @@ func SetCookieRefreshToken(refreshToken token.Token, w http.ResponseWriter, r *h
 
 	http.SetCookie(w, cookie)
 }
+
+func RemoveCookieRefreshToken(w http.ResponseWriter, r *http.Request) {
+	cookie := utils.GenCookie(consts.RefreshToken, "", &http.Cookie{
+		SameSite: http.SameSiteStrictMode,
+		Domain:   r.URL.Hostname(),
+		MaxAge:   -1,
+	})
+
+	http.SetCookie(w, cookie)
+}

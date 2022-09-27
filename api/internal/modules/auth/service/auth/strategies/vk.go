@@ -10,7 +10,6 @@ import (
 
 	"primedivident/internal/config"
 	"primedivident/internal/modules/auth/entity"
-	"primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/auth"
 	"primedivident/pkg/errorn"
 )
@@ -20,13 +19,13 @@ const OauthVkUrlAPI = "https://api.vk.com/method/users.get?v=5.131&album_id=wall
 type vkStrategy struct {
 	oauth      *oauth2.Config
 	jwtTokens  auth.JwtTokens
-	repository repository.Repository
+	repository auth.TokenRepository
 }
 
 func NewVkStrategy(
 	cfg config.VkOAuth2,
 	jwtTokens auth.JwtTokens,
-	repository repository.Repository,
+	repository auth.TokenRepository,
 ) auth.NetworkStrategy {
 	return vkStrategy{
 		oauth: &oauth2.Config{
@@ -65,15 +64,17 @@ func (v vkStrategy) Login(code string) (auth.Tokens, error) {
 		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
 	}
 
-	genTokens, err := v.jwtTokens.GenTokens(entity.JwtUser{
+	jwtUser := entity.JwtUser{
 		Email: token.Extra("email").(string),
 		Name:  fmt.Sprintf("%s %s", body.Response[0].LastName, body.Response[0].FirstName),
-	})
+	}
+
+	genTokens, err := v.jwtTokens.GenTokens(jwtUser)
 	if err != nil {
 		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
 	}
 
-	// TODO: save db refresh token
+	v.repository.AttachNetwork(jwtUser, auth.Vk)
 
 	return genTokens, nil
 }

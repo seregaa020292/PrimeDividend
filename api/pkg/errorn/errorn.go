@@ -52,7 +52,7 @@ func (e Error) Clone() Error {
 }
 
 func (e Error) Error() string {
-	err := gog.If(e.error != nil, e.error, fmt.Errorf("%s", "_"))
+	err := gog.If(e.error != nil, e.error, fmt.Errorf( "_"))
 
 	return fmt.Sprintf(
 		"error=%s, status=%d, target=%d, message=%s, details=%+v",

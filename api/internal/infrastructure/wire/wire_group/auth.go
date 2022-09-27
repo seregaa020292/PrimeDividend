@@ -12,7 +12,7 @@ import (
 	port "primedivident/internal/ports/http/auth"
 )
 
-func ProvideAuth(cfg config.Config, jwtTokens auth.JwtTokens, repository repository.Repository) auth.Auth {
+func ProvideAuth(cfg config.Config, jwtTokens auth.JwtTokens, repository auth.TokenRepository) auth.Auth {
 	strategy := auth.NewStrategy()
 
 	strategy.SetPassword(auth.Email, strategies.NewEmailStrategy(jwtTokens, repository))
@@ -25,6 +25,7 @@ func ProvideAuth(cfg config.Config, jwtTokens auth.JwtTokens, repository reposit
 
 var Auth = wire.NewSet(
 	repository.NewRepository,
+	auth.NewTokenRepository,
 	email.NewJoinConfirmUser,
 	email.NewConfirmUser,
 	command.NewJoinByEmail,

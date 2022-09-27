@@ -37,7 +37,7 @@ func (c confirmByToken) Exec(tokenValue uuid.UUID) error {
 	}
 
 	if user.Token.IsExpiredByNow() {
-		return errorn.ErrForbidden.Wrap(fmt.Errorf("%s", "token expired"))
+		return errorn.ErrForbidden.Wrap(fmt.Errorf("token expired"))
 	}
 
 	if err := c.repository.Confirm(user.Token.Value); err != nil {

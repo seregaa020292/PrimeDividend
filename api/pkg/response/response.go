@@ -100,7 +100,7 @@ func (h Respond) DecodeValidate(v any) error {
 func (h Respond) Err(err error) {
 	errorResponse := NewByError(err)
 
-	h.logger.Errorf("%s", errorResponse.Error)
+	h.logger.Errorf(errorResponse.Error.Error())
 
 	h.SetHeader("Content-Type", "application/json; charset=utf-8")
 	if err := render.Render(h.writer, h.request, errorResponse); err != nil {

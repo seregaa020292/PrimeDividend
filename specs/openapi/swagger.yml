@@ -110,6 +110,16 @@ paths:
           $ref: '#/components/responses/301'
         500:
           $ref: '#/components/responses/500'
+  /auth/logout:
+    post:
+      tags: [ auth ]
+      operationId: logout
+      summary: Выйти из аккаунта
+      responses:
+        200:
+          $ref: '#/components/responses/200'
+        403:
+          $ref: '#/components/responses/403'
 
   /portfolio/{portfolioId}:
     get:

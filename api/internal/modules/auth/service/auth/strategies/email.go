@@ -1,19 +1,18 @@
 package strategies
 
 import (
-	"primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/auth"
 	"primedivident/pkg/errorn"
 )
 
 type emailStrategy struct {
 	jwtTokens  auth.JwtTokens
-	repository repository.Repository
+	repository auth.TokenRepository
 }
 
 func NewEmailStrategy(
 	jwtTokens auth.JwtTokens,
-	repository repository.Repository,
+	repository auth.TokenRepository,
 ) auth.PasswordStrategy {
 	return emailStrategy{
 		jwtTokens:  jwtTokens,
@@ -22,25 +21,22 @@ func NewEmailStrategy(
 }
 
 func (e emailStrategy) Login(email, password string) (auth.Tokens, error) {
-	user, err := e.repository.FindByEmail(email)
+	user, err := e.repository.FindUserByEmail(email)
 	if err != nil {
 		return auth.Tokens{}, errorn.ErrSelect.Wrap(err)
 	}
 
-	if !user.Status.IsActive() {
-		return auth.Tokens{}, errorn.ErrForbidden
+	jwtUser, err := user.JwtPayloadValidPassword(password)
+	if err != nil {
+		return auth.Tokens{}, errorn.ErrForbidden.Wrap(err)
 	}
 
-	if err := user.ComparePasswordHash(password); err != nil {
-		return auth.Tokens{}, errorn.ErrPasswordIncorrect.Wrap(err)
-	}
-
-	genTokens, err := e.jwtTokens.GenTokens(user.JwtPayload())
+	genTokens, err := e.jwtTokens.GenTokens(jwtUser)
 	if err != nil {
 		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
 	}
 
-	// TODO: save db refresh token
+	e.repository.SaveRefreshToken(user.ID, genTokens.RefreshToken)
 
 	return genTokens, nil
 }
