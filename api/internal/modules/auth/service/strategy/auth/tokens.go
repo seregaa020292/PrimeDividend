@@ -25,10 +25,10 @@ type jwtTokens struct {
 	refreshTokenService token.JwtService[uuid.UUID]
 }
 
-func NewJwtTokens(issuer string, jwt config.Jwt) JwtTokens {
+func NewJwtTokens(issuer string, cfg config.Jwt) JwtTokens {
 	return jwtTokens{
-		accessTokenService:  token.NewJwtService[entity.JwtUser](issuer, jwt.AccessSecretKey, jwt.AccessExpiresIn),
-		refreshTokenService: token.NewJwtService[uuid.UUID](issuer, jwt.RefreshSecretKey, jwt.RefreshExpiresIn),
+		accessTokenService:  token.NewJwtService[entity.JwtUser](issuer, cfg.AccessSecretKey, cfg.AccessExpiresIn),
+		refreshTokenService: token.NewJwtService[uuid.UUID](issuer, cfg.RefreshSecretKey, cfg.RefreshExpiresIn),
 	}
 }
 

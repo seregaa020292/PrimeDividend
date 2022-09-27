@@ -43,9 +43,9 @@ func (s strategy) Verify(accessToken string) error {
 }
 
 func (s strategy) Logout(refreshToken string) error {
-	return nil
+	panic("implement me")
 }
 
 func (s strategy) Refresh(refreshToken string) (auth.Tokens, error) {
-	return auth.Tokens{}, nil
+	panic("implement me")
 }
