@@ -26,9 +26,6 @@ const (
 
 	TokenJoinTTL = 1 * time.Hour
 
-	OauthState   = "oauth-state"
-	RefreshToken = "refresh-token"
-
 	VkOauthRedirectUrl     = "/api/auth/vk/callback"
 	OkOauthRedirectUrl     = "/api/auth/ok/callback"
 	YandexOauthRedirectUrl = "/api/auth/yandex/callback"

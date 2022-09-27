@@ -1,4 +1,4 @@
-package auth
+package repository
 
 import (
 	jet "github.com/go-jet/jet/v2/postgres"
@@ -10,26 +10,27 @@ import (
 	"primedivident/internal/models/app/public/table"
 	"primedivident/internal/modules/auth/dto"
 	"primedivident/internal/modules/auth/entity"
+	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/pkg/db/postgres"
 	"primedivident/pkg/token"
 )
 
-type TokenRepository interface {
+type Repository interface {
 	FindUserByEmail(email string) (entity.User, error)
 	FindUserByNetworkId(id string) (entity.User, error)
-	AttachNetwork(user entity.JwtUser, network Key)
+	AttachNetwork(user entity.JwtUser, network auth.Name)
 	SaveRefreshToken(id uuid.UUID, refreshToken token.Token)
 }
 
-type tokenRepository struct {
+type repository struct {
 	db *postgres.Postgres
 }
 
-func NewTokenRepository(db *postgres.Postgres) TokenRepository {
-	return tokenRepository{db: db}
+func NewRepository(db *postgres.Postgres) Repository {
+	return repository{db: db}
 }
 
-func (r tokenRepository) FindUserByEmail(email string) (entity.User, error) {
+func (r repository) FindUserByEmail(email string) (entity.User, error) {
 	var user model.Users
 
 	stmt := table.Users.
@@ -51,14 +52,14 @@ func (r tokenRepository) FindUserByEmail(email string) (entity.User, error) {
 	return dto.EntityUserByModel(user), nil
 }
 
-func (r tokenRepository) FindUserByNetworkId(id string) (entity.User, error) {
+func (r repository) FindUserByNetworkId(id string) (entity.User, error) {
 	panic("implement me")
 }
 
-func (r tokenRepository) AttachNetwork(user entity.JwtUser, network Key) {
+func (r repository) AttachNetwork(user entity.JwtUser, network auth.Name) {
 	panic("implement me")
 }
 
-func (r tokenRepository) SaveRefreshToken(id uuid.UUID, refreshToken token.Token) {
+func (r repository) SaveRefreshToken(id uuid.UUID, refreshToken token.Token) {
 	panic("implement me")
 }

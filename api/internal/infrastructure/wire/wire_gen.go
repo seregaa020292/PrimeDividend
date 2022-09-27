@@ -12,16 +12,16 @@ import (
 	"primedivident/internal/infrastructure/http/handlers"
 	"primedivident/internal/infrastructure/wire/wire_group"
 	"primedivident/internal/modules/auth/command"
-	"primedivident/internal/modules/auth/repository"
-	"primedivident/internal/modules/auth/service/auth"
+	repository2 "primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/email"
+	"primedivident/internal/modules/auth/service/strategy/repository"
 	"primedivident/internal/modules/instrument/query"
-	repository2 "primedivident/internal/modules/instrument/repository"
+	repository3 "primedivident/internal/modules/instrument/repository"
 	command2 "primedivident/internal/modules/portfolio/command"
 	query2 "primedivident/internal/modules/portfolio/query"
-	repository3 "primedivident/internal/modules/portfolio/repository"
+	repository4 "primedivident/internal/modules/portfolio/repository"
 	"primedivident/internal/ports/http/asset"
-	auth2 "primedivident/internal/ports/http/auth"
+	"primedivident/internal/ports/http/auth"
 	"primedivident/internal/ports/http/currency"
 	instrument2 "primedivident/internal/ports/http/instrument"
 	"primedivident/internal/ports/http/market"
@@ -40,35 +40,35 @@ import (
 func Initialize(cfg config.Config) http.Server {
 	jwtTokens := ProvideJwtTokens(cfg)
 	postgres := ProvidePostgres(cfg)
-	tokenRepository := auth.NewTokenRepository(postgres)
-	authAuth := wire_group.ProvideAuth(cfg, jwtTokens, tokenRepository)
+	repositoryRepository := repository.NewRepository(postgres)
+	strategy := wire_group.ProvideStrategy(cfg, jwtTokens, repositoryRepository)
 	logger := ProvideLogger(cfg)
 	validatorValidator := validator.GetValidator()
 	responder := response.NewRespond(logger, validatorValidator)
-	repositoryRepository := repository.NewRepository(postgres)
+	repository5 := repository2.NewRepository(postgres)
 	sender := ProvideMailerObserver(cfg, logger)
 	templater := ProvideTemplate(cfg)
 	joinConfirmUser := email.NewJoinConfirmUser(sender, templater)
-	joinByEmail := command.NewJoinByEmail(repositoryRepository, joinConfirmUser)
+	joinByEmail := command.NewJoinByEmail(repository5, joinConfirmUser)
 	confirmUser := email.NewConfirmUser(sender)
-	confirmByToken := command.NewConfirmByToken(repositoryRepository, confirmUser)
-	handlerAuth := auth2.NewHandler(responder, joinByEmail, confirmByToken, authAuth)
+	confirmByToken := command.NewConfirmByToken(repository5, confirmUser)
+	handlerAuth := auth.NewHandler(responder, strategy, joinByEmail, confirmByToken)
 	handlerAsset := asset.NewHandler()
 	handlerCurrency := currency.NewHandler()
 	presenter := instrument.NewPresenter()
-	repository4 := repository2.NewRepository(postgres)
-	instrumentAll := query.NewInstrumentAll(repository4)
+	repository6 := repository3.NewRepository(postgres)
+	instrumentAll := query.NewInstrumentAll(repository6)
 	handlerInstrument := instrument2.NewHandler(responder, presenter, instrumentAll)
 	handlerMarket := market.NewHandler()
 	portfolioPresenter := portfolio.NewPresenter()
-	repository5 := repository3.NewRepository(postgres)
-	portfolioById := query2.NewPortfolioById(repository5)
-	portfolioCreate := command2.NewPortfolioCreate(repository5)
+	repository7 := repository4.NewRepository(postgres)
+	portfolioById := query2.NewPortfolioById(repository7)
+	portfolioCreate := command2.NewPortfolioCreate(repository7)
 	handlerPortfolio := portfolio2.NewHandler(responder, portfolioPresenter, portfolioById, portfolioCreate)
 	handlerProvider := provider.NewHandler()
 	handlerRegister := register.NewHandler()
 	handlerUser := user.NewHandler()
-	httpHandlers := handlers.NewHandlers(authAuth, handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
+	httpHandlers := handlers.NewHandlers(strategy, handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
 	server := http.NewServer(httpHandlers)
 	return server
 }

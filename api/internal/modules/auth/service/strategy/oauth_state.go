@@ -1,4 +1,4 @@
-package auth
+package strategy
 
 import (
 	"errors"
@@ -6,13 +6,14 @@ import (
 
 	"github.com/google/uuid"
 
-	"primedivident/internal/config/consts"
 	"primedivident/pkg/datetime"
 	"primedivident/pkg/utils"
 )
 
+const OauthState = "oauth-state"
+
 func ValidateOauthState(r *http.Request) error {
-	oauthState, err := r.Cookie(consts.OauthState)
+	oauthState, err := r.Cookie(OauthState)
 	if err != nil {
 		return err
 	}
@@ -27,7 +28,7 @@ func ValidateOauthState(r *http.Request) error {
 func GenCookieOauthState(w http.ResponseWriter, r *http.Request) string {
 	state := uuid.New().String()
 
-	cookie := utils.GenCookie(consts.OauthState, state, &http.Cookie{
+	cookie := utils.GenCookie(OauthState, state, &http.Cookie{
 		Secure:   true,
 		HttpOnly: true,
 		SameSite: http.SameSiteStrictMode,

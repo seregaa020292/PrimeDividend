@@ -4,7 +4,8 @@ import (
 	"net/http"
 
 	"primedivident/internal/infrastructure/http/openapi"
-	"primedivident/internal/modules/auth/service/auth"
+	"primedivident/internal/modules/auth/service/strategy"
+	"primedivident/internal/modules/auth/service/strategy/auth"
 )
 
 func (h HandlerAuth) LoginEmail(w http.ResponseWriter, r *http.Request) {
@@ -17,13 +18,13 @@ func (h HandlerAuth) LoginEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokens, err := h.authService.PasswordStrategy(auth.Email).Login(user.Email, user.Password)
+	tokens, err := h.strategy.Password().Get(auth.Email).Login(user.Email, user.Password)
 	if err != nil {
 		respond.Err(err)
 		return
 	}
 
-	auth.SetCookieRefreshToken(tokens.RefreshToken, w, r)
+	strategy.SetCookieRefreshToken(tokens.RefreshToken, w, r)
 
 	respond.Json(http.StatusOK, tokens.AccessToken)
 }

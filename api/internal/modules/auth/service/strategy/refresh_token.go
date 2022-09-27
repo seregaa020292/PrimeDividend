@@ -1,15 +1,16 @@
-package auth
+package strategy
 
 import (
 	"net/http"
 
-	"primedivident/internal/config/consts"
 	"primedivident/pkg/token"
 	"primedivident/pkg/utils"
 )
 
+const RefreshToken = "refresh-token"
+
 func GetCookieRefreshToken(r *http.Request) (string, error) {
-	refreshToken, err := r.Cookie(consts.RefreshToken)
+	refreshToken, err := r.Cookie(RefreshToken)
 	if err != nil {
 		return "", err
 	}
@@ -18,7 +19,7 @@ func GetCookieRefreshToken(r *http.Request) (string, error) {
 }
 
 func SetCookieRefreshToken(refreshToken token.Token, w http.ResponseWriter, r *http.Request) {
-	cookie := utils.GenCookie(consts.RefreshToken, refreshToken.Value, &http.Cookie{
+	cookie := utils.GenCookie(RefreshToken, refreshToken.Value, &http.Cookie{
 		Secure:   true,
 		HttpOnly: true,
 		SameSite: http.SameSiteStrictMode,
@@ -30,7 +31,7 @@ func SetCookieRefreshToken(refreshToken token.Token, w http.ResponseWriter, r *h
 }
 
 func RemoveCookieRefreshToken(w http.ResponseWriter, r *http.Request) {
-	cookie := utils.GenCookie(consts.RefreshToken, "", &http.Cookie{
+	cookie := utils.GenCookie(RefreshToken, "", &http.Cookie{
 		SameSite: http.SameSiteStrictMode,
 		Domain:   r.URL.Hostname(),
 		MaxAge:   -1,

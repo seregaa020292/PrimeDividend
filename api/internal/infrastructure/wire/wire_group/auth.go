@@ -5,27 +5,31 @@ import (
 
 	"primedivident/internal/config"
 	"primedivident/internal/modules/auth/command"
+	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/repository"
-	"primedivident/internal/modules/auth/service/auth"
-	"primedivident/internal/modules/auth/service/auth/strategies"
 	"primedivident/internal/modules/auth/service/email"
+	"primedivident/internal/modules/auth/service/strategy"
+	"primedivident/internal/modules/auth/service/strategy/auth"
+	sr "primedivident/internal/modules/auth/service/strategy/repository"
+	"primedivident/internal/modules/auth/service/strategy/strategies"
 	port "primedivident/internal/ports/http/auth"
 )
 
-func ProvideAuth(cfg config.Config, jwtTokens auth.JwtTokens, repository auth.TokenRepository) auth.Auth {
-	strategy := auth.NewStrategy()
+func ProvideStrategy(cfg config.Config, jwtTokens entity.JwtTokens, repository sr.Repository) strategy.Strategy {
+	s := strategy.NewStrategy(jwtTokens, repository)
 
-	strategy.SetPassword(auth.Email, strategies.NewEmailStrategy(jwtTokens, repository))
-	strategy.SetNetwork(auth.Vk, strategies.NewVkStrategy(cfg.Networks.VkOAuth2, jwtTokens, repository))
-	strategy.SetNetwork(auth.Ok, strategies.NewOkStrategy(cfg.Networks.OkOAuth2, jwtTokens, repository))
-	strategy.SetNetwork(auth.Yandex, strategies.NewYandexStrategy(cfg.Networks.YandexOAuth2, jwtTokens, repository))
+	s.Password().Set(auth.Email, strategies.NewEmailStrategy(jwtTokens, repository))
+	s.Network().Set(auth.Vk, strategies.NewVkStrategy(cfg.Networks.VkOAuth2, jwtTokens, repository))
+	s.Network().Set(auth.Ok, strategies.NewOkStrategy(cfg.Networks.OkOAuth2, jwtTokens, repository))
+	s.Network().Set(auth.Yandex, strategies.NewYandexStrategy(cfg.Networks.YandexOAuth2, jwtTokens, repository))
 
-	return auth.NewAuth(strategy, jwtTokens, repository)
+	return s
 }
 
 var Auth = wire.NewSet(
 	repository.NewRepository,
-	auth.NewTokenRepository,
+	sr.NewRepository,
+	ProvideStrategy,
 	email.NewJoinConfirmUser,
 	email.NewConfirmUser,
 	command.NewJoinByEmail,
