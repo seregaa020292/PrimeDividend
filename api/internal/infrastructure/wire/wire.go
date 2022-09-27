@@ -7,14 +7,15 @@ import (
 	"github.com/google/wire"
 
 	"primedivident/internal/config"
-	serverHttp "primedivident/internal/infrastructure/http"
-	"primedivident/internal/infrastructure/http/handlers"
+	"primedivident/internal/infrastructure/server"
+	"primedivident/internal/infrastructure/server/handlers"
+	"primedivident/internal/infrastructure/server/middlewares"
 	wireGroup "primedivident/internal/infrastructure/wire/wire_group"
 	"primedivident/pkg/response"
 	"primedivident/pkg/validator"
 )
 
-func Initialize(cfg config.Config) serverHttp.Server {
+func Initialize(cfg config.Config) server.Server {
 	wire.Build(
 		ProvideLogger,
 		ProvidePostgres,
@@ -35,9 +36,10 @@ func Initialize(cfg config.Config) serverHttp.Server {
 		wireGroup.Register,
 		wireGroup.User,
 
+		middlewares.NewMiddlewares,
 		handlers.NewHandlers,
-		serverHttp.NewServer,
+		server.NewServer,
 	)
 
-	return serverHttp.Server{}
+	return server.Server{}
 }

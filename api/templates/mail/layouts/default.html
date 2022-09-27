@@ -314,10 +314,7 @@
           }
       }
   </style>
-  <style type="text/css">
-
-  </style>
-  {% block title %}{% endblock %}
+  {% block style %}{% endblock %}
 </head>
 <body>
 <span class="preheader">{% block preheader %}Вам пришло новое соощение.{% endblock %}</span>
@@ -326,13 +323,9 @@
     <td>&nbsp;</td>
     <td class="container">
       <div class="content">
-        <!-- START LOGO -->
         {% include "mail/partials/logo.html" %}
-        <!-- END LOGO -->
 
-        <!-- START CENTERED WHITE CONTAINER -->
         <table role="presentation" class="main">
-
           <!-- START MAIN CONTENT AREA -->
           <tr>
             <td class="wrapper">
@@ -341,12 +334,8 @@
           </tr>
           <!-- END MAIN CONTENT AREA -->
         </table>
-        <!-- END CENTERED WHITE CONTAINER -->
 
-        <!-- START FOOTER -->
         {% include "mail/partials/footer.html" %}
-        <!-- END FOOTER -->
-
       </div>
     </td>
     <td>&nbsp;</td>

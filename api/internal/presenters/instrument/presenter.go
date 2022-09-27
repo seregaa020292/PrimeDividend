@@ -1,7 +1,7 @@
 package instrument
 
 import (
-	"primedivident/internal/infrastructure/http/openapi"
+	"primedivident/internal/infrastructure/server/openapi"
 	"primedivident/internal/models/app/public/model"
 )
 

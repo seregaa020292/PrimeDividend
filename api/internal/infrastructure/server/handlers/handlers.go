@@ -7,9 +7,9 @@ import (
 	"github.com/getkin/kin-openapi/routers/gorillamux"
 	"github.com/go-chi/chi/v5"
 
-	serverHttp "primedivident/internal/infrastructure/http"
-	"primedivident/internal/infrastructure/http/openapi"
-	authService "primedivident/internal/modules/auth/service/strategy"
+	"primedivident/internal/infrastructure/server"
+	"primedivident/internal/infrastructure/server/openapi"
+	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/ports/http/asset"
 	"primedivident/internal/ports/http/auth"
 	"primedivident/internal/ports/http/currency"
@@ -26,7 +26,7 @@ import (
 var _ openapi.ServerInterface = (*Handlers)(nil) //nolint:typecheck
 
 type Handlers struct {
-	strategy authService.Strategy
+	strategy strategy.Strategy
 
 	auth.HandlerAuth
 	asset.HandlerAsset
@@ -40,7 +40,7 @@ type Handlers struct {
 }
 
 func NewHandlers(
-	strategy authService.Strategy,
+	strategy strategy.Strategy,
 
 	auth auth.HandlerAuth,
 	asset asset.HandlerAsset,
@@ -51,7 +51,7 @@ func NewHandlers(
 	provider provider.HandlerProvider,
 	register register.HandlerRegister,
 	user user.HandlerUser,
-) serverHttp.Handlers {
+) server.Handlers {
 	return Handlers{
 		strategy: strategy,
 

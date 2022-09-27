@@ -3,7 +3,7 @@ package portfolio
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/http/openapi"
+	"primedivident/internal/infrastructure/server/openapi"
 	"primedivident/internal/modules/portfolio/command"
 )
 

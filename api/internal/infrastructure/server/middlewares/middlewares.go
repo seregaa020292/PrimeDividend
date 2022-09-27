@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/httprate"
 
 	"primedivident/internal/config/consts"
+	"primedivident/internal/infrastructure/server"
 )
 
 type middlewareFunc = func(next http.Handler) http.Handler
@@ -15,11 +16,11 @@ type middlewareFunc = func(next http.Handler) http.Handler
 type middlewares struct {
 }
 
-func NewMiddlewares() Handlers {
+func NewMiddlewares() server.Middlewares {
 	return middlewares{}
 }
 
-func Setup(router *chi.Mux) {
+func (m middlewares) Setup(router chi.Router) {
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
 	router.Use(middleware.Heartbeat("/health"))

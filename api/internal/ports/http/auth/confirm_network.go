@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"primedivident/internal/infrastructure/http/openapi"
+	"primedivident/internal/infrastructure/server/openapi"
 	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/pkg/errorn"

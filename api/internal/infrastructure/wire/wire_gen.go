@@ -8,8 +8,9 @@ package wire
 
 import (
 	"primedivident/internal/config"
-	"primedivident/internal/infrastructure/http"
-	"primedivident/internal/infrastructure/http/handlers"
+	"primedivident/internal/infrastructure/server"
+	"primedivident/internal/infrastructure/server/handlers"
+	"primedivident/internal/infrastructure/server/middlewares"
 	"primedivident/internal/infrastructure/wire/wire_group"
 	"primedivident/internal/modules/auth/command"
 	repository2 "primedivident/internal/modules/auth/repository"
@@ -37,7 +38,8 @@ import (
 
 // Injectors from wire.go:
 
-func Initialize(cfg config.Config) http.Server {
+func Initialize(cfg config.Config) server.Server {
+	serverMiddlewares := middlewares.NewMiddlewares()
 	jwtTokens := ProvideJwtTokens(cfg)
 	postgres := ProvidePostgres(cfg)
 	repositoryRepository := repository.NewRepository(postgres)
@@ -68,7 +70,7 @@ func Initialize(cfg config.Config) http.Server {
 	handlerProvider := provider.NewHandler()
 	handlerRegister := register.NewHandler()
 	handlerUser := user.NewHandler()
-	httpHandlers := handlers.NewHandlers(strategy, handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
-	server := http.NewServer(httpHandlers)
-	return server
+	serverHandlers := handlers.NewHandlers(strategy, handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
+	serverServer := server.NewServer(serverMiddlewares, serverHandlers)
+	return serverServer
 }
