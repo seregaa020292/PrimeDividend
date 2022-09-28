@@ -21,7 +21,7 @@ func NewEmailStrategy(jwtTokens auth.JwtTokens, repository repository.Repository
 	}
 }
 
-func (e emailStrategy) Login(email, password string, fingerprint entity.FingerprintSession) (auth.Tokens, error) {
+func (e emailStrategy) Login(email, password string, accountability entity.Accountability) (auth.Tokens, error) {
 	user, err := e.repository.FindUserByEmail(email)
 	if err != nil {
 		return auth.Tokens{}, errorn.ErrSelect.Wrap(err)
@@ -42,9 +42,9 @@ func (e emailStrategy) Login(email, password string, fingerprint entity.Fingerpr
 		ExpiresAt: genTokens.RefreshToken.ExpiresAt,
 		UserID:    user.ID,
 		Strategy:  auth.Email.String(),
-		IP:        fingerprint.IP,
-		UserAgent: fingerprint.UserAgent,
-		Origin:    fingerprint.Origin,
+		IP:        accountability.IP,
+		UserAgent: accountability.UserAgent,
+		Origin:    accountability.Origin,
 	}); err != nil {
 		return auth.Tokens{}, err
 	}

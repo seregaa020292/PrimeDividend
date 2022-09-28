@@ -39,6 +39,6 @@ func (o okStrategy) Callback(state string) string {
 	return o.oauth.AuthCodeURL(state, oauth2.AccessTypeOnline)
 }
 
-func (o okStrategy) Login(code string, fingerprint entity.FingerprintSession) (auth.Tokens, error) {
+func (o okStrategy) Login(code string, accountability entity.Accountability) (auth.Tokens, error) {
 	panic("implement me")
 }

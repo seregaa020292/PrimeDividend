@@ -8,6 +8,6 @@ import (
 type (
 	PasswordStrategies = maps[PasswordStrategy]
 	PasswordStrategy   interface {
-		Login(identify, password string, fingerprint entity.FingerprintSession) (auth.Tokens, error)
+		Login(identify, password string, accountability entity.Accountability) (auth.Tokens, error)
 	}
 )

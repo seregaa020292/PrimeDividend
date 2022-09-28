@@ -20,7 +20,7 @@ func (h HandlerAuth) LoginEmail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tokens, err := h.strategy.Password().Get(auth.Email).
-		Login(user.Email, user.Password, entity.FingerprintSession{
+		Login(user.Email, user.Password, entity.Accountability{
 			IP:        r.RemoteAddr,
 			UserAgent: r.UserAgent(),
 			Origin:    r.Host,

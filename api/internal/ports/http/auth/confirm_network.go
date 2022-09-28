@@ -26,7 +26,7 @@ func (h HandlerAuth) ConfirmNetwork(w http.ResponseWriter, r *http.Request, netw
 		return
 	}
 
-	tokens, err := strategyNetwork.Login(r.FormValue("code"), entity.FingerprintSession{
+	tokens, err := strategyNetwork.Login(r.FormValue("code"), entity.Accountability{
 		IP:        r.RemoteAddr,
 		UserAgent: r.UserAgent(),
 		Origin:    r.Host,

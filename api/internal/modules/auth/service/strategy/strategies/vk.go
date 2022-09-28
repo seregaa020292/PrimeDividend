@@ -47,7 +47,7 @@ func (v vkStrategy) Callback(state string) string {
 	return v.oauth.AuthCodeURL(state, oauth2.AccessTypeOnline)
 }
 
-func (v vkStrategy) Login(code string, fingerprint entity.FingerprintSession) (auth.Tokens, error) {
+func (v vkStrategy) Login(code string, accountability entity.Accountability) (auth.Tokens, error) {
 	token, err := v.oauth.Exchange(context.Background(), code)
 	if err != nil {
 		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
