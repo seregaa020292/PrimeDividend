@@ -6,7 +6,7 @@ import (
 	"github.com/go-chi/render"
 
 	"primedivident/pkg/logger"
-	"primedivident/pkg/utils"
+	"primedivident/pkg/utils/gog"
 	"primedivident/pkg/validator"
 )
 
@@ -82,7 +82,7 @@ func (h Respond) Any(httpStatus int, data any) {
 }
 
 func (h Respond) Redirect(url string, httpStatus ...int) {
-	http.Redirect(h.writer, h.request, url, utils.ByDefault(http.StatusMovedPermanently, httpStatus...))
+	http.Redirect(h.writer, h.request, url, gog.ByDefault(http.StatusMovedPermanently, httpStatus...))
 }
 
 func (h Respond) Decode(v any) error {

@@ -2,6 +2,8 @@ package utils
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"log"
@@ -114,12 +116,19 @@ func GenCookie(key string, value string, opts *http.Cookie) *http.Cookie {
 	}
 }
 
-func ByDefault[T any](first T, optional ...T) T {
-	defFirst := first
-
-	if len(optional) >= 1 {
-		defFirst = optional[0]
+// GenerateRandomBytes returns securely generated random bytes.
+func GenerateRandomBytes(n int) ([]byte, error) {
+	b := make([]byte, n)
+	if _, err := rand.Read(b); err != nil {
+		return nil, err
 	}
 
-	return defFirst
+	return b, nil
+}
+
+// GenerateRandomString returns a URL-safe, base64 encoded
+// securely generated random string.
+func GenerateRandomString(s int) (string, error) {
+	b, err := GenerateRandomBytes(s)
+	return base64.URLEncoding.EncodeToString(b), err
 }

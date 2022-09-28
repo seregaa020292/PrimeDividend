@@ -88,3 +88,17 @@ func Second[T any](_ any, second T, _ ...any) T {
 func Third[T any](_, _ any, third T, _ ...any) T {
 	return third
 }
+
+// ByDefault return default argument
+// For example:
+//
+//	ByDefault(default, optional...)
+func ByDefault[T any](first T, optional ...T) T {
+	defFirst := first
+
+	if len(optional) >= 1 {
+		defFirst = optional[0]
+	}
+
+	return defFirst
+}

@@ -6,7 +6,7 @@ import (
 
 	"github.com/jordan-wright/email"
 
-	"primedivident/pkg/utils"
+	"primedivident/pkg/utils/gog"
 )
 
 // Attachment represents an email attachment.
@@ -49,7 +49,7 @@ func NewMessage(subject, body string, contentType ...ContentType) Message {
 	return Message{
 		Subject:     subject,
 		Body:        body,
-		ContentType: utils.ByDefault(TextPlain, contentType...),
+		ContentType: gog.ByDefault(TextPlain, contentType...),
 
 		email: new(email.Email),
 	}
