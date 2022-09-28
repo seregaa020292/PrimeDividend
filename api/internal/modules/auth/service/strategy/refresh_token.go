@@ -14,6 +14,9 @@ func GetCookieRefreshToken(r *http.Request) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	if refreshToken.Value == "" {
+		return "", err
+	}
 
 	return refreshToken.Value, nil
 }

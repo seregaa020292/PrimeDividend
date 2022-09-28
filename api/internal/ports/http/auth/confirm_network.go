@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"primedivident/internal/infrastructure/server/openapi"
-	"primedivident/internal/modules/auth/entity"
+	"primedivident/internal/modules/auth/dto"
 	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/pkg/errorn"
@@ -26,11 +26,7 @@ func (h HandlerAuth) ConfirmNetwork(w http.ResponseWriter, r *http.Request, netw
 		return
 	}
 
-	tokens, err := strategyNetwork.Login(r.FormValue("code"), entity.Accountability{
-		IP:        r.RemoteAddr,
-		UserAgent: r.UserAgent(),
-		Origin:    r.Host,
-	})
+	tokens, err := strategyNetwork.Login(r.FormValue("code"), dto.AccountabilityByRequest(r))
 	if err != nil {
 		respond.Err(errorn.ErrUnauthorized.Wrap(err))
 		return

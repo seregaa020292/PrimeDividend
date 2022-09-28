@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"primedivident/internal/infrastructure/server/openapi"
-	"primedivident/internal/modules/auth/entity"
+	"primedivident/internal/modules/auth/dto"
 	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 )
@@ -20,11 +20,7 @@ func (h HandlerAuth) LoginEmail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tokens, err := h.strategy.Password().Get(auth.Email).
-		Login(user.Email, user.Password, entity.Accountability{
-			IP:        r.RemoteAddr,
-			UserAgent: r.UserAgent(),
-			Origin:    r.Host,
-		})
+		Login(user.Email, user.Password, dto.AccountabilityByRequest(r))
 	if err != nil {
 		respond.Err(err)
 		return
