@@ -19,6 +19,7 @@ func EntityUserByModel(user model.Users) entity.User {
 		Name:     user.Name,
 		Email:    user.Email,
 		PassHash: user.Password,
+		Role:     entity.Role(user.Role),
 		Status:   entity.Status(user.Status),
 		Token:    token,
 	}

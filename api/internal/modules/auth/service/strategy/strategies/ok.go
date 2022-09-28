@@ -5,6 +5,7 @@ import (
 	"golang.org/x/oauth2/odnoklassniki"
 
 	"primedivident/internal/config"
+	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/categorize"
 	"primedivident/internal/modules/auth/service/strategy/repository"
@@ -38,6 +39,6 @@ func (o okStrategy) Callback(state string) string {
 	return o.oauth.AuthCodeURL(state, oauth2.AccessTypeOnline)
 }
 
-func (o okStrategy) Login(code string) (auth.Tokens, error) {
+func (o okStrategy) Login(code string, session entity.FingerprintSession) (auth.Tokens, error) {
 	panic("implement me")
 }

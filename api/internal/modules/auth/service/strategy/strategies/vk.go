@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/vk"
@@ -46,7 +47,7 @@ func (v vkStrategy) Callback(state string) string {
 	return v.oauth.AuthCodeURL(state, oauth2.AccessTypeOnline)
 }
 
-func (v vkStrategy) Login(code string) (auth.Tokens, error) {
+func (v vkStrategy) Login(code string, session entity.FingerprintSession) (auth.Tokens, error) {
 	token, err := v.oauth.Exchange(context.Background(), code)
 	if err != nil {
 		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
@@ -66,17 +67,21 @@ func (v vkStrategy) Login(code string) (auth.Tokens, error) {
 		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
 	}
 
-	jwtUser := entity.JwtUser{
-		Email: token.Extra("email").(string),
-		Name:  fmt.Sprintf("%s %s", body.Response[0].LastName, body.Response[0].FirstName),
-	}
+	networkUser := body.Response[0]
+	_ = token.Extra("email").(string)
+	_ = fmt.Sprintf("%s %s", body.Response[0].LastName, body.Response[0].FirstName)
 
-	genTokens, err := v.jwtTokens.GenTokens(jwtUser)
+	user, err := v.repository.FindUserByNetworkId(strconv.Itoa(networkUser.ID))
 	if err != nil {
 		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
 	}
 
-	v.repository.AttachNetwork(jwtUser, auth.Vk)
+	genTokens, err := v.jwtTokens.GenTokens(user.JwtPayload())
+	if err != nil {
+		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
+	}
+
+	v.repository.AttachNetwork(genTokens.RefreshToken, auth.Vk)
 
 	return genTokens, nil
 }

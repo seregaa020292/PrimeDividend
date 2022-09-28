@@ -3,7 +3,6 @@ package repository
 import (
 	jet "github.com/go-jet/jet/v2/postgres"
 	"github.com/go-jet/jet/v2/qrm"
-	"github.com/google/uuid"
 	"github.com/pkg/errors"
 
 	"primedivident/internal/models/app/public/model"
@@ -18,8 +17,8 @@ import (
 type Repository interface {
 	FindUserByEmail(email string) (entity.User, error)
 	FindUserByNetworkId(id string) (entity.User, error)
-	AttachNetwork(user entity.JwtUser, network auth.Name)
-	SaveRefreshToken(id uuid.UUID, refreshToken token.Token)
+	AttachNetwork(refreshToken token.Token, network auth.Name)
+	SaveRefreshToken(session model.Sessions) error
 }
 
 type repository struct {
@@ -56,10 +55,23 @@ func (r repository) FindUserByNetworkId(id string) (entity.User, error) {
 	panic("implement me")
 }
 
-func (r repository) AttachNetwork(user entity.JwtUser, network auth.Name) {
+func (r repository) AttachNetwork(refreshToken token.Token, network auth.Name) {
 	panic("implement me")
 }
 
-func (r repository) SaveRefreshToken(id uuid.UUID, refreshToken token.Token) {
-	panic("implement me")
+func (r repository) SaveRefreshToken(session model.Sessions) error {
+	stmt := table.Sessions.
+		INSERT(
+			table.Sessions.Token,
+			table.Sessions.ExpiresAt,
+			table.Sessions.UserID,
+			table.Sessions.Strategy,
+			table.Sessions.IP,
+			table.Sessions.UserAgent,
+		).
+		MODEL(session)
+
+	_, err := stmt.Exec(r.db)
+
+	return err
 }

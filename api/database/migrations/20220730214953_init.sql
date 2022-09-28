@@ -3,7 +3,9 @@
 CREATE
     EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE
-    EXTENSION IF NOT EXISTS CITEXT;
+    EXTENSION IF NOT EXISTS citext;
+CREATE
+    EXTENSION IF NOT EXISTS moddatetime;
 
 CREATE TABLE users
 (
@@ -11,13 +13,25 @@ CREATE TABLE users
     name               VARCHAR(32)              NOT NULL DEFAULT '',
     email              VARCHAR(64) UNIQUE       NOT NULL CHECK (email <> ''),
     password           VARCHAR(250)             NOT NULL CHECK (octet_length(password) <> 0),
-    role               VARCHAR(10)              NOT NULL DEFAULT 'user',
+    role               VARCHAR(10)              NOT NULL CHECK (role <> ''),
     avatar             VARCHAR(512),
     status             VARCHAR(250)             NOT NULL CHECK (status <> ''),
     token_join_value   UUID                              DEFAULT uuid_generate_v4(),
     token_join_expires TIMESTAMP                         DEFAULT (NOW() + interval '1 hour'),
     created_at         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at         TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE sessions
+(
+    token      VARCHAR(255) UNIQUE,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    user_id    UUID                     NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    strategy   VARCHAR(100)             NOT NULL CHECK (strategy <> ''),
+    ip         VARCHAR(255)             NOT NULL CHECK (ip <> ''),
+    user_agent VARCHAR(255)             NOT NULL CHECK (user_agent <> ''),
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE currencies
@@ -94,9 +108,20 @@ CREATE TABLE assets
 );
 
 CREATE INDEX IF NOT EXISTS users_token_join_value_id_idx ON users (token_join_value);
+CREATE INDEX IF NOT EXISTS sessions_token_id_idx ON sessions (token);
 CREATE INDEX IF NOT EXISTS markets_title_id_idx ON markets (title);
 CREATE INDEX IF NOT EXISTS markets_ticker_id_idx ON markets (ticker);
 CREATE INDEX IF NOT EXISTS registers_identify_id_idx ON registers (identify);
+
+CREATE TRIGGER users_timestamp BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
+CREATE TRIGGER sessions_timestamp BEFORE UPDATE ON sessions FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
+CREATE TRIGGER currencies_timestamp BEFORE UPDATE ON currencies FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
+CREATE TRIGGER providers_timestamp BEFORE UPDATE ON providers FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
+CREATE TRIGGER instruments_timestamp BEFORE UPDATE ON instruments FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
+CREATE TRIGGER markets_timestamp BEFORE UPDATE ON markets FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
+CREATE TRIGGER registers_timestamp BEFORE UPDATE ON registers FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
+CREATE TRIGGER portfolios_timestamp BEFORE UPDATE ON portfolios FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
+CREATE TRIGGER assets_timestamp BEFORE UPDATE ON assets FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
 
 INSERT INTO currencies (id, title, description)
 VALUES ('e6dffe5f-af39-44c4-a9f2-4938cceb7f7c', 'RUB', 'Рубль'),
@@ -119,6 +144,7 @@ VALUES ('514edc8f-0921-468e-95f4-2284cba5b7bb', 'Tinkoff', 'Тинькофф И�
 -- +goose Down
 -- +goose StatementBegin
 DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS sessions CASCADE;
 DROP TABLE IF EXISTS currencies CASCADE;
 DROP TABLE IF EXISTS providers CASCADE;
 DROP TABLE IF EXISTS instruments CASCADE;
@@ -128,5 +154,6 @@ DROP TABLE IF EXISTS portfolios CASCADE;
 DROP TABLE IF EXISTS assets CASCADE;
 
 DROP EXTENSION IF EXISTS "uuid-ossp";
-DROP EXTENSION IF EXISTS CITEXT;
+DROP EXTENSION IF EXISTS citext;
+DROP EXTENSION IF EXISTS moddatetime;
 -- +goose StatementEnd

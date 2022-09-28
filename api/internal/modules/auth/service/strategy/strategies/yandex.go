@@ -5,6 +5,7 @@ import (
 	"golang.org/x/oauth2/yandex"
 
 	"primedivident/internal/config"
+	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/categorize"
 	"primedivident/internal/modules/auth/service/strategy/repository"
@@ -38,6 +39,6 @@ func (y yandexStrategy) Callback(state string) string {
 	return y.oauth.AuthCodeURL(state, oauth2.AccessTypeOnline)
 }
 
-func (y yandexStrategy) Login(code string) (auth.Tokens, error) {
+func (y yandexStrategy) Login(code string, session entity.FingerprintSession) (auth.Tokens, error) {
 	panic("implement me")
 }

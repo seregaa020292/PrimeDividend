@@ -13,13 +13,14 @@ type User struct {
 	Name     string
 	Email    string
 	PassHash string
+	Role     Role
 	Status   Status
 	Token    Token
 }
 
-type JwtUser struct {
-	Email string `json:"email"`
-	Name  string `json:"name"`
+type JwtPayload struct {
+	ID   uuid.UUID `json:"id"`
+	Role string    `json:"role"`
 }
 
 func NewUser(email, password string) (User, error) {
@@ -32,7 +33,8 @@ func NewUser(email, password string) (User, error) {
 		ID:       uuid.New(),
 		Email:    email,
 		PassHash: pass,
-		Status:   Wait,
+		Role:     UserRole,
+		Status:   WaitStatus,
 		Token:    NewTokenTTL(),
 	}, nil
 }
@@ -41,20 +43,20 @@ func (u User) ComparePasswordHash(password string) error {
 	return hash.Password(password).Verify(u.PassHash)
 }
 
-func (u User) JwtPayload() JwtUser {
-	return JwtUser{
-		Email: u.Email,
-		Name:  u.Name,
+func (u User) JwtPayload() JwtPayload {
+	return JwtPayload{
+		ID:   u.ID,
+		Role: u.Role.String(),
 	}
 }
 
-func (u User) JwtPayloadValidPassword(password string) (JwtUser, error) {
+func (u User) JwtPayloadValidPassword(password string) (JwtPayload, error) {
 	if !u.Status.IsActive() {
-		return JwtUser{}, errors.New("user is not active")
+		return JwtPayload{}, errors.New("user is not active")
 	}
 
 	if err := u.ComparePasswordHash(password); err != nil {
-		return JwtUser{}, err
+		return JwtPayload{}, err
 	}
 
 	return u.JwtPayload(), nil

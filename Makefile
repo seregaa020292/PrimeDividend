@@ -85,7 +85,7 @@ api-gen-oapi:
 	docker-compose exec api-go go generate ./specs/openapi/
 
 api-gen-gojet:
-	docker-compose exec api-go gojet -path=./internal/models
+	docker-compose exec api-go gojet -path=./internal/models -ignore-tables=goose_db_version
 
 # ==============================================================================
 # Migrate postgresql

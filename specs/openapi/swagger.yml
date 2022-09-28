@@ -40,7 +40,7 @@ paths:
     post:
       tags: [ auth ]
       operationId: joinEmail
-      summary: Аутентификация по Email
+      summary: Создание пользователя
       requestBody:
         required: true
         content:
@@ -58,7 +58,7 @@ paths:
     post:
       tags: [ auth ]
       operationId: confirmEmail
-      summary: Авторизация по Email
+      summary: Подтверждение почты
       requestBody:
         required: true
         content:
@@ -74,7 +74,7 @@ paths:
     post:
       tags: [ auth ]
       operationId: loginEmail
-      summary: Логин по Email
+      summary: Аутентификация по Email
       requestBody:
         required: true
         content:
@@ -90,7 +90,7 @@ paths:
     get:
       tags: [ auth ]
       operationId: joinNetwork
-      summary: Аутентификация в соц. сетях
+      summary: Аутентификация в соц. сети
       parameters:
         - $ref: "#/components/parameters/network"
       responses:
@@ -102,7 +102,7 @@ paths:
     get:
       tags: [ auth ]
       operationId: confirmNetwork
-      summary: Авторизация в соц. сетях
+      summary: Авторизация в соц. сети
       parameters:
         - $ref: "#/components/parameters/network"
       responses:
@@ -114,7 +114,7 @@ paths:
     post:
       tags: [ auth ]
       operationId: logout
-      summary: Выйти из аккаунта
+      summary: Выход из аккаунта
       responses:
         200:
           $ref: '#/components/responses/200'

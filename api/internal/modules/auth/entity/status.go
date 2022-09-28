@@ -1,18 +1,18 @@
 package entity
 
 const (
-	Wait   Status = "wait"
-	Active Status = "active"
+	WaitStatus   Status = "wait"
+	ActiveStatus Status = "active"
 )
 
 type Status string
 
 func (s Status) IsWait() bool {
-	return s == Wait
+	return s == WaitStatus
 }
 
 func (s Status) IsActive() bool {
-	return s == Active
+	return s == ActiveStatus
 }
 
 func (s Status) String() string {

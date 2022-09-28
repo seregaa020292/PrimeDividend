@@ -1,5 +1,31 @@
 ##### Аутентификация, авторизация, идентификация #####
 
-#### Выйти из аккаунта
+#### Создание пользователя
+POST {{host}}/auth/email
+Content-type: application/json
+
+{
+  "email": "test@mail.ru",
+  "password": "123456"
+}
+
+#### Подтверждение почты
+POST {{host}}/auth/email/confirm
+Content-type: application/json
+
+{
+  "token": "cccdf7cb-0d48-4fee-bff0-ee477e267cdb"
+}
+
+#### Аутентификация по Email
+POST {{host}}/auth/email/login
+Content-type: application/json
+
+{
+  "email": "test@mail.ru",
+  "password": "123456"
+}
+
+#### Выход из аккаунта
 POST {{host}}/auth/logout
 Cookie: refresh-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiNzhkZTlmOGUtZDE1ZC00YWRlLTg0ZjYtNjMxNTNkZTk3YzU1IiwiaXNzIjoiUHJpbWVEaXZpZGVuZCIsImV4cCI6MTY2OTM5NTMyMywiaWF0IjoxNjY0MjExMzIzfQ.COdqCfJBTZ_23Sy0N6-Yq9wlCfk0RcGYeoWiGFOcMWM

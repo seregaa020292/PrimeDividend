@@ -34,6 +34,7 @@ func (r repository) Add(user model.Users) error {
 	stmt := table.Users.INSERT(
 		table.Users.Email,
 		table.Users.Password,
+		table.Users.Role,
 		table.Users.Status,
 		table.Users.TokenJoinValue,
 		table.Users.TokenJoinExpires,
@@ -64,7 +65,7 @@ func (r repository) FindByTokenJoin(tokenValue uuid.UUID) (entity.User, error) {
 func (r repository) Confirm(tokenValue uuid.UUID) error {
 	stmt := table.Users.
 		UPDATE(table.Users.Status, table.Users.TokenJoinValue, table.Users.TokenJoinExpires).
-		SET(entity.Active, nil, nil).
+		SET(entity.ActiveStatus, nil, nil).
 		WHERE(table.Users.TokenJoinValue.EQ(jet.UUID(tokenValue)))
 
 	_, err := stmt.Exec(r.db)
