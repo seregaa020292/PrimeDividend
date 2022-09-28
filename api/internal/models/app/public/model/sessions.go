@@ -13,7 +13,7 @@ import (
 )
 
 type Sessions struct {
-	Token     *string
+	Token     string
 	ExpiresAt time.Time
 	UserID    uuid.UUID
 	Strategy  string

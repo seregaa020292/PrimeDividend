@@ -24,7 +24,7 @@ CREATE TABLE users
 
 CREATE TABLE sessions
 (
-    token      VARCHAR(255) UNIQUE,
+    token      VARCHAR(255) UNIQUE      NOT NULL,
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
     user_id    UUID                     NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     strategy   VARCHAR(100)             NOT NULL CHECK (strategy <> ''),

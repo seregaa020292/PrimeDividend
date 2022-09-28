@@ -9,6 +9,6 @@ type (
 	NetworkStrategies = maps[NetworkStrategy]
 	NetworkStrategy   interface {
 		Callback(state string) string
-		Login(code string, session entity.FingerprintSession) (auth.Tokens, error)
+		Login(code string, fingerprint entity.FingerprintSession) (auth.Tokens, error)
 	}
 )

@@ -39,6 +39,6 @@ func (y yandexStrategy) Callback(state string) string {
 	return y.oauth.AuthCodeURL(state, oauth2.AccessTypeOnline)
 }
 
-func (y yandexStrategy) Login(code string, session entity.FingerprintSession) (auth.Tokens, error) {
+func (y yandexStrategy) Login(code string, fingerprint entity.FingerprintSession) (auth.Tokens, error) {
 	panic("implement me")
 }
