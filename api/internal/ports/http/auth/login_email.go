@@ -19,12 +19,11 @@ func (h HandlerAuth) LoginEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokens, err := h.strategy.Password().Get(auth.Email).Login(
-		user.Email,
-		user.Password,
-		entity.FingerprintSession{
+	tokens, err := h.strategy.Password().Get(auth.Email).
+		Login(user.Email, user.Password, entity.FingerprintSession{
 			IP:        r.RemoteAddr,
 			UserAgent: r.UserAgent(),
+			Origin:    r.Host,
 		})
 	if err != nil {
 		respond.Err(err)

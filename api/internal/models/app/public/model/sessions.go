@@ -19,6 +19,7 @@ type Sessions struct {
 	Strategy  string
 	IP        string
 	UserAgent string
+	Origin    string
 	CreatedAt time.Time
 	UpdatedAt *time.Time
 }

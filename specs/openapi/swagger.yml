@@ -17,7 +17,7 @@ servers:
 
 tags:
   - name: auth
-    description: "Аутентификация, авторизация, идентификация"
+    description: "Аутентификация и авторизация"
   - name: user
     description: "Инвестор"
   - name: currency
@@ -90,7 +90,7 @@ paths:
     get:
       tags: [ auth ]
       operationId: joinNetwork
-      summary: Аутентификация в соц. сети
+      summary: Аутентификация через соц. сети
       parameters:
         - $ref: "#/components/parameters/network"
       responses:
@@ -102,7 +102,7 @@ paths:
     get:
       tags: [ auth ]
       operationId: confirmNetwork
-      summary: Авторизация в соц. сети
+      summary: Авторизация через соц. сети
       parameters:
         - $ref: "#/components/parameters/network"
       responses:

@@ -19,6 +19,7 @@ type Repository interface {
 	FindUserByNetworkId(id string) (entity.User, error)
 	AttachNetwork(refreshToken token.Token, network auth.Name)
 	SaveRefreshToken(session model.Sessions) error
+	RemoveRefreshToken(refreshToken string) error
 }
 
 type repository struct {
@@ -68,8 +69,19 @@ func (r repository) SaveRefreshToken(session model.Sessions) error {
 			table.Sessions.Strategy,
 			table.Sessions.IP,
 			table.Sessions.UserAgent,
+			table.Sessions.Origin,
 		).
 		MODEL(session)
+
+	_, err := stmt.Exec(r.db)
+
+	return err
+}
+
+func (r repository) RemoveRefreshToken(refreshToken string) error {
+	stmt := table.Sessions.
+		DELETE().
+		WHERE(table.Sessions.Token.EQ(jet.String(refreshToken)))
 
 	_, err := stmt.Exec(r.db)
 

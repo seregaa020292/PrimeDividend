@@ -44,6 +44,7 @@ func (e emailStrategy) Login(email, password string, fingerprint entity.Fingerpr
 		Strategy:  auth.Email.String(),
 		IP:        fingerprint.IP,
 		UserAgent: fingerprint.UserAgent,
+		Origin:    fingerprint.Origin,
 	}); err != nil {
 		return auth.Tokens{}, err
 	}

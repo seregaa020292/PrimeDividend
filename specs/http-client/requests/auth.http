@@ -1,4 +1,4 @@
-##### Аутентификация, авторизация, идентификация #####
+##### Аутентификация и авторизация #####
 
 #### Создание пользователя
 POST {{host}}/auth/email
@@ -14,7 +14,7 @@ POST {{host}}/auth/email/confirm
 Content-type: application/json
 
 {
-  "token": "cccdf7cb-0d48-4fee-bff0-ee477e267cdb"
+  "token": "49e84101-8c73-42fc-accf-316e72e70a95"
 }
 
 #### Аутентификация по Email
@@ -28,4 +28,4 @@ Content-type: application/json
 
 #### Выход из аккаунта
 POST {{host}}/auth/logout
-Cookie: refresh-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiNzhkZTlmOGUtZDE1ZC00YWRlLTg0ZjYtNjMxNTNkZTk3YzU1IiwiaXNzIjoiUHJpbWVEaXZpZGVuZCIsImV4cCI6MTY2OTM5NTMyMywiaWF0IjoxNjY0MjExMzIzfQ.COdqCfJBTZ_23Sy0N6-Yq9wlCfk0RcGYeoWiGFOcMWM
+Cookie: refresh-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiNDkwYTAyN2EtN2Y1NC00YzI0LTkyZGUtMjdhYzkyNjhiZDcxIiwiaXNzIjoiUHJpbWVEaXZpZGVuZCIsImV4cCI6MTY2OTU4MjEwNCwiaWF0IjoxNjY0Mzk4MTA0fQ.tTPyBr_xO0W9SDLzRyZvTFCmQQ0WcijNLg1XGxtMMgI

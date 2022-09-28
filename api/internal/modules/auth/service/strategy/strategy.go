@@ -43,7 +43,11 @@ func (s strategy) Verify(accessToken string) error {
 }
 
 func (s strategy) Logout(refreshToken string) error {
-	panic("implement me")
+	if _, err := s.jwtTokens.ValidateRefreshToken(refreshToken); err != nil {
+		return err
+	}
+
+	return s.repository.RemoveRefreshToken(refreshToken)
 }
 
 func (s strategy) Refresh(refreshToken string) (auth.Tokens, error) {

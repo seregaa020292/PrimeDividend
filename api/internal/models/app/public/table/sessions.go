@@ -23,6 +23,7 @@ type sessionsTable struct {
 	Strategy  postgres.ColumnString
 	IP        postgres.ColumnString
 	UserAgent postgres.ColumnString
+	Origin    postgres.ColumnString
 	CreatedAt postgres.ColumnTimestampz
 	UpdatedAt postgres.ColumnTimestampz
 
@@ -71,10 +72,11 @@ func newSessionsTableImpl(schemaName, tableName, alias string) sessionsTable {
 		StrategyColumn  = postgres.StringColumn("strategy")
 		IPColumn        = postgres.StringColumn("ip")
 		UserAgentColumn = postgres.StringColumn("user_agent")
+		OriginColumn    = postgres.StringColumn("origin")
 		CreatedAtColumn = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn = postgres.TimestampzColumn("updated_at")
-		allColumns      = postgres.ColumnList{TokenColumn, ExpiresAtColumn, UserIDColumn, StrategyColumn, IPColumn, UserAgentColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns  = postgres.ColumnList{TokenColumn, ExpiresAtColumn, UserIDColumn, StrategyColumn, IPColumn, UserAgentColumn, CreatedAtColumn, UpdatedAtColumn}
+		allColumns      = postgres.ColumnList{TokenColumn, ExpiresAtColumn, UserIDColumn, StrategyColumn, IPColumn, UserAgentColumn, OriginColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns  = postgres.ColumnList{TokenColumn, ExpiresAtColumn, UserIDColumn, StrategyColumn, IPColumn, UserAgentColumn, OriginColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return sessionsTable{
@@ -87,6 +89,7 @@ func newSessionsTableImpl(schemaName, tableName, alias string) sessionsTable {
 		Strategy:  StrategyColumn,
 		IP:        IPColumn,
 		UserAgent: UserAgentColumn,
+		Origin:    OriginColumn,
 		CreatedAt: CreatedAtColumn,
 		UpdatedAt: UpdatedAtColumn,
 

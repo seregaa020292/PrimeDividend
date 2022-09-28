@@ -30,6 +30,7 @@ CREATE TABLE sessions
     strategy   VARCHAR(100)             NOT NULL CHECK (strategy <> ''),
     ip         VARCHAR(255)             NOT NULL CHECK (ip <> ''),
     user_agent VARCHAR(255)             NOT NULL CHECK (user_agent <> ''),
+    origin     VARCHAR(255)             NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
 );
