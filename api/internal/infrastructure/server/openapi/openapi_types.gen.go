@@ -86,6 +86,9 @@ type PortfolioUpdate struct {
 	UserId     openapi_types.UUID `json:"userId" validate:"required,uuid"`
 }
 
+// Code defines model for code.
+type Code = string
+
 // Network defines model for network.
 type Network = string
 
@@ -109,6 +112,11 @@ type ConfirmEmailJSONBody = AuthConfirm
 
 // LoginEmailJSONBody defines parameters for LoginEmail.
 type LoginEmailJSONBody = LoginUser
+
+// ConfirmNetworkParams defines parameters for ConfirmNetwork.
+type ConfirmNetworkParams struct {
+	Code Code `form:"code" json:"code"`
+}
 
 // CreatePortfolioJSONBody defines parameters for CreatePortfolio.
 type CreatePortfolioJSONBody = PortfolioUpdate

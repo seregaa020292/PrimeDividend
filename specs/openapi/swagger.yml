@@ -112,6 +112,7 @@ paths:
       summary: Авторизация через соц. сети
       parameters:
         - $ref: '#/components/parameters/network'
+        - $ref: '#/components/parameters/code'
       responses:
         200:
           description: ''
@@ -226,6 +227,12 @@ components:
     network:
       in: path
       name: network
+      schema:
+        type: string
+      required: true
+    code:
+      in: query
+      name: code
       schema:
         type: string
       required: true

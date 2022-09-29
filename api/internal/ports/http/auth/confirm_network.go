@@ -11,7 +11,12 @@ import (
 	"primedivident/pkg/errorn"
 )
 
-func (h HandlerAuth) ConfirmNetwork(w http.ResponseWriter, r *http.Request, network openapi.Network) {
+func (h HandlerAuth) ConfirmNetwork(
+	w http.ResponseWriter,
+	r *http.Request,
+	network openapi.Network,
+	params openapi.ConfirmNetworkParams,
+) {
 	respond := h.responder.Http(w, r)
 
 	if err := strategy.ValidateOauthState(r); err != nil {
@@ -26,7 +31,7 @@ func (h HandlerAuth) ConfirmNetwork(w http.ResponseWriter, r *http.Request, netw
 		return
 	}
 
-	tokens, err := strategyNetwork.Login(r.FormValue("code"), dto.AccountabilityByRequest(r))
+	tokens, err := strategyNetwork.Login(params.Code, dto.AccountabilityByRequest(r))
 	if err != nil {
 		respond.Err(errorn.ErrUnauthorized.Wrap(err))
 		return
