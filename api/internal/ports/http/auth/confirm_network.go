@@ -33,7 +33,7 @@ func (h HandlerAuth) ConfirmNetwork(
 
 	tokens, err := strategyNetwork.Login(params.Code, dto.AccountabilityByRequest(r))
 	if err != nil {
-		respond.Err(errorn.ErrUnauthorized.Wrap(err))
+		respond.Err(err)
 		return
 	}
 

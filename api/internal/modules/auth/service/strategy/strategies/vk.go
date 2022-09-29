@@ -1,8 +1,6 @@
 package strategies
 
 import (
-	"context"
-	"encoding/json"
 	"fmt"
 	"strconv"
 
@@ -10,27 +8,21 @@ import (
 	"golang.org/x/oauth2/vk"
 
 	"primedivident/internal/config"
-	"primedivident/internal/modules/auth/dto"
 	"primedivident/internal/modules/auth/entity"
+	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/categorize"
-	"primedivident/internal/modules/auth/service/strategy/repository"
 	"primedivident/pkg/errorn"
 )
 
 const OauthVkUrlAPI = "https://api.vk.com/method/users.get?v=5.131&album_id=wall"
 
 type vkStrategy struct {
-	oauth      *oauth2.Config
-	jwtTokens  auth.JwtTokens
-	repository repository.Repository
+	oauth *oauth2.Config
+	strategy.Service
 }
 
-func NewVkStrategy(
-	cfg config.VkOAuth2,
-	jwtTokens auth.JwtTokens,
-	repository repository.Repository,
-) categorize.NetworkStrategy {
+func NewVkStrategy(cfg config.VkOAuth2, service strategy.Service) categorize.NetworkStrategy {
 	return vkStrategy{
 		oauth: &oauth2.Config{
 			ClientID:     cfg.ClientID,
@@ -39,8 +31,7 @@ func NewVkStrategy(
 			Scopes:       cfg.Scopes,
 			Endpoint:     vk.Endpoint,
 		},
-		jwtTokens:  jwtTokens,
-		repository: repository,
+		Service: service,
 	}
 }
 
@@ -49,87 +40,23 @@ func (v vkStrategy) Callback(state string) string {
 }
 
 func (v vkStrategy) Login(code string, accountability entity.Accountability) (auth.Tokens, error) {
-	network, err := v.authorization(code)
+	var response responseVK
+
+	token, err := v.ClientNetwork(&response, v.oauth, code, OauthVkUrlAPI)
+	if err != nil {
+		return auth.Tokens{}, err
+	}
+
+	network := entity.Network{
+		Identity: strconv.Itoa(response.Response[0].ID),
+		Email:    token.Extra("email").(string),
+		Name:     fmt.Sprintf("%s %s", response.Response[0].LastName, response.Response[0].FirstName),
+	}
+
+	user, err := v.UserAttachNetwork(network, auth.Vk)
 	if err != nil {
 		return auth.Tokens{}, errorn.ErrUnauthorized.Wrap(err)
 	}
 
-	user, err := v.repository.FindUserByEmail(network.Email)
-	if err != nil {
-		return auth.Tokens{}, errorn.ErrSelect.Wrap(err)
-	}
-
-	if user.IsEmpty() {
-		user = entity.NewUserNetwork(network.Email, network.Name)
-
-		if err := v.repository.CreateUser(dto.ModelUserByEntity(user)); err != nil {
-			return auth.Tokens{}, errorn.ErrInsert.Wrap(err)
-		}
-	}
-
-	if err := user.ErrorIsActiveStatus(); err != nil {
-		return auth.Tokens{}, errorn.ErrNotFound.Wrap(err)
-	}
-
-	userNetwork, err := v.repository.FindNetworkByID(network.Identity, auth.Vk)
-	if err != nil {
-		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
-	}
-
-	if userNetwork.IsEmpty() {
-		if err := v.repository.AttachNetwork(dto.ModelUserNetworksCreating(network, user.ID, auth.Vk)); err != nil {
-			return auth.Tokens{}, errorn.ErrInsert.Wrap(err)
-		}
-	}
-
-	genTokens, err := v.jwtTokens.GenTokens(user.JwtPayload())
-	if err != nil {
-		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
-	}
-
-	if err := v.repository.SaveRefreshToken(dto.ModelSessionCreating(
-		user.ID,
-		auth.Vk,
-		genTokens.RefreshToken,
-		accountability,
-	)); err != nil {
-		return auth.Tokens{}, err
-	}
-
-	if err := v.repository.RemoveExpireRefreshToken(user.ID); err != nil {
-		return auth.Tokens{}, err
-	}
-
-	if err := v.repository.RemoveLastRefreshToken(user.ID); err != nil {
-		return auth.Tokens{}, err
-	}
-
-	return genTokens, nil
-}
-
-func (v vkStrategy) authorization(code string) (entity.Network, error) {
-	token, err := v.oauth.Exchange(context.Background(), code)
-	if err != nil {
-		return entity.Network{}, errorn.ErrUnknown.Wrap(err)
-	}
-
-	client := v.oauth.Client(context.Background(), token)
-
-	response, err := client.Get(OauthVkUrlAPI)
-	if err != nil {
-		return entity.Network{}, errorn.ErrUnknown.Wrap(err)
-	}
-	defer response.Body.Close()
-
-	var body vkBody
-	if err := json.NewDecoder(response.Body).Decode(&body); err != nil {
-		return entity.Network{}, errorn.ErrUnknown.Wrap(err)
-	}
-	bodyResponse := body.Response[0]
-
-	return entity.Network{
-		Identity: strconv.Itoa(bodyResponse.ID),
-		Email:    token.Extra("email").(string),
-		Name:     fmt.Sprintf("%s %s", bodyResponse.LastName, bodyResponse.FirstName),
-	}, nil
+	return v.CreateSessionTokens(auth.Vk, user, accountability)
 }

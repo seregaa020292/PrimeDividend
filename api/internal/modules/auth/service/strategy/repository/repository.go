@@ -105,16 +105,15 @@ func (r repository) CreateUser(user model.Users) error {
 }
 
 func (r repository) SaveRefreshToken(session model.Sessions) error {
-	stmt := table.Sessions.
-		INSERT(
-			table.Sessions.Token,
-			table.Sessions.ExpiresAt,
-			table.Sessions.UserID,
-			table.Sessions.Strategy,
-			table.Sessions.IP,
-			table.Sessions.UserAgent,
-			table.Sessions.Origin,
-		).
+	stmt := table.Sessions.INSERT(
+		table.Sessions.Token,
+		table.Sessions.ExpiresAt,
+		table.Sessions.UserID,
+		table.Sessions.Strategy,
+		table.Sessions.IP,
+		table.Sessions.UserAgent,
+		table.Sessions.Origin,
+	).
 		MODEL(session)
 
 	_, err := stmt.Exec(r.db)
@@ -123,8 +122,7 @@ func (r repository) SaveRefreshToken(session model.Sessions) error {
 }
 
 func (r repository) RemoveRefreshToken(refreshToken string) error {
-	stmt := table.Sessions.
-		DELETE().
+	stmt := table.Sessions.DELETE().
 		WHERE(table.Sessions.Token.EQ(jet.String(refreshToken)))
 
 	_, err := stmt.Exec(r.db)
@@ -133,8 +131,7 @@ func (r repository) RemoveRefreshToken(refreshToken string) error {
 }
 
 func (r repository) RemoveExpireRefreshToken(userID uuid.UUID) error {
-	stmt := table.Sessions.
-		DELETE().
+	stmt := table.Sessions.DELETE().
 		WHERE(jet.AND(
 			table.Sessions.UserID.EQ(jet.UUID(userID)),
 			table.Sessions.ExpiresAt.LT(jet.TimestampzT(time.Now())),
@@ -146,8 +143,7 @@ func (r repository) RemoveExpireRefreshToken(userID uuid.UUID) error {
 }
 
 func (r repository) RemoveLastRefreshToken(userID uuid.UUID) error {
-	stmt := table.Sessions.
-		DELETE().
+	stmt := table.Sessions.DELETE().
 		WHERE(jet.AND(
 			table.Sessions.UserID.EQ(jet.UUID(userID)),
 			table.Sessions.ID.NOT_IN(
@@ -165,12 +161,11 @@ func (r repository) RemoveLastRefreshToken(userID uuid.UUID) error {
 }
 
 func (r repository) AttachNetwork(network model.UserNetworks) error {
-	stmt := table.UserNetworks.
-		INSERT(
-			table.UserNetworks.UserID,
-			table.UserNetworks.Identity,
-			table.UserNetworks.Strategy,
-		).
+	stmt := table.UserNetworks.INSERT(
+		table.UserNetworks.UserID,
+		table.UserNetworks.Identity,
+		table.UserNetworks.Strategy,
+	).
 		MODEL(network)
 
 	_, err := stmt.Exec(r.db)

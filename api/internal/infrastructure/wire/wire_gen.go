@@ -39,7 +39,7 @@ import (
 // Injectors from wire.go:
 
 func Initialize(cfg config.Config) server.Server {
-	serverMiddlewares := middlewares.NewMiddlewares()
+	serverMiddlewares := middlewares.NewMiddlewares(cfg)
 	jwtTokens := ProvideJwtTokens(cfg)
 	postgres := ProvidePostgres(cfg)
 	repositoryRepository := repository.NewRepository(postgres)

@@ -6,22 +6,17 @@ import (
 
 	"primedivident/internal/config"
 	"primedivident/internal/modules/auth/entity"
+	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/categorize"
-	"primedivident/internal/modules/auth/service/strategy/repository"
 )
 
 type yandexStrategy struct {
-	oauth      *oauth2.Config
-	jwtTokens  auth.JwtTokens
-	repository repository.Repository
+	oauth *oauth2.Config
+	strategy.Service
 }
 
-func NewYandexStrategy(
-	cfg config.YandexOAuth2,
-	jwtTokens auth.JwtTokens,
-	repository repository.Repository,
-) categorize.NetworkStrategy {
+func NewYandexStrategy(cfg config.YandexOAuth2, service strategy.Service) categorize.NetworkStrategy {
 	return yandexStrategy{
 		oauth: &oauth2.Config{
 			ClientID:     cfg.ClientID,
@@ -30,8 +25,7 @@ func NewYandexStrategy(
 			RedirectURL:  cfg.RedirectUrl(),
 			Scopes:       cfg.Scopes,
 		},
-		jwtTokens:  jwtTokens,
-		repository: repository,
+		Service: service,
 	}
 }
 

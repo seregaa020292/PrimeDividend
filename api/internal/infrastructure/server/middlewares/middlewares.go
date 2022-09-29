@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httprate"
 
+	"primedivident/internal/config"
 	"primedivident/internal/config/consts"
 	"primedivident/internal/infrastructure/server"
 )
@@ -14,10 +15,11 @@ import (
 type middlewareFunc = func(next http.Handler) http.Handler
 
 type middlewares struct {
+	cfg config.Config
 }
 
-func NewMiddlewares() server.Middlewares {
-	return middlewares{}
+func NewMiddlewares(cfg config.Config) server.Middlewares {
+	return middlewares{cfg}
 }
 
 func (m middlewares) Setup(router chi.Router) {

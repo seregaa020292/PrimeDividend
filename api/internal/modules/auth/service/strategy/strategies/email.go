@@ -1,28 +1,23 @@
 package strategies
 
 import (
-	"primedivident/internal/modules/auth/dto"
 	"primedivident/internal/modules/auth/entity"
+	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/categorize"
-	"primedivident/internal/modules/auth/service/strategy/repository"
 	"primedivident/pkg/errorn"
 )
 
 type emailStrategy struct {
-	jwtTokens  auth.JwtTokens
-	repository repository.Repository
+	strategy.Service
 }
 
-func NewEmailStrategy(jwtTokens auth.JwtTokens, repository repository.Repository) categorize.PasswordStrategy {
-	return emailStrategy{
-		jwtTokens:  jwtTokens,
-		repository: repository,
-	}
+func NewEmailStrategy(service strategy.Service) categorize.PasswordStrategy {
+	return emailStrategy{Service: service}
 }
 
 func (e emailStrategy) Login(email, password string, accountability entity.Accountability) (auth.Tokens, error) {
-	user, err := e.repository.FindUserByEmail(email)
+	user, err := e.Repository.FindUserByEmail(email)
 	if err != nil {
 		return auth.Tokens{}, errorn.ErrSelect.Wrap(err)
 	}
@@ -31,32 +26,9 @@ func (e emailStrategy) Login(email, password string, accountability entity.Accou
 		return auth.Tokens{}, errorn.ErrNotFound.Wrap(err)
 	}
 
-	jwtPayload, err := user.JwtPayloadValidPassword(password)
-	if err != nil {
+	if err = user.ValidPasswordActive(password); err != nil {
 		return auth.Tokens{}, errorn.ErrForbidden.Wrap(err)
 	}
 
-	genTokens, err := e.jwtTokens.GenTokens(jwtPayload)
-	if err != nil {
-		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
-	}
-
-	if err := e.repository.SaveRefreshToken(dto.ModelSessionCreating(
-		user.ID,
-		auth.Email,
-		genTokens.RefreshToken,
-		accountability,
-	)); err != nil {
-		return auth.Tokens{}, err
-	}
-
-	if err := e.repository.RemoveExpireRefreshToken(user.ID); err != nil {
-		return auth.Tokens{}, err
-	}
-
-	if err := e.repository.RemoveLastRefreshToken(user.ID); err != nil {
-		return auth.Tokens{}, err
-	}
-
-	return genTokens, nil
+	return e.CreateSessionTokens(auth.Email, user, accountability)
 }

@@ -1,6 +1,6 @@
 package strategies
 
-type vkBody struct {
+type responseVK struct {
 	Response []struct {
 		ID        int    `json:"id"`
 		FirstName string `json:"first_name"`
@@ -8,8 +8,8 @@ type vkBody struct {
 	} `json:"response"`
 }
 
-type okBody struct {
+type responseOK struct {
 }
 
-type yandexBody struct {
+type responseYandex struct {
 }

@@ -69,16 +69,16 @@ func (u User) JwtPayload() JwtPayload {
 	}
 }
 
-func (u User) JwtPayloadValidPassword(password string) (JwtPayload, error) {
+func (u User) ValidPasswordActive(password string) error {
 	if err := u.ErrorIsActiveStatus(); err != nil {
-		return JwtPayload{}, err
+		return err
 	}
 
 	if err := u.ComparePasswordHash(password); err != nil {
-		return JwtPayload{}, err
+		return err
 	}
 
-	return u.JwtPayload(), nil
+	return nil
 }
 
 func (u User) IsEmpty() bool {
