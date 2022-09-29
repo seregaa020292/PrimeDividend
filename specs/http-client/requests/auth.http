@@ -15,7 +15,7 @@ POST {{host}}/auth/email/confirm
 Content-type: application/json
 
 {
-  "token": "49e84101-8c73-42fc-accf-316e72e70a95"
+  "token": "f58d28cc-391b-4ba3-827a-17ebf818308b"
 }
 
 #### Аутентификация по Email
@@ -27,8 +27,11 @@ Content-type: application/json
   "password": "123456"
 }
 
+#### Аутентификация через соц. сети
+GET {{host}}/auth/vk
+
 #### Обновить токены
-POST {{host}}/auth/refreshtoken
+POST {{host}}/auth/refresh-token
 Cookie: refresh-token=
 
 #### Выход из аккаунта

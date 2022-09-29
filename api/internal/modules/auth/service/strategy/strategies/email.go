@@ -1,7 +1,7 @@
 package strategies
 
 import (
-	"primedivident/internal/models/app/public/model"
+	"primedivident/internal/modules/auth/dto"
 	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/categorize"
@@ -27,6 +27,10 @@ func (e emailStrategy) Login(email, password string, accountability entity.Accou
 		return auth.Tokens{}, errorn.ErrSelect.Wrap(err)
 	}
 
+	if err := user.ErrorIsEmpty(); err != nil {
+		return auth.Tokens{}, errorn.ErrNotFound.Wrap(err)
+	}
+
 	jwtPayload, err := user.JwtPayloadValidPassword(password)
 	if err != nil {
 		return auth.Tokens{}, errorn.ErrForbidden.Wrap(err)
@@ -37,15 +41,20 @@ func (e emailStrategy) Login(email, password string, accountability entity.Accou
 		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
 	}
 
-	if err := e.repository.SaveRefreshToken(model.Sessions{
-		Token:     genTokens.RefreshToken.Value,
-		ExpiresAt: genTokens.RefreshToken.ExpiresAt,
-		UserID:    user.ID,
-		Strategy:  auth.Email.String(),
-		IP:        accountability.IP,
-		UserAgent: accountability.UserAgent,
-		Origin:    accountability.Origin,
-	}); err != nil {
+	if err := e.repository.SaveRefreshToken(dto.ModelSessionCreating(
+		user.ID,
+		auth.Email,
+		genTokens.RefreshToken,
+		accountability,
+	)); err != nil {
+		return auth.Tokens{}, err
+	}
+
+	if err := e.repository.RemoveExpireRefreshToken(user.ID); err != nil {
+		return auth.Tokens{}, err
+	}
+
+	if err := e.repository.RemoveLastRefreshToken(user.ID); err != nil {
 		return auth.Tokens{}, err
 	}
 

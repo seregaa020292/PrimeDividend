@@ -124,7 +124,7 @@ paths:
                     $ref: '#/components/schemas/authToken'
         500:
           $ref: '#/components/responses/500'
-  /auth/refreshtoken:
+  /auth/refresh-token:
     post:
       tags: [ auth ]
       operationId: refreshToken

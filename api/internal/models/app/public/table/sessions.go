@@ -17,6 +17,7 @@ type sessionsTable struct {
 	postgres.Table
 
 	//Columns
+	ID        postgres.ColumnString
 	Token     postgres.ColumnString
 	ExpiresAt postgres.ColumnTimestampz
 	UserID    postgres.ColumnString
@@ -66,6 +67,7 @@ func newSessionsTable(schemaName, tableName, alias string) *SessionsTable {
 
 func newSessionsTableImpl(schemaName, tableName, alias string) sessionsTable {
 	var (
+		IDColumn        = postgres.StringColumn("id")
 		TokenColumn     = postgres.StringColumn("token")
 		ExpiresAtColumn = postgres.TimestampzColumn("expires_at")
 		UserIDColumn    = postgres.StringColumn("user_id")
@@ -75,7 +77,7 @@ func newSessionsTableImpl(schemaName, tableName, alias string) sessionsTable {
 		OriginColumn    = postgres.StringColumn("origin")
 		CreatedAtColumn = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn = postgres.TimestampzColumn("updated_at")
-		allColumns      = postgres.ColumnList{TokenColumn, ExpiresAtColumn, UserIDColumn, StrategyColumn, IPColumn, UserAgentColumn, OriginColumn, CreatedAtColumn, UpdatedAtColumn}
+		allColumns      = postgres.ColumnList{IDColumn, TokenColumn, ExpiresAtColumn, UserIDColumn, StrategyColumn, IPColumn, UserAgentColumn, OriginColumn, CreatedAtColumn, UpdatedAtColumn}
 		mutableColumns  = postgres.ColumnList{TokenColumn, ExpiresAtColumn, UserIDColumn, StrategyColumn, IPColumn, UserAgentColumn, OriginColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
@@ -83,6 +85,7 @@ func newSessionsTableImpl(schemaName, tableName, alias string) sessionsTable {
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
+		ID:        IDColumn,
 		Token:     TokenColumn,
 		ExpiresAt: ExpiresAtColumn,
 		UserID:    UserIDColumn,

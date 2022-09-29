@@ -12,18 +12,19 @@ CREATE TABLE users
     id                 UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
     name               VARCHAR(32)              NOT NULL DEFAULT '',
     email              VARCHAR(64) UNIQUE       NOT NULL CHECK (email <> ''),
-    password           VARCHAR(250)             NOT NULL CHECK (octet_length(password) <> 0),
+    password           VARCHAR(250),
     role               VARCHAR(10)              NOT NULL CHECK (role <> ''),
     avatar             VARCHAR(512),
     status             VARCHAR(250)             NOT NULL CHECK (status <> ''),
-    token_join_value   UUID                              DEFAULT uuid_generate_v4(),
-    token_join_expires TIMESTAMP                         DEFAULT (NOW() + interval '1 hour'),
+    token_join_value   UUID,
+    token_join_expires TIMESTAMP,
     created_at         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at         TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE sessions
 (
+    id         UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
     token      VARCHAR(255) UNIQUE      NOT NULL,
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
     user_id    UUID                     NOT NULL REFERENCES users (id) ON DELETE CASCADE,
@@ -31,6 +32,16 @@ CREATE TABLE sessions
     ip         VARCHAR(255)             NOT NULL CHECK (ip <> ''),
     user_agent VARCHAR(255)             NOT NULL CHECK (user_agent <> ''),
     origin     VARCHAR(255)             NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_networks
+(
+    id         UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
+    user_id    UUID                     NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    identity   VARCHAR(255) UNIQUE      NOT NULL CHECK (identity <> ''),
+    strategy   VARCHAR(100)         NOT NULL CHECK (strategy <> ''),
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
 );
@@ -110,12 +121,14 @@ CREATE TABLE assets
 
 CREATE INDEX IF NOT EXISTS users_token_join_value_id_idx ON users (token_join_value);
 CREATE INDEX IF NOT EXISTS sessions_token_id_idx ON sessions (token);
+CREATE INDEX IF NOT EXISTS user_networks_identity_id_idx ON user_networks (identity);
 CREATE INDEX IF NOT EXISTS markets_title_id_idx ON markets (title);
 CREATE INDEX IF NOT EXISTS markets_ticker_id_idx ON markets (ticker);
 CREATE INDEX IF NOT EXISTS registers_identify_id_idx ON registers (identify);
 
 CREATE TRIGGER users_timestamp BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
 CREATE TRIGGER sessions_timestamp BEFORE UPDATE ON sessions FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
+CREATE TRIGGER user_networks_timestamp BEFORE UPDATE ON user_networks FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
 CREATE TRIGGER currencies_timestamp BEFORE UPDATE ON currencies FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
 CREATE TRIGGER providers_timestamp BEFORE UPDATE ON providers FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
 CREATE TRIGGER instruments_timestamp BEFORE UPDATE ON instruments FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
@@ -146,6 +159,7 @@ VALUES ('514edc8f-0921-468e-95f4-2284cba5b7bb', 'Tinkoff', 'Тинькофф И�
 -- +goose StatementBegin
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS sessions CASCADE;
+DROP TABLE IF EXISTS user_networks CASCADE;
 DROP TABLE IF EXISTS currencies CASCADE;
 DROP TABLE IF EXISTS providers CASCADE;
 DROP TABLE IF EXISTS instruments CASCADE;

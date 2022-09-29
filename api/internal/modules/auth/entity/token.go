@@ -7,17 +7,18 @@ import (
 
 	"primedivident/internal/config/consts"
 	"primedivident/pkg/datetime"
+	"primedivident/pkg/utils/gog"
 )
 
 type Token struct {
-	Value   uuid.UUID
-	Expires time.Time
+	Value   *uuid.UUID
+	Expires *time.Time
 }
 
 func NewToken(d time.Duration) Token {
 	return Token{
-		Value:   uuid.New(),
-		Expires: datetime.GetNow().Add(d),
+		Value:   gog.Ptr(uuid.New()),
+		Expires: gog.Ptr(datetime.GetNow().Add(d)),
 	}
 }
 
@@ -30,7 +31,7 @@ func (t Token) String() string {
 }
 
 func (t Token) GetExpires() time.Time {
-	return t.Expires
+	return *t.Expires
 }
 
 func (t Token) Valid(value string, expires time.Time) bool {

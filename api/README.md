@@ -3,7 +3,6 @@
 ### TODO:
 
 - OAuth
-    - Login email
     - Attach networks
     - Login vk
     - Login ok

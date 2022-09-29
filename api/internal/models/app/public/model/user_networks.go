@@ -12,15 +12,11 @@ import (
 	"time"
 )
 
-type Sessions struct {
+type UserNetworks struct {
 	ID        uuid.UUID `sql:"primary_key"`
-	Token     string
-	ExpiresAt time.Time
 	UserID    uuid.UUID
+	Identity  string
 	Strategy  string
-	IP        string
-	UserAgent string
-	Origin    string
 	CreatedAt time.Time
 	UpdatedAt *time.Time
 }
