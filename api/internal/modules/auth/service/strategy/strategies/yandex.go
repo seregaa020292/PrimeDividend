@@ -1,6 +1,8 @@
 package strategies
 
 import (
+	"log"
+
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/yandex"
 
@@ -9,7 +11,10 @@ import (
 	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/categorize"
+	"primedivident/pkg/errorn"
 )
+
+const OauthUrlYandex = ""
 
 type yandexStrategy struct {
 	oauth *oauth2.Config
@@ -29,10 +34,32 @@ func NewYandexStrategy(cfg config.YandexOAuth2, service strategy.Service) catego
 	}
 }
 
-func (y yandexStrategy) Callback(state string) string {
-	return y.oauth.AuthCodeURL(state, oauth2.AccessTypeOnline)
+func (s yandexStrategy) Callback(state string) string {
+	return s.oauth.AuthCodeURL(state, oauth2.AccessTypeOnline)
 }
 
-func (y yandexStrategy) Login(code string, accountability entity.Accountability) (auth.Tokens, error) {
-	panic("implement me")
+func (s yandexStrategy) Login(code string, accountability entity.Accountability) (auth.Tokens, error) {
+	var response responseYandex
+
+	token, err := s.ClientNetwork(&response, s.oauth, code, func(token *oauth2.Token) string {
+		return OauthUrlYandex
+	})
+	if err != nil {
+		return auth.Tokens{}, err
+	}
+
+	log.Printf("%+v", token)
+
+	network := entity.Network{
+		Identity: "",
+		Email:    "",
+		Name:     "",
+	}
+
+	user, err := s.UserAttachNetwork(network, auth.Yandex)
+	if err != nil {
+		return auth.Tokens{}, errorn.ErrUnauthorized.Wrap(err)
+	}
+
+	return s.CreateSessionTokens(auth.Yandex, user, accountability)
 }

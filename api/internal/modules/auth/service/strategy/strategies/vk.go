@@ -15,7 +15,7 @@ import (
 	"primedivident/pkg/errorn"
 )
 
-const OauthVkUrlAPI = "https://api.vk.com/method/users.get?v=5.131&album_id=wall"
+const OauthUrlVK = "https://api.vk.com/method/users.get?v=5.131&album_id=wall"
 
 type vkStrategy struct {
 	oauth *oauth2.Config
@@ -35,14 +35,16 @@ func NewVkStrategy(cfg config.VkOAuth2, service strategy.Service) categorize.Net
 	}
 }
 
-func (v vkStrategy) Callback(state string) string {
-	return v.oauth.AuthCodeURL(state, oauth2.AccessTypeOnline)
+func (s vkStrategy) Callback(state string) string {
+	return s.oauth.AuthCodeURL(state, oauth2.AccessTypeOnline)
 }
 
-func (v vkStrategy) Login(code string, accountability entity.Accountability) (auth.Tokens, error) {
+func (s vkStrategy) Login(code string, accountability entity.Accountability) (auth.Tokens, error) {
 	var response responseVK
 
-	token, err := v.ClientNetwork(&response, v.oauth, code, OauthVkUrlAPI)
+	token, err := s.ClientNetwork(&response, s.oauth, code, func(token *oauth2.Token) string {
+		return OauthUrlVK
+	})
 	if err != nil {
 		return auth.Tokens{}, err
 	}
@@ -53,10 +55,10 @@ func (v vkStrategy) Login(code string, accountability entity.Accountability) (au
 		Name:     fmt.Sprintf("%s %s", response.Response[0].LastName, response.Response[0].FirstName),
 	}
 
-	user, err := v.UserAttachNetwork(network, auth.Vk)
+	user, err := s.UserAttachNetwork(network, auth.Vk)
 	if err != nil {
 		return auth.Tokens{}, errorn.ErrUnauthorized.Wrap(err)
 	}
 
-	return v.CreateSessionTokens(auth.Vk, user, accountability)
+	return s.CreateSessionTokens(auth.Vk, user, accountability)
 }

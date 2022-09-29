@@ -30,6 +30,7 @@ type YandexOAuth2 struct {
 
 type OkOAuth2 struct {
 	ClientID     string   `env:"OK_OAUTH_CLIENT_ID" env-required:"true"`
+	ClientKey    string   `env:"OK_OAUTH_CLIENT_KEY" env-required:"true"`
 	ClientSecret string   `env:"OK_OAUTH_CLIENT_SECRET" env-required:"true"`
 	Scopes       []string `env:"OK_OAUTH_SCOPES"`
 

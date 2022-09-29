@@ -16,8 +16,8 @@ func NewEmailStrategy(service strategy.Service) categorize.PasswordStrategy {
 	return emailStrategy{Service: service}
 }
 
-func (e emailStrategy) Login(email, password string, accountability entity.Accountability) (auth.Tokens, error) {
-	user, err := e.Repository.FindUserByEmail(email)
+func (s emailStrategy) Login(email, password string, accountability entity.Accountability) (auth.Tokens, error) {
+	user, err := s.Repository.FindUserByEmail(email)
 	if err != nil {
 		return auth.Tokens{}, errorn.ErrSelect.Wrap(err)
 	}
@@ -30,5 +30,5 @@ func (e emailStrategy) Login(email, password string, accountability entity.Accou
 		return auth.Tokens{}, errorn.ErrForbidden.Wrap(err)
 	}
 
-	return e.CreateSessionTokens(auth.Email, user, accountability)
+	return s.CreateSessionTokens(auth.Email, user, accountability)
 }

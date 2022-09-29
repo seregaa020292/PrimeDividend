@@ -3,8 +3,6 @@
 ### TODO:
 
 - OAuth
-    - Attach networks
-    - Login vk
     - Login ok
     - Login yandex
     - Refresh tokens логика

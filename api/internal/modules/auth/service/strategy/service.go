@@ -54,7 +54,12 @@ func (s Service) CreateSessionTokens(
 	return genTokens, nil
 }
 
-func (s Service) ClientNetwork(body any, oauth *oauth2.Config, code, urlApi string) (*oauth2.Token, error) {
+func (s Service) ClientNetwork(
+	body any,
+	oauth *oauth2.Config,
+	code string,
+	urlApi func(*oauth2.Token) string,
+) (*oauth2.Token, error) {
 	token, err := oauth.Exchange(context.Background(), code)
 	if err != nil {
 		return nil, err
@@ -62,7 +67,7 @@ func (s Service) ClientNetwork(body any, oauth *oauth2.Config, code, urlApi stri
 
 	client := oauth.Client(context.Background(), token)
 
-	response, err := client.Get(urlApi)
+	response, err := client.Get(urlApi(token))
 	if err != nil {
 		return nil, err
 	}
