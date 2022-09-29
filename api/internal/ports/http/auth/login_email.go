@@ -28,5 +28,8 @@ func (h HandlerAuth) LoginEmail(w http.ResponseWriter, r *http.Request) {
 
 	strategy.SetCookieRefreshToken(tokens.RefreshToken, w, r)
 
-	respond.Json(http.StatusOK, tokens.AccessToken)
+	respond.Json(http.StatusOK, openapi.AuthToken{
+		AccessToken: tokens.AccessToken.Value,
+		ExpiresAt:   tokens.AccessToken.ExpiresAt,
+	})
 }

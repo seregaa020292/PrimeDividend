@@ -3,12 +3,13 @@ package auth
 import (
 	"net/http"
 
+	"primedivident/internal/infrastructure/server/openapi"
 	"primedivident/internal/modules/auth/dto"
 	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/pkg/errorn"
 )
 
-func (h HandlerAuth) RefreshTokens(w http.ResponseWriter, r *http.Request) {
+func (h HandlerAuth) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	respond := h.responder.Http(w, r)
 
 	refreshToken, err := strategy.GetCookieRefreshToken(r)
@@ -25,5 +26,8 @@ func (h HandlerAuth) RefreshTokens(w http.ResponseWriter, r *http.Request) {
 
 	strategy.SetCookieRefreshToken(tokens.RefreshToken, w, r)
 
-	respond.Json(http.StatusOK, tokens.AccessToken)
+	respond.Json(http.StatusOK, openapi.AuthToken{
+		AccessToken: tokens.AccessToken.Value,
+		ExpiresAt:   tokens.AccessToken.ExpiresAt,
+	})
 }

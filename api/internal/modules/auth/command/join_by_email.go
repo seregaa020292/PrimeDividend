@@ -2,17 +2,17 @@ package command
 
 import (
 	"primedivident/internal/decorator"
-	"primedivident/internal/models/app/public/model"
+	"primedivident/internal/modules/auth/dto"
 	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/email"
 	"primedivident/pkg/errorn"
-	"primedivident/pkg/utils/gog"
 )
 
 type (
 	Credential struct {
 		Email    string
+		Name     string
 		Password string
 	}
 	JoinByEmail decorator.CommandHandler[Credential]
@@ -42,19 +42,12 @@ func (c joinByEmail) Exec(cmd Credential) error {
 		}
 	}
 
-	user, err := entity.NewUser(cmd.Email, cmd.Password)
+	user, err := entity.NewUser(cmd.Email, cmd.Name, cmd.Password)
 	if err != nil {
 		return errorn.ErrUnknown.Wrap(err)
 	}
 
-	if err := c.repository.Add(model.Users{
-		Email:            user.Email,
-		Password:         user.PassHash,
-		Role:             user.Role.String(),
-		Status:           user.Status.String(),
-		TokenJoinValue:   gog.Ptr(user.Token.Value),
-		TokenJoinExpires: gog.Ptr(user.Token.Expires),
-	}); err != nil {
+	if err := c.repository.Add(dto.ModelUserByEntity(user)); err != nil {
 		return errorn.ErrInsert.Wrap(err)
 	}
 

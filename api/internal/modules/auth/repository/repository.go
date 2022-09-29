@@ -33,6 +33,7 @@ func NewRepository(db *postgres.Postgres) Repository {
 func (r repository) Add(user model.Users) error {
 	stmt := table.Users.INSERT(
 		table.Users.Email,
+		table.Users.Name,
 		table.Users.Password,
 		table.Users.Role,
 		table.Users.Status,

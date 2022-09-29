@@ -23,7 +23,7 @@ type JwtPayload struct {
 	Role string    `json:"role"`
 }
 
-func NewUser(email, password string) (User, error) {
+func NewUser(email, name, password string) (User, error) {
 	pass, err := hash.Password(password).Hash()
 	if err != nil {
 		return User{}, err
@@ -32,6 +32,7 @@ func NewUser(email, password string) (User, error) {
 	return User{
 		ID:       uuid.New(),
 		Email:    email,
+		Name:     name,
 		PassHash: pass,
 		Role:     UserRole,
 		Status:   WaitStatus,

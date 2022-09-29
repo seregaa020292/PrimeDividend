@@ -34,5 +34,8 @@ func (h HandlerAuth) ConfirmNetwork(w http.ResponseWriter, r *http.Request, netw
 
 	strategy.SetCookieRefreshToken(tokens.RefreshToken, w, r)
 
-	respond.Json(http.StatusAccepted, tokens.AccessToken)
+	respond.Json(http.StatusAccepted, openapi.AuthToken{
+		AccessToken: tokens.AccessToken.Value,
+		ExpiresAt:   tokens.AccessToken.ExpiresAt,
+	})
 }

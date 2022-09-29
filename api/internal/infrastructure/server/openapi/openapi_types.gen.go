@@ -18,9 +18,16 @@ type AuthConfirm struct {
 	Token openapi_types.UUID `json:"token" validate:"required"`
 }
 
+// AuthToken defines model for authToken.
+type AuthToken struct {
+	AccessToken string    `json:"accessToken"`
+	ExpiresAt   time.Time `json:"expiresAt"`
+}
+
 // AuthUser defines model for authUser.
 type AuthUser struct {
 	Email    string `json:"email" validate:"required,email"`
+	Name     string `json:"name"`
 	Password string `json:"password" validate:"required,min=6"`
 }
 

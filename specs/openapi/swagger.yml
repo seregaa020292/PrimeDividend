@@ -46,7 +46,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/authUser"
+              $ref: '#/components/schemas/authUser'
       responses:
         201:
           $ref: '#/components/responses/201'
@@ -64,7 +64,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/authConfirm"
+              $ref: '#/components/schemas/authConfirm'
       responses:
         200:
           $ref: '#/components/responses/200'
@@ -80,10 +80,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/loginUser"
+              $ref: '#/components/schemas/loginUser'
       responses:
         200:
-          $ref: '#/components/responses/200'
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/authToken'
         500:
           $ref: '#/components/responses/500'
   /auth/{network}:
@@ -92,7 +99,7 @@ paths:
       operationId: joinNetwork
       summary: Аутентификация через соц. сети
       parameters:
-        - $ref: "#/components/parameters/network"
+        - $ref: '#/components/parameters/network'
       responses:
         301:
           $ref: '#/components/responses/301'
@@ -104,20 +111,34 @@ paths:
       operationId: confirmNetwork
       summary: Авторизация через соц. сети
       parameters:
-        - $ref: "#/components/parameters/network"
+        - $ref: '#/components/parameters/network'
       responses:
-        301:
-          $ref: '#/components/responses/301'
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/authToken'
         500:
           $ref: '#/components/responses/500'
-  /auth/refresh-tokens:
+  /auth/refreshtoken:
     post:
       tags: [ auth ]
-      operationId: refreshTokens
+      operationId: refreshToken
       summary: Обновить токены
       responses:
         200:
-          $ref: '#/components/responses/200'
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/authToken'
         403:
           $ref: '#/components/responses/403'
   /auth/logout:
@@ -137,7 +158,7 @@ paths:
       operationId: getPortfolio
       summary: Получение портфеля по ID
       parameters:
-        - $ref: "#/components/parameters/portfolioId"
+        - $ref: '#/components/parameters/portfolioId'
       responses:
         200:
           description: todo
@@ -163,7 +184,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/portfolioUpdate"
+              $ref: '#/components/schemas/portfolioUpdate'
       responses:
         204:
           $ref: '#/components/responses/204'
@@ -260,15 +281,26 @@ components:
             $ref: '#/components/schemas/error'
 
   schemas:
+    authToken:
+      type: object
+      required: [ accessToken, expiresAt ]
+      properties:
+        accessToken:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
     authUser:
       type: object
-      required: [ email, password ]
+      required: [ email, name, password ]
       properties:
         email:
           type: string
           format: example@example.ru
           x-oapi-codegen-extra-tags:
             validate: required,email
+        name:
+          type: string
         password:
           type: string
           x-oapi-codegen-extra-tags:

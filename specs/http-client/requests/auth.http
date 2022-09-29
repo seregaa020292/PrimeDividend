@@ -6,6 +6,7 @@ Content-type: application/json
 
 {
   "email": "test@mail.ru",
+  "name": "Вася",
   "password": "123456"
 }
 
@@ -25,6 +26,10 @@ Content-type: application/json
   "email": "test@mail.ru",
   "password": "123456"
 }
+
+#### Обновить токены
+POST {{host}}/auth/refreshtoken
+Cookie: refresh-token=
 
 #### Выход из аккаунта
 POST {{host}}/auth/logout
