@@ -9,14 +9,13 @@ import (
 	"primedivident/internal/modules/auth/service/email"
 	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/modules/auth/service/strategy/auth"
-	repository2 "primedivident/internal/modules/auth/service/strategy/repository"
+	strategyRepository "primedivident/internal/modules/auth/service/strategy/repository"
 	"primedivident/internal/modules/auth/service/strategy/strategies"
 	port "primedivident/internal/ports/http/auth"
 )
 
-func ProvideStrategy(cfg config.Config, jwtTokens auth.JwtTokens, repository repository2.Repository) strategy.Strategy {
-	newStrategy := strategy.NewStrategy(jwtTokens, repository)
-	strategyService := strategy.NewService(jwtTokens, repository)
+func ProvideStrategy(cfg config.Config, strategyService strategy.Service) strategy.Strategy {
+	newStrategy := strategy.NewStrategy(strategyService)
 
 	newStrategy.Password().Set(auth.Email, strategies.NewEmailStrategy(strategyService))
 	newStrategy.Network().Set(auth.Vk, strategies.NewVkStrategy(cfg.Networks.VkOAuth2, strategyService))
@@ -28,7 +27,8 @@ func ProvideStrategy(cfg config.Config, jwtTokens auth.JwtTokens, repository rep
 
 var Auth = wire.NewSet(
 	repository.NewRepository,
-	repository2.NewRepository,
+	strategyRepository.NewRepository,
+	strategy.NewService,
 	ProvideStrategy,
 	email.NewJoinConfirmUser,
 	email.NewConfirmUser,

@@ -4,7 +4,6 @@ import (
 	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/categorize"
-	"primedivident/internal/modules/auth/service/strategy/repository"
 )
 
 type Strategy interface {
@@ -17,15 +16,13 @@ type Strategy interface {
 
 type strategy struct {
 	categorize categorize.Categorize
-	jwtTokens  auth.JwtTokens
-	repository repository.Repository
+	service    Service
 }
 
-func NewStrategy(jwtTokens auth.JwtTokens, repository repository.Repository) Strategy {
+func NewStrategy(service Service) Strategy {
 	return &strategy{
 		categorize: categorize.NewCategorize(),
-		jwtTokens:  jwtTokens,
-		repository: repository,
+		service:    service,
 	}
 }
 
@@ -38,17 +35,17 @@ func (s strategy) Password() categorize.PasswordStrategies {
 }
 
 func (s strategy) Verify(accessToken string) error {
-	_, err := s.jwtTokens.ValidateAccessToken(accessToken)
+	_, err := s.service.JwtTokens.ValidateAccessToken(accessToken)
 
 	return err
 }
 
 func (s strategy) Logout(refreshToken string) error {
-	if _, err := s.jwtTokens.ValidateRefreshToken(refreshToken); err != nil {
+	if _, err := s.service.JwtTokens.ValidateRefreshToken(refreshToken); err != nil {
 		return err
 	}
 
-	return s.repository.RemoveRefreshToken(refreshToken)
+	return s.service.Repository.RemoveRefreshToken(refreshToken)
 }
 
 func (s strategy) Refresh(refreshToken string, accountability entity.Accountability) (auth.Tokens, error) {

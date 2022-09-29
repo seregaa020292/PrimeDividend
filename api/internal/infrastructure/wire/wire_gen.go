@@ -15,6 +15,7 @@ import (
 	"primedivident/internal/modules/auth/command"
 	repository2 "primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/email"
+	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/modules/auth/service/strategy/repository"
 	"primedivident/internal/modules/instrument/query"
 	repository3 "primedivident/internal/modules/instrument/repository"
@@ -43,7 +44,8 @@ func Initialize(cfg config.Config) server.Server {
 	jwtTokens := ProvideJwtTokens(cfg)
 	postgres := ProvidePostgres(cfg)
 	repositoryRepository := repository.NewRepository(postgres)
-	strategy := wire_group.ProvideStrategy(cfg, jwtTokens, repositoryRepository)
+	service := strategy.NewService(jwtTokens, repositoryRepository)
+	strategyStrategy := wire_group.ProvideStrategy(cfg, service)
 	logger := ProvideLogger(cfg)
 	validatorValidator := validator.GetValidator()
 	responder := response.NewRespond(logger, validatorValidator)
@@ -54,7 +56,7 @@ func Initialize(cfg config.Config) server.Server {
 	joinByEmail := command.NewJoinByEmail(repository5, joinConfirmUser)
 	confirmUser := email.NewConfirmUser(sender, templater)
 	confirmByToken := command.NewConfirmByToken(repository5, confirmUser)
-	handlerAuth := auth.NewHandler(responder, strategy, joinByEmail, confirmByToken)
+	handlerAuth := auth.NewHandler(responder, strategyStrategy, joinByEmail, confirmByToken)
 	handlerAsset := asset.NewHandler()
 	handlerCurrency := currency.NewHandler()
 	presenter := instrument.NewPresenter()
@@ -70,7 +72,7 @@ func Initialize(cfg config.Config) server.Server {
 	handlerProvider := provider.NewHandler()
 	handlerRegister := register.NewHandler()
 	handlerUser := user.NewHandler()
-	serverHandlers := handlers.NewHandlers(strategy, handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
+	serverHandlers := handlers.NewHandlers(strategyStrategy, handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
 	serverServer := server.NewServer(serverMiddlewares, serverHandlers)
 	return serverServer
 }
