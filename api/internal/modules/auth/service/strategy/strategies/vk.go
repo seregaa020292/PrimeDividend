@@ -15,7 +15,7 @@ import (
 	"primedivident/pkg/errorn"
 )
 
-const OauthUrlVK = "https://api.vk.com/method/users.get?v=5.131&album_id=wall"
+const oauthUrlVK = "https://api.vk.com/method/users.get?v=5.131&album_id=wall"
 
 type vkStrategy struct {
 	oauth *oauth2.Config
@@ -43,7 +43,7 @@ func (s vkStrategy) Login(code string, accountability entity.Accountability) (au
 	var response responseVK
 
 	token, err := s.ClientNetwork(&response, s.oauth, code, func(token *oauth2.Token) string {
-		return OauthUrlVK
+		return oauthUrlVK
 	})
 	if err != nil {
 		return auth.Tokens{}, err

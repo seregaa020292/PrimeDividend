@@ -1,7 +1,7 @@
 package strategies
 
 import (
-	"log"
+	"fmt"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/yandex"
@@ -14,7 +14,7 @@ import (
 	"primedivident/pkg/errorn"
 )
 
-const OauthUrlYandex = ""
+const oauthUrlYandex = "https://login.yandex.ru/info"
 
 type yandexStrategy struct {
 	oauth *oauth2.Config
@@ -41,19 +41,17 @@ func (s yandexStrategy) Callback(state string) string {
 func (s yandexStrategy) Login(code string, accountability entity.Accountability) (auth.Tokens, error) {
 	var response responseYandex
 
-	token, err := s.ClientNetwork(&response, s.oauth, code, func(token *oauth2.Token) string {
-		return OauthUrlYandex
+	_, err := s.ClientNetwork(&response, s.oauth, code, func(token *oauth2.Token) string {
+		return oauthUrlYandex
 	})
 	if err != nil {
 		return auth.Tokens{}, err
 	}
 
-	log.Printf("%+v", token)
-
 	network := entity.Network{
-		Identity: "",
-		Email:    "",
-		Name:     "",
+		Identity: response.ClientID,
+		Email:    response.DefaultEmail,
+		Name:     fmt.Sprintf("%s %s", response.LastName, response.FirstName),
 	}
 
 	user, err := s.UserAttachNetwork(network, auth.Yandex)

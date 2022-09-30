@@ -95,6 +95,9 @@ type Network = string
 // PortfolioId defines model for portfolioId.
 type PortfolioId = openapi_types.UUID
 
+// State defines model for state.
+type State = string
+
 // N400 defines model for 400.
 type N400 = Error
 
@@ -115,7 +118,8 @@ type LoginEmailJSONBody = LoginUser
 
 // ConfirmNetworkParams defines parameters for ConfirmNetwork.
 type ConfirmNetworkParams struct {
-	Code Code `form:"code" json:"code"`
+	Code  Code  `form:"code" json:"code"`
+	State State `form:"state" json:"state"`
 }
 
 // CreatePortfolioJSONBody defines parameters for CreatePortfolio.

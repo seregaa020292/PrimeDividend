@@ -34,4 +34,15 @@ type responseOK struct {
 }
 
 type responseYandex struct {
+	ClientID     string   `json:"client_id"`
+	DefaultEmail string   `json:"default_email"`
+	DisplayName  string   `json:"display_name"`
+	Emails       []string `json:"emails"`
+	FirstName    string   `json:"first_name"`
+	ID           string   `json:"id"`
+	LastName     string   `json:"last_name"`
+	Login        string   `json:"login"`
+	Psuid        string   `json:"psuid"`
+	RealName     string   `json:"real_name"`
+	Sex          string   `json:"sex"`
 }

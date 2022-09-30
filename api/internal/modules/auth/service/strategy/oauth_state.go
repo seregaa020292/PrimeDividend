@@ -12,13 +12,13 @@ import (
 
 const OauthState = "oauth-state"
 
-func ValidateOauthState(r *http.Request) error {
+func ValidateOauthState(state string, r *http.Request) error {
 	oauthState, err := r.Cookie(OauthState)
 	if err != nil {
 		return err
 	}
 
-	if r.FormValue("state") != oauthState.Value {
+	if state != oauthState.Value {
 		return errors.New("invalid oauth state")
 	}
 
@@ -31,7 +31,6 @@ func GenCookieOauthState(w http.ResponseWriter, r *http.Request) string {
 	cookie := utils.GenCookie(OauthState, state, &http.Cookie{
 		Secure:   true,
 		HttpOnly: true,
-		SameSite: http.SameSiteStrictMode,
 		Domain:   r.URL.Hostname(),
 		Expires:  datetime.GetNow().AddDate(1, 0, 0),
 	})

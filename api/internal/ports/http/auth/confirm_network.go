@@ -19,7 +19,7 @@ func (h HandlerAuth) ConfirmNetwork(
 ) {
 	respond := h.responder.Http(w, r)
 
-	if err := strategy.ValidateOauthState(r); err != nil {
+	if err := strategy.ValidateOauthState(params.State, r); err != nil {
 		respond.Err(errorn.ErrForbidden.Wrap(err))
 		return
 	}

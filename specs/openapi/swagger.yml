@@ -113,6 +113,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/network'
         - $ref: '#/components/parameters/code'
+        - $ref: '#/components/parameters/state'
       responses:
         200:
           description: ''
@@ -233,6 +234,12 @@ components:
     code:
       in: query
       name: code
+      schema:
+        type: string
+      required: true
+    state:
+      in: query
+      name: state
       schema:
         type: string
       required: true
