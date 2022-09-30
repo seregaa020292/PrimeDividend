@@ -33,6 +33,20 @@ type (
 	Target int
 )
 
+func NewError(
+	target Target,
+	status int,
+	message string,
+	details ...DetailError,
+) Error {
+	return Error{
+		status:  status,
+		target:  target,
+		message: message,
+		details: append([]DetailError{}, details...),
+	}
+}
+
 func (e Error) Wrap(err error) Error {
 	newErr := e.Clone()
 	newErr.error = err
@@ -52,7 +66,7 @@ func (e Error) Clone() Error {
 }
 
 func (e Error) Error() string {
-	err := gog.If(e.error != nil, e.error, fmt.Errorf( "_"))
+	err := gog.If(e.error != nil, e.error, fmt.Errorf(""))
 
 	return fmt.Sprintf(
 		"error=%s, status=%d, target=%d, message=%s, details=%+v",
@@ -76,18 +90,4 @@ func (e Error) MarshalJSON() ([]byte, error) {
 
 func (e Error) Status() int {
 	return e.status
-}
-
-func NewError(
-	target Target,
-	status int,
-	message string,
-	details ...DetailError,
-) Error {
-	return Error{
-		status:  status,
-		target:  target,
-		message: message,
-		details: append([]DetailError{}, details...),
-	}
 }

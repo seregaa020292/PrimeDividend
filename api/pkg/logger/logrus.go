@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"os"
 	"path"
 	"runtime"
 
 	"github.com/sirupsen/logrus"
+
+	"primedivident/pkg/utils"
 )
 
 type Logrus struct {
@@ -24,12 +25,18 @@ func NewLogrus(config Config) Logger {
 	logNew := logrus.New()
 
 	logNew.SetFormatter(&logrus.JSONFormatter{
-		PrettyPrint:     true,
-		TimestampFormat: config.Format,
+		PrettyPrint:      true,
+		DisableTimestamp: true,
+		DataKey:          "detail",
 	})
 
+	outputFile, err := utils.OpenOrCreateFile(config.FileLog)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	logNew.SetLevel(level)
-	logNew.SetOutput(io.MultiWriter( /*os.Stdout,*/ outputFile(config.FileLog)))
+	logNew.SetOutput(io.MultiWriter( /*os.Stdout,*/ outputFile))
 
 	logEntry := &Logrus{logrus.NewEntry(logNew)}
 
@@ -57,7 +64,7 @@ func (l *Logrus) Fatalln(args ...any) {
 }
 
 func (l *Logrus) ExtraFields(fields Fields) Logger {
-	return &Logrus{l.Entry.WithFields(convertToFields(fields))}
+	return &Logrus{l.Entry.WithFields(logrus.Fields(fields))}
 }
 
 func (l *Logrus) ExtraField(key string, value any) Logger {
@@ -77,21 +84,4 @@ func callerPrettyfier(pc uintptr, file string, line int, ok bool) logrus.Fields 
 		"file": fmt.Sprintf("%s:%d", path.Clean(file), line),
 		"func": fmt.Sprintf("%s()", runtime.FuncForPC(pc).Name()),
 	}
-}
-
-func convertToFields(fields Fields) logrus.Fields {
-	return logrus.Fields(fields)
-}
-
-func outputFile(fileName string) *os.File {
-	if err := os.MkdirAll(path.Dir(fileName), os.ModePerm); err != nil {
-		log.Fatal(err)
-	}
-
-	file, err := os.OpenFile(fileName, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return file
 }

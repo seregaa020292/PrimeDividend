@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path"
 	"syscall"
 	"time"
 )
@@ -89,6 +90,14 @@ func WaitForService(host string) {
 
 		time.Sleep(time.Millisecond * 500)
 	}
+}
+
+func OpenOrCreateFile(fileName string) (*os.File, error) {
+	if err := os.MkdirAll(path.Dir(fileName), os.ModePerm); err != nil {
+		return nil, err
+	}
+
+	return os.OpenFile(fileName, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0644)
 }
 
 func GenCookie(key string, value string, opts *http.Cookie) *http.Cookie {

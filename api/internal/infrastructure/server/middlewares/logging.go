@@ -7,63 +7,69 @@ import (
 
 	"github.com/go-chi/chi/v5/middleware"
 
+	"primedivident/internal/config/consts"
 	"primedivident/pkg/logger"
+	"primedivident/pkg/utils/gog"
 )
 
-type StructuredLogger struct {
-	logger.Logger
-}
+type (
+	StructLogger struct {
+		logger.Logger
+	}
+	LoggerEntry struct {
+		requestFields logger.Fields
+		logger.Logger
+	}
+)
 
 func newStructuredLogger() middlewareFunc {
-	return middleware.RequestLogger(&StructuredLogger{
-		logger.GetLogger(),
+	return middleware.RequestLogger(&StructLogger{
+		Logger: logger.GetLogger(),
 	})
 }
 
-func (l *StructuredLogger) NewLogEntry(r *http.Request) middleware.LogEntry {
-	entry := &StructuredLoggerEntry{Logger: l.Logger}
-	logFields := logger.Fields{}
+func (l *StructLogger) NewLogEntry(r *http.Request) middleware.LogEntry {
+	scheme := gog.If(r.TLS != nil, "https", "http")
+
+	logFields := logger.Fields{
+		"http_scheme": scheme,
+		"http_proto":  r.Proto,
+		"http_method": r.Method,
+		"remote_addr": r.RemoteAddr,
+		"user_agent":  r.UserAgent(),
+		"uri":         fmt.Sprintf("%s://%s%s", scheme, r.Host, r.RequestURI),
+		"time":        time.Now().Format(consts.TimestampFormat),
+	}
 
 	if reqID := middleware.GetReqID(r.Context()); reqID != "" {
 		logFields["req_id"] = reqID
 	}
 
-	scheme := "http"
-	if r.TLS != nil {
-		scheme = "https"
+	return &LoggerEntry{
+		Logger:        l.Logger,
+		requestFields: logFields,
 	}
-
-	logFields["http_scheme"] = scheme
-	logFields["http_proto"] = r.Proto
-	logFields["http_method"] = r.Method
-
-	logFields["remote_addr"] = r.RemoteAddr
-	logFields["user_agent"] = r.UserAgent()
-
-	logFields["uri"] = fmt.Sprintf("%s://%s%s", scheme, r.Host, r.RequestURI)
-
-	entry.Logger.ExtraFields(logFields).Infof("Request started")
-
-	return entry
 }
 
-type StructuredLoggerEntry struct {
-	logger.Logger
-}
-
-func (l *StructuredLoggerEntry) Write(status, bytes int, header http.Header, elapsed time.Duration, extra any) {
+func (l *LoggerEntry) Write(status, bytes int, header http.Header, elapsed time.Duration, extra any) {
 	if status >= http.StatusBadRequest {
-		l.Logger.ExtraFields(logger.Fields{
-			"resp_status":       status,
-			"resp_bytes_length": bytes,
-			"resp_elapsed_ms":   float64(elapsed.Nanoseconds()) / 1000000.0,
-		}).Errorf("Request fail")
+		l.Logger.
+			ExtraFields(l.requestFields).
+			ExtraFields(logger.Fields{
+				"resp_status":       status,
+				"resp_bytes_length": bytes,
+				"resp_elapsed_ms":   float64(elapsed.Nanoseconds()) / 1000000.0,
+				"resp_time":         time.Now().Format(consts.TimestampFormat),
+			}).Errorf("Request fail")
 	}
 }
 
-func (l *StructuredLoggerEntry) Panic(v any, stack []byte) {
-	l.Logger.ExtraFields(logger.Fields{
-		"stack": string(stack),
-		"panic": fmt.Sprintf("%+v", v),
-	}).Errorf("Request panic")
+func (l *LoggerEntry) Panic(v any, stack []byte) {
+	l.Logger.
+		ExtraFields(l.requestFields).
+		ExtraFields(logger.Fields{
+			"stack": string(stack),
+			"panic": fmt.Sprintf("%+v", v),
+			"time":  time.Now().Format(consts.TimestampFormat),
+		}).Errorf("Request panic")
 }

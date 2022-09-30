@@ -1,0 +1,3 @@
+#### Инструменты
+GET {{host}}/instrument
+Content-type: application/json

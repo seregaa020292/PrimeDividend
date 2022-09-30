@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
@@ -51,7 +50,8 @@ func custom(router routers.Router) func(next http.HandlerFunc) http.HandlerFunc 
 				panic(err)
 			}
 
-			log.Print(route.Operation.OperationID)
+			// TODO:
+			_ = route.Operation.OperationID
 
 			next(w, r)
 		}

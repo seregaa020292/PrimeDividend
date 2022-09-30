@@ -37,7 +37,7 @@ func (c joinByEmail) Exec(cmd Credential) error {
 	if user, err := c.repository.FindByEmail(cmd.Email); err != nil {
 		return errorn.ErrSelect.Wrap(err)
 	} else {
-		if user != (entity.User{}) {
+		if !user.IsEmpty() {
 			return c.existedUser(user)
 		}
 	}

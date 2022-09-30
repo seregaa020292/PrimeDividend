@@ -1,5 +1,3 @@
-##### Аутентификация и авторизация #####
-
 #### Создание пользователя
 POST {{host}}/auth/email
 Content-type: application/json
