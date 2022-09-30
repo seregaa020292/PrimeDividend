@@ -26,7 +26,6 @@ func NewService(jwtTokens auth.JwtTokens, repository repository.Repository) Serv
 }
 
 func (s Service) CreateSessionTokens(
-	strategy auth.Name,
 	user entity.User,
 	accountability auth.Accountability,
 ) (auth.Tokens, error) {
@@ -37,7 +36,6 @@ func (s Service) CreateSessionTokens(
 
 	if err := s.Repository.SaveRefreshToken(dto.ModelSessionCreating(
 		user.ID,
-		strategy,
 		genTokens.RefreshToken,
 		accountability,
 	)); err != nil {
@@ -75,8 +73,8 @@ func (s Service) UpdateSessionTokens(refreshToken string, accountability auth.Ac
 
 func (s Service) ClientNetwork(
 	body any,
-	oauth *oauth2.Config,
 	code string,
+	oauth *oauth2.Config,
 	urlApi func(*oauth2.Token) string,
 ) error {
 	token, err := oauth.Exchange(context.Background(), code)
@@ -114,7 +112,7 @@ func (s Service) UserAttachNetwork(network entity.Network, strategy auth.Name) (
 		return entity.User{}, err
 	}
 
-	userNetwork, err := s.Repository.FindNetworkByID(network.Identity, strategy)
+	userNetwork, err := s.Repository.FindNetworkByID(network.ClientID, strategy)
 	if err != nil {
 		return entity.User{}, err
 	}

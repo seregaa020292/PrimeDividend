@@ -11,7 +11,6 @@ import (
 
 func ModelSessionCreating(
 	userID uuid.UUID,
-	strategy auth.Name,
 	refreshToken token.Token,
 	accountability auth.Accountability,
 ) model.Sessions {
@@ -19,7 +18,6 @@ func ModelSessionCreating(
 		Token:     refreshToken.Value,
 		ExpiresAt: refreshToken.ExpiresAt,
 		UserID:    userID,
-		Strategy:  strategy.String(),
 		IP:        accountability.IP,
 		UserAgent: accountability.UserAgent,
 		Origin:    accountability.Origin,

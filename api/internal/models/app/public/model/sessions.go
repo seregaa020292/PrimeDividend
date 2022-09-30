@@ -17,7 +17,6 @@ type Sessions struct {
 	Token     string
 	ExpiresAt time.Time
 	UserID    uuid.UUID
-	Strategy  string
 	IP        string
 	UserAgent string
 	Origin    string

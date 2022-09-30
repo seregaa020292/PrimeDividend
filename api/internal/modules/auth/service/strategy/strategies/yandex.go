@@ -41,14 +41,14 @@ func (s yandexStrategy) Callback(state string) string {
 func (s yandexStrategy) Login(code string, accountability auth.Accountability) (auth.Tokens, error) {
 	var response responseYandex
 
-	if err := s.ClientNetwork(&response, s.oauth, code, func(token *oauth2.Token) string {
+	if err := s.ClientNetwork(&response, code, s.oauth, func(token *oauth2.Token) string {
 		return oauthUrlYandex
 	}); err != nil {
 		return auth.Tokens{}, err
 	}
 
 	network := entity.Network{
-		Identity: response.ClientID,
+		ClientID: response.ClientID,
 		Email:    response.DefaultEmail,
 		Name:     fmt.Sprintf("%s %s", response.LastName, response.FirstName),
 	}
@@ -58,5 +58,5 @@ func (s yandexStrategy) Login(code string, accountability auth.Accountability) (
 		return auth.Tokens{}, errorn.ErrUnauthorized.Wrap(err)
 	}
 
-	return s.CreateSessionTokens(auth.Yandex, user, accountability)
+	return s.CreateSessionTokens(user, accountability)
 }

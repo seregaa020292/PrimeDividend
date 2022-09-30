@@ -1,18 +1,18 @@
 package entity
 
 type Network struct {
-	Identity string
-	Strategy string
-	Email    string
-	Name     string
+	ClientID   string
+	ClientType string
+	Email      string
+	Name       string
 }
 
 func NewNetwork(id, email, name, strategy string) Network {
 	return Network{
-		Identity: id,
-		Strategy: strategy,
-		Email:    email,
-		Name:     name,
+		ClientID:   id,
+		ClientType: strategy,
+		Email:      email,
+		Name:       name,
 	}
 }
 

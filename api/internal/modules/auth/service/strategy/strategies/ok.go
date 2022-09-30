@@ -48,12 +48,12 @@ func (s okStrategy) Callback(state string) string {
 func (s okStrategy) Login(code string, accountability auth.Accountability) (auth.Tokens, error) {
 	var response responseOK
 
-	if err := s.ClientNetwork(&response, s.oauth, code, s.urlApi); err != nil {
+	if err := s.ClientNetwork(&response, code, s.oauth, s.urlApi); err != nil {
 		return auth.Tokens{}, err
 	}
 
 	network := entity.Network{
-		Identity: response.UID,
+		ClientID: response.UID,
 		Email:    response.Email,
 		Name:     fmt.Sprintf("%s %s", response.LastName, response.FirstName),
 	}
@@ -63,7 +63,7 @@ func (s okStrategy) Login(code string, accountability auth.Accountability) (auth
 		return auth.Tokens{}, errorn.ErrUnauthorized.Wrap(err)
 	}
 
-	return s.CreateSessionTokens(auth.Ok, user, accountability)
+	return s.CreateSessionTokens(user, accountability)
 }
 
 func (s okStrategy) urlApi(token *oauth2.Token) string {

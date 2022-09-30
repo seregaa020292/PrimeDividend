@@ -29,6 +29,7 @@ Content-type: application/json
 
 #### Аутентификация через соц. сети
 GET {{host}}/auth/vk
+Content-type: application/json
 
 #### Обновить токены
 POST {{host}}/auth/refresh-token

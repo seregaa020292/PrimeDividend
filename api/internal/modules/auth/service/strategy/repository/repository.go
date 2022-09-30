@@ -74,8 +74,8 @@ func (r repository) FindNetworkByID(networkID string, strategy auth.Name) (entit
 				INNER_JOIN(table.Users, table.UserNetworks.UserID.EQ(table.Users.ID)),
 		).
 		WHERE(jet.AND(
-			table.UserNetworks.Identity.EQ(jet.String(networkID)),
-			table.UserNetworks.Strategy.EQ(jet.String(strategy.String())),
+			table.UserNetworks.ClientID.EQ(jet.String(networkID)),
+			table.UserNetworks.ClientType.EQ(jet.String(strategy.String())),
 		)).
 		LIMIT(1)
 
@@ -143,7 +143,6 @@ func (r repository) SaveRefreshToken(session model.Sessions) error {
 		table.Sessions.Token,
 		table.Sessions.ExpiresAt,
 		table.Sessions.UserID,
-		table.Sessions.Strategy,
 		table.Sessions.IP,
 		table.Sessions.UserAgent,
 		table.Sessions.Origin,
@@ -213,8 +212,8 @@ func (r repository) RemoveLastRefreshToken(userID uuid.UUID) error {
 func (r repository) AttachNetwork(network model.UserNetworks) error {
 	stmt := table.UserNetworks.INSERT(
 		table.UserNetworks.UserID,
-		table.UserNetworks.Identity,
-		table.UserNetworks.Strategy,
+		table.UserNetworks.ClientID,
+		table.UserNetworks.ClientType,
 	).
 		MODEL(network)
 

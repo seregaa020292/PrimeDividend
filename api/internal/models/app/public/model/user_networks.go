@@ -13,10 +13,10 @@ import (
 )
 
 type UserNetworks struct {
-	ID        uuid.UUID `sql:"primary_key"`
-	UserID    uuid.UUID
-	Identity  string
-	Strategy  string
-	CreatedAt time.Time
-	UpdatedAt *time.Time
+	ID         uuid.UUID `sql:"primary_key"`
+	UserID     uuid.UUID
+	ClientID   string
+	ClientType string
+	CreatedAt  time.Time
+	UpdatedAt  *time.Time
 }

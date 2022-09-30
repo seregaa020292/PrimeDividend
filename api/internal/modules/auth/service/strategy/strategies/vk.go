@@ -43,7 +43,7 @@ func (s vkStrategy) Login(code string, accountability auth.Accountability) (auth
 	var response responseVK
 	var oauthToken *oauth2.Token
 
-	if err := s.ClientNetwork(&response, s.oauth, code, func(token *oauth2.Token) string {
+	if err := s.ClientNetwork(&response, code, s.oauth, func(token *oauth2.Token) string {
 		oauthToken = token
 		return oauthUrlVK
 	}); err != nil {
@@ -51,7 +51,7 @@ func (s vkStrategy) Login(code string, accountability auth.Accountability) (auth
 	}
 
 	network := entity.Network{
-		Identity: strconv.Itoa(response.Response[0].ID),
+		ClientID: strconv.Itoa(response.Response[0].ID),
 		Email:    oauthToken.Extra("email").(string),
 		Name:     fmt.Sprintf("%s %s", response.Response[0].LastName, response.Response[0].FirstName),
 	}
@@ -61,5 +61,5 @@ func (s vkStrategy) Login(code string, accountability auth.Accountability) (auth
 		return auth.Tokens{}, errorn.ErrUnauthorized.Wrap(err)
 	}
 
-	return s.CreateSessionTokens(auth.Vk, user, accountability)
+	return s.CreateSessionTokens(user, accountability)
 }

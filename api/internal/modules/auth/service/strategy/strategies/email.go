@@ -29,5 +29,5 @@ func (s emailStrategy) Login(email, password string, accountability auth.Account
 		return auth.Tokens{}, errorn.ErrForbidden.Wrap(err)
 	}
 
-	return s.CreateSessionTokens(auth.Email, user, accountability)
+	return s.CreateSessionTokens(user, accountability)
 }

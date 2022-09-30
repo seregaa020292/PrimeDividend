@@ -17,12 +17,12 @@ type userNetworksTable struct {
 	postgres.Table
 
 	//Columns
-	ID        postgres.ColumnString
-	UserID    postgres.ColumnString
-	Identity  postgres.ColumnString
-	Strategy  postgres.ColumnString
-	CreatedAt postgres.ColumnTimestampz
-	UpdatedAt postgres.ColumnTimestampz
+	ID         postgres.ColumnString
+	UserID     postgres.ColumnString
+	ClientID   postgres.ColumnString
+	ClientType postgres.ColumnString
+	CreatedAt  postgres.ColumnTimestampz
+	UpdatedAt  postgres.ColumnTimestampz
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -63,26 +63,26 @@ func newUserNetworksTable(schemaName, tableName, alias string) *UserNetworksTabl
 
 func newUserNetworksTableImpl(schemaName, tableName, alias string) userNetworksTable {
 	var (
-		IDColumn        = postgres.StringColumn("id")
-		UserIDColumn    = postgres.StringColumn("user_id")
-		IdentityColumn  = postgres.StringColumn("identity")
-		StrategyColumn  = postgres.StringColumn("strategy")
-		CreatedAtColumn = postgres.TimestampzColumn("created_at")
-		UpdatedAtColumn = postgres.TimestampzColumn("updated_at")
-		allColumns      = postgres.ColumnList{IDColumn, UserIDColumn, IdentityColumn, StrategyColumn, CreatedAtColumn, UpdatedAtColumn}
-		mutableColumns  = postgres.ColumnList{UserIDColumn, IdentityColumn, StrategyColumn, CreatedAtColumn, UpdatedAtColumn}
+		IDColumn         = postgres.StringColumn("id")
+		UserIDColumn     = postgres.StringColumn("user_id")
+		ClientIDColumn   = postgres.StringColumn("client_id")
+		ClientTypeColumn = postgres.StringColumn("client_type")
+		CreatedAtColumn  = postgres.TimestampzColumn("created_at")
+		UpdatedAtColumn  = postgres.TimestampzColumn("updated_at")
+		allColumns       = postgres.ColumnList{IDColumn, UserIDColumn, ClientIDColumn, ClientTypeColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns   = postgres.ColumnList{UserIDColumn, ClientIDColumn, ClientTypeColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return userNetworksTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		ID:        IDColumn,
-		UserID:    UserIDColumn,
-		Identity:  IdentityColumn,
-		Strategy:  StrategyColumn,
-		CreatedAt: CreatedAtColumn,
-		UpdatedAt: UpdatedAtColumn,
+		ID:         IDColumn,
+		UserID:     UserIDColumn,
+		ClientID:   ClientIDColumn,
+		ClientType: ClientTypeColumn,
+		CreatedAt:  CreatedAtColumn,
+		UpdatedAt:  UpdatedAtColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

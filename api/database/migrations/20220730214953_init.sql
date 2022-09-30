@@ -28,22 +28,21 @@ CREATE TABLE sessions
     token      VARCHAR(255) UNIQUE      NOT NULL,
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
     user_id    UUID                     NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    strategy   VARCHAR(100)             NOT NULL CHECK (strategy <> ''),
-    ip         VARCHAR(255)             NOT NULL CHECK (ip <> ''),
+    ip         VARCHAR(50)              NOT NULL,
     user_agent VARCHAR(255)             NOT NULL CHECK (user_agent <> ''),
-    origin     VARCHAR(255)             NOT NULL,
+    origin     VARCHAR(100)             NOT NULL CHECK (origin <> ''),
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE user_networks
 (
-    id         UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
-    user_id    UUID                     NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    identity   VARCHAR(255) UNIQUE      NOT NULL CHECK (identity <> ''),
-    strategy   VARCHAR(100)         NOT NULL CHECK (strategy <> ''),
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
+    id          UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
+    user_id     UUID                     NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    client_id   VARCHAR(255) UNIQUE      NOT NULL CHECK (client_id <> ''),
+    client_type VARCHAR(100)             NOT NULL CHECK (client_type <> ''),
+    created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at  TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE currencies
@@ -121,7 +120,7 @@ CREATE TABLE assets
 
 CREATE INDEX IF NOT EXISTS users_token_join_value_id_idx ON users (token_join_value);
 CREATE INDEX IF NOT EXISTS sessions_token_id_idx ON sessions (token);
-CREATE INDEX IF NOT EXISTS user_networks_identity_id_idx ON user_networks (identity);
+CREATE INDEX IF NOT EXISTS user_networks_client_id_id_idx ON user_networks (client_id);
 CREATE INDEX IF NOT EXISTS markets_title_id_idx ON markets (title);
 CREATE INDEX IF NOT EXISTS markets_ticker_id_idx ON markets (ticker);
 CREATE INDEX IF NOT EXISTS registers_identify_id_idx ON registers (identify);
