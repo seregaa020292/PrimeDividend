@@ -1,7 +1,6 @@
 package strategies
 
 import (
-	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/categorize"
@@ -16,7 +15,7 @@ func NewEmailStrategy(service strategy.Service) categorize.PasswordStrategy {
 	return emailStrategy{Service: service}
 }
 
-func (s emailStrategy) Login(email, password string, accountability entity.Accountability) (auth.Tokens, error) {
+func (s emailStrategy) Login(email, password string, accountability auth.Accountability) (auth.Tokens, error) {
 	user, err := s.Repository.FindUserByEmail(email)
 	if err != nil {
 		return auth.Tokens{}, errorn.ErrSelect.Wrap(err)

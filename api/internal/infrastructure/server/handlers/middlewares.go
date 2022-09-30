@@ -25,7 +25,7 @@ func authValidator(swagger *openapi3.T, strategy strategy.Strategy) func(next ht
 				scheme := fmt.Sprintf("%s ", input.SecurityScheme.Scheme)
 				accessToken := strings.Replace(bearerToken, scheme, "", 1)
 
-				return strategy.Verify(accessToken)
+				return strategy.VerifyAccess(accessToken)
 			},
 		},
 		ErrorHandler: func(w http.ResponseWriter, message string, statusCode int) {

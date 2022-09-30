@@ -1,6 +1,7 @@
 package strategy
 
 import (
+	"fmt"
 	"net/http"
 
 	"primedivident/pkg/token"
@@ -15,7 +16,7 @@ func GetCookieRefreshToken(r *http.Request) (string, error) {
 		return "", err
 	}
 	if refreshToken.Value == "" {
-		return "", err
+		return "", fmt.Errorf("%s is empty", RefreshToken)
 	}
 
 	return refreshToken.Value, nil

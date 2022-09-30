@@ -39,3 +39,12 @@ func GenCookieOauthState(w http.ResponseWriter, r *http.Request) string {
 
 	return state
 }
+
+func RemoveCookieOauthState(w http.ResponseWriter, r *http.Request) {
+	cookie := utils.GenCookie(OauthState, "", &http.Cookie{
+		Domain: r.URL.Hostname(),
+		MaxAge: -1,
+	})
+
+	http.SetCookie(w, cookie)
+}

@@ -45,7 +45,7 @@ func (s okStrategy) Callback(state string) string {
 	return s.oauth.AuthCodeURL(state, oauth2.AccessTypeOffline)
 }
 
-func (s okStrategy) Login(code string, accountability entity.Accountability) (auth.Tokens, error) {
+func (s okStrategy) Login(code string, accountability auth.Accountability) (auth.Tokens, error) {
 	var response responseOK
 
 	if err := s.ClientNetwork(&response, s.oauth, code, s.urlApi); err != nil {

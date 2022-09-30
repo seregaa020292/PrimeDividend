@@ -1,10 +1,9 @@
 package auth
 
 import (
-	"errors"
-
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
+	"github.com/pkg/errors"
 
 	"primedivident/internal/config"
 	"primedivident/internal/modules/auth/entity"
@@ -17,6 +16,7 @@ type JwtTokens interface {
 	GenRefreshToken(id uuid.UUID) (token.Token, error)
 	ValidateAccessToken(token string) (entity.JwtPayload, error)
 	ValidateRefreshToken(token string) (uuid.UUID, error)
+	CorrectRefreshToken(token string) error
 }
 
 type Tokens struct {
@@ -45,21 +45,21 @@ func (t jwtTokens) GenRefreshToken(id uuid.UUID) (token.Token, error) {
 }
 
 func (t jwtTokens) ValidateAccessToken(token string) (entity.JwtPayload, error) {
-	data, err := t.accessTokenService.ValidateToken(token)
-	if err != nil {
-		return entity.JwtPayload{}, err
-	}
-
-	return data, nil
+	return t.accessTokenService.ValidateToken(token)
 }
 
 func (t jwtTokens) ValidateRefreshToken(token string) (uuid.UUID, error) {
-	data, err := t.refreshTokenService.ValidateToken(token)
-	if err != nil && !errors.Is(err, jwt.ErrTokenExpired) {
-		return uuid.UUID{}, nil
+	return t.refreshTokenService.ValidateToken(token)
+}
+
+func (t jwtTokens) CorrectRefreshToken(token string) error {
+	if _, err := t.ValidateRefreshToken(token); err != nil {
+		if !errors.Is(err, jwt.ErrTokenExpired) {
+			return err
+		}
 	}
 
-	return data, nil
+	return nil
 }
 
 func (t jwtTokens) GenTokens(data entity.JwtPayload) (Tokens, error) {

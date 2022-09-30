@@ -10,6 +10,7 @@ import (
 	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/repository"
+	"primedivident/pkg/errorn"
 )
 
 type Service struct {
@@ -27,7 +28,7 @@ func NewService(jwtTokens auth.JwtTokens, repository repository.Repository) Serv
 func (s Service) CreateSessionTokens(
 	strategy auth.Name,
 	user entity.User,
-	accountability entity.Accountability,
+	accountability auth.Accountability,
 ) (auth.Tokens, error) {
 	genTokens, err := s.JwtTokens.GenTokens(user.JwtPayload())
 	if err != nil {
@@ -49,6 +50,24 @@ func (s Service) CreateSessionTokens(
 
 	if err := s.Repository.RemoveLastRefreshToken(user.ID); err != nil {
 		return auth.Tokens{}, err
+	}
+
+	return genTokens, nil
+}
+
+func (s Service) UpdateSessionTokens(refreshToken string, accountability auth.Accountability) (auth.Tokens, error) {
+	user, _, err := s.Repository.FindUserSession(refreshToken, accountability)
+	if err != nil {
+		return auth.Tokens{}, errorn.ErrNotFound.Wrap(err)
+	}
+
+	genTokens, err := s.JwtTokens.GenTokens(user.JwtPayload())
+	if err != nil {
+		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
+	}
+
+	if err := s.Repository.UpdateRefreshToken(refreshToken, genTokens.RefreshToken); err != nil {
+		return auth.Tokens{}, errorn.ErrUpdate.Wrap(err)
 	}
 
 	return genTokens, nil

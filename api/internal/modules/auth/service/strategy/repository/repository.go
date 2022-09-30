@@ -15,13 +15,16 @@ import (
 	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/pkg/db/postgres"
+	"primedivident/pkg/token"
 )
 
 type Repository interface {
 	FindUserByEmail(email string) (entity.User, error)
 	FindNetworkByID(networkID string, strategy auth.Name) (entity.Network, error)
+	FindUserSession(refreshToken string, accountability auth.Accountability) (entity.User, entity.Session, error)
 	CreateUser(user model.Users) error
 	SaveRefreshToken(session model.Sessions) error
+	UpdateRefreshToken(refreshToken string, newRefreshToken token.Token) error
 	RemoveExpireRefreshToken(userID uuid.UUID) error
 	RemoveLastRefreshToken(userID uuid.UUID) error
 	RemoveRefreshToken(refreshToken string) error
@@ -89,6 +92,37 @@ func (r repository) FindNetworkByID(networkID string, strategy auth.Name) (entit
 	return dto.EntityUserNetworksByModel(dest.UserNetworks, dest.Users.Email, dest.Users.Name), nil
 }
 
+func (r repository) FindUserSession(
+	refreshToken string,
+	accountability auth.Accountability,
+) (entity.User, entity.Session, error) {
+	var dest struct {
+		model.Sessions
+		model.Users
+	}
+
+	stmt := table.Sessions.
+		SELECT(table.Sessions.AllColumns, table.Users.AllColumns).
+		FROM(
+			table.Sessions.
+				INNER_JOIN(table.Users, table.Sessions.UserID.EQ(table.Users.ID)),
+		).
+		WHERE(jet.AND(
+			table.Sessions.Token.EQ(jet.String(refreshToken)),
+			table.Sessions.UserAgent.EQ(jet.String(accountability.UserAgent)),
+			table.Sessions.Origin.EQ(jet.String(accountability.Origin)),
+		)).
+		LIMIT(1)
+
+	err := stmt.Query(r.db, &dest)
+
+	if err != nil {
+		return entity.User{}, entity.Session{}, err
+	}
+
+	return dto.EntityUserByModel(dest.Users), dto.EntitySessionByModel(dest.Sessions), nil
+}
+
 func (r repository) CreateUser(user model.Users) error {
 	stmt := table.Users.INSERT(
 		table.Users.ID,
@@ -115,6 +149,22 @@ func (r repository) SaveRefreshToken(session model.Sessions) error {
 		table.Sessions.Origin,
 	).
 		MODEL(session)
+
+	_, err := stmt.Exec(r.db)
+
+	return err
+}
+
+func (r repository) UpdateRefreshToken(refreshToken string, newRefreshToken token.Token) error {
+	stmt := table.Sessions.UPDATE(
+		table.Sessions.Token,
+		table.Sessions.ExpiresAt,
+	).
+		SET(
+			newRefreshToken.Value,
+			newRefreshToken.ExpiresAt,
+		).
+		WHERE(table.Sessions.Token.EQ(jet.String(refreshToken)))
 
 	_, err := stmt.Exec(r.db)
 

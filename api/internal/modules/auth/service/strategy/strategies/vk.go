@@ -39,7 +39,7 @@ func (s vkStrategy) Callback(state string) string {
 	return s.oauth.AuthCodeURL(state, oauth2.AccessTypeOnline)
 }
 
-func (s vkStrategy) Login(code string, accountability entity.Accountability) (auth.Tokens, error) {
+func (s vkStrategy) Login(code string, accountability auth.Accountability) (auth.Tokens, error) {
 	var response responseVK
 	var oauthToken *oauth2.Token
 

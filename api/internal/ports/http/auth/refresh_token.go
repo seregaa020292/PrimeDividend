@@ -18,6 +18,12 @@ func (h HandlerAuth) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := h.strategy.VerifyRefresh(refreshToken); err != nil {
+		strategy.RemoveCookieRefreshToken(w, r)
+		respond.Err(errorn.ErrForbidden.Wrap(err))
+		return
+	}
+
 	tokens, err := h.strategy.Refresh(refreshToken, dto.AccountabilityByRequest(r))
 	if err != nil {
 		respond.Err(err)

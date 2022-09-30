@@ -38,7 +38,7 @@ func (s yandexStrategy) Callback(state string) string {
 	return s.oauth.AuthCodeURL(state, oauth2.AccessTypeOnline)
 }
 
-func (s yandexStrategy) Login(code string, accountability entity.Accountability) (auth.Tokens, error) {
+func (s yandexStrategy) Login(code string, accountability auth.Accountability) (auth.Tokens, error) {
 	var response responseYandex
 
 	if err := s.ClientNetwork(&response, s.oauth, code, func(token *oauth2.Token) string {

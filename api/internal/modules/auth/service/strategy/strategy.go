@@ -1,17 +1,18 @@
 package strategy
 
 import (
-	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/categorize"
+	"primedivident/pkg/errorn"
 )
 
 type Strategy interface {
 	Network() categorize.NetworkStrategies
 	Password() categorize.PasswordStrategies
-	Verify(accessToken string) error
+	VerifyAccess(accessToken string) error
+	VerifyRefresh(refreshToken string) error
 	Logout(refreshToken string) error
-	Refresh(refreshToken string, accountability entity.Accountability) (auth.Tokens, error)
+	Refresh(refreshToken string, accountability auth.Accountability) (auth.Tokens, error)
 }
 
 type strategy struct {
@@ -34,20 +35,31 @@ func (s strategy) Password() categorize.PasswordStrategies {
 	return s.categorize.Passwords
 }
 
-func (s strategy) Verify(accessToken string) error {
+func (s strategy) VerifyAccess(accessToken string) error {
 	_, err := s.service.JwtTokens.ValidateAccessToken(accessToken)
 
-	return err
+	return errorn.ErrValidate.Wrap(err)
+}
+
+func (s strategy) VerifyRefresh(refreshToken string) error {
+	if _, err := s.service.JwtTokens.ValidateRefreshToken(refreshToken); err != nil {
+		if err := s.service.Repository.RemoveRefreshToken(refreshToken); err != nil {
+			return errorn.ErrDelete.Wrap(err)
+		}
+		return errorn.ErrValidate.Wrap(err)
+	}
+
+	return nil
 }
 
 func (s strategy) Logout(refreshToken string) error {
-	if _, err := s.service.JwtTokens.ValidateRefreshToken(refreshToken); err != nil {
-		return err
+	if err := s.service.JwtTokens.CorrectRefreshToken(refreshToken); err != nil {
+		return errorn.ErrValidate.Wrap(err)
 	}
 
 	return s.service.Repository.RemoveRefreshToken(refreshToken)
 }
 
-func (s strategy) Refresh(refreshToken string, accountability entity.Accountability) (auth.Tokens, error) {
-	panic("implement me")
+func (s strategy) Refresh(refreshToken string, accountability auth.Accountability) (auth.Tokens, error) {
+	return s.service.UpdateSessionTokens(refreshToken, accountability)
 }

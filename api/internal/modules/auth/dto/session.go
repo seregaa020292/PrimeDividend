@@ -13,7 +13,7 @@ func ModelSessionCreating(
 	userID uuid.UUID,
 	strategy auth.Name,
 	refreshToken token.Token,
-	accountability entity.Accountability,
+	accountability auth.Accountability,
 ) model.Sessions {
 	return model.Sessions{
 		Token:     refreshToken.Value,
@@ -23,5 +23,13 @@ func ModelSessionCreating(
 		IP:        accountability.IP,
 		UserAgent: accountability.UserAgent,
 		Origin:    accountability.Origin,
+	}
+}
+
+func EntitySessionByModel(session model.Sessions) entity.Session {
+	return entity.Session{
+		ID:      session.ID,
+		Token:   session.Token,
+		Expires: session.ExpiresAt,
 	}
 }

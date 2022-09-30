@@ -32,7 +32,7 @@ GET {{host}}/auth/vk
 
 #### Обновить токены
 POST {{host}}/auth/refresh-token
-Cookie: refresh-token=
+Cookie: refresh-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiZTRiMjc0YjQtOTY2Zi00ZGRhLTk4OGQtNDY1ZmZhZTllMDg5IiwiaXNzIjoiUHJpbWVEaXZpZGVuZCIsImV4cCI6MTY2OTczMzY3MiwiaWF0IjoxNjY0NTQ5NjcyfQ.3091bdJgdReAoZ5DkNaVfVnwivoq4Jq0ogYQSoPeBOY
 
 #### Выход из аккаунта
 POST {{host}}/auth/logout

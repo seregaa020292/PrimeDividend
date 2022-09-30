@@ -1,4 +1,4 @@
-package entity
+package auth
 
 type Accountability struct {
 	IP        string
