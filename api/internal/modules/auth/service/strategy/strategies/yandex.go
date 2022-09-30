@@ -41,10 +41,9 @@ func (s yandexStrategy) Callback(state string) string {
 func (s yandexStrategy) Login(code string, accountability entity.Accountability) (auth.Tokens, error) {
 	var response responseYandex
 
-	_, err := s.ClientNetwork(&response, s.oauth, code, func(token *oauth2.Token) string {
+	if err := s.ClientNetwork(&response, s.oauth, code, func(token *oauth2.Token) string {
 		return oauthUrlYandex
-	})
-	if err != nil {
+	}); err != nil {
 		return auth.Tokens{}, err
 	}
 

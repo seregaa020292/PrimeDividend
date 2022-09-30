@@ -59,26 +59,22 @@ func (s Service) ClientNetwork(
 	oauth *oauth2.Config,
 	code string,
 	urlApi func(*oauth2.Token) string,
-) (*oauth2.Token, error) {
+) error {
 	token, err := oauth.Exchange(context.Background(), code)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	client := oauth.Client(context.Background(), token)
 
 	response, err := client.Get(urlApi(token))
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	defer response.Body.Close()
 
-	if err := json.NewDecoder(response.Body).Decode(body); err != nil {
-		return nil, err
-	}
-
-	return token, err
+	return json.NewDecoder(response.Body).Decode(body)
 }
 
 func (s Service) UserAttachNetwork(network entity.Network, strategy auth.Name) (entity.User, error) {

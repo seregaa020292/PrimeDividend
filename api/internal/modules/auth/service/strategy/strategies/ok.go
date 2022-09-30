@@ -17,19 +17,18 @@ import (
 
 const (
 	oauthUrlOK    = "https://api.ok.ru/fb.do?method=%s&application_key=%s&sig=%s&access_token=%s"
-	oauthMethodOK = "users.getCurrentUser"
 	oauthSigOK    = "application_key=%smethod=%s%s"
+	oauthMethodOK = "users.getCurrentUser"
 )
 
 type okStrategy struct {
-	clientKey string
-	oauth     *oauth2.Config
+	oauth  *oauth2.Config
+	config config.OkOAuth2
 	strategy.Service
 }
 
 func NewOkStrategy(cfg config.OkOAuth2, service strategy.Service) categorize.NetworkStrategy {
 	return okStrategy{
-		clientKey: cfg.ClientKey,
 		oauth: &oauth2.Config{
 			ClientID:     cfg.ClientID,
 			ClientSecret: cfg.ClientSecret,
@@ -37,6 +36,7 @@ func NewOkStrategy(cfg config.OkOAuth2, service strategy.Service) categorize.Net
 			Scopes:       cfg.Scopes,
 			Endpoint:     odnoklassniki.Endpoint,
 		},
+		config:  cfg,
 		Service: service,
 	}
 }
@@ -48,8 +48,7 @@ func (s okStrategy) Callback(state string) string {
 func (s okStrategy) Login(code string, accountability entity.Accountability) (auth.Tokens, error) {
 	var response responseOK
 
-	_, err := s.ClientNetwork(&response, s.oauth, code, s.urlApi)
-	if err != nil {
+	if err := s.ClientNetwork(&response, s.oauth, code, s.urlApi); err != nil {
 		return auth.Tokens{}, err
 	}
 
@@ -68,9 +67,9 @@ func (s okStrategy) Login(code string, accountability entity.Accountability) (au
 }
 
 func (s okStrategy) urlApi(token *oauth2.Token) string {
-	secretKey := secure.GetMD5Hash(fmt.Sprintf("%s%s", token.AccessToken, s.oauth.ClientSecret))
+	secretKey := secure.GetMD5Hash(fmt.Sprintf("%s%s", token.AccessToken, s.config.ClientSecret))
 
-	sign := secure.GetMD5Hash(fmt.Sprintf(oauthSigOK, s.clientKey, oauthMethodOK, secretKey))
+	sign := secure.GetMD5Hash(fmt.Sprintf(oauthSigOK, s.config.ClientKey, oauthMethodOK, secretKey))
 
-	return fmt.Sprintf(oauthUrlOK, oauthMethodOK, s.clientKey, sign, token.AccessToken)
+	return fmt.Sprintf(oauthUrlOK, oauthMethodOK, s.config.ClientKey, sign, token.AccessToken)
 }
