@@ -7,6 +7,7 @@ import (
 	"github.com/getkin/kin-openapi/routers/gorillamux"
 	"github.com/go-chi/chi/v5"
 
+	"primedivident/internal/infrastructure/response"
 	"primedivident/internal/infrastructure/server"
 	"primedivident/internal/infrastructure/server/openapi"
 	"primedivident/internal/modules/auth/service/strategy"
@@ -19,7 +20,6 @@ import (
 	"primedivident/internal/ports/http/provider"
 	"primedivident/internal/ports/http/register"
 	"primedivident/internal/ports/http/user"
-	"primedivident/pkg/response"
 )
 
 // Handlers implements openapi.ServerInterface

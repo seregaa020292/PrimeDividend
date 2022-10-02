@@ -8,6 +8,7 @@ package wire
 
 import (
 	"primedivident/internal/config"
+	"primedivident/internal/infrastructure/response"
 	"primedivident/internal/infrastructure/server"
 	"primedivident/internal/infrastructure/server/handlers"
 	"primedivident/internal/infrastructure/server/middlewares"
@@ -33,7 +34,6 @@ import (
 	"primedivident/internal/ports/http/user"
 	"primedivident/internal/presenters/instrument"
 	"primedivident/internal/presenters/portfolio"
-	"primedivident/pkg/response"
 	"primedivident/pkg/validator"
 )
 

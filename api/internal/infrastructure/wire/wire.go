@@ -7,11 +7,11 @@ import (
 	"github.com/google/wire"
 
 	"primedivident/internal/config"
+	"primedivident/internal/infrastructure/response"
 	"primedivident/internal/infrastructure/server"
 	"primedivident/internal/infrastructure/server/handlers"
 	"primedivident/internal/infrastructure/server/middlewares"
 	wireGroup "primedivident/internal/infrastructure/wire/wire_group"
-	"primedivident/pkg/response"
 	"primedivident/pkg/validator"
 )
 

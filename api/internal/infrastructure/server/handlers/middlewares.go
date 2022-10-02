@@ -11,9 +11,9 @@ import (
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/getkin/kin-openapi/routers"
 
+	"primedivident/internal/infrastructure/response"
 	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/pkg/errorn"
-	"primedivident/pkg/response"
 )
 
 func authValidator(swagger *openapi3.T, strategy strategy.Strategy) func(next http.Handler) http.Handler {

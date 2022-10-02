@@ -411,37 +411,35 @@ components:
               type: integer
               description: Всего элементов
               minimum: 1
+
+    errorMessage:
+      type: object
+      required: [ message, details ]
+      description: Объект ошибки
+      properties:
+        message:
+          type: string
+          description: Описание ошибки
+        details:
+          type: array
+          description: В каком поле произошла ошибка
+          items:
+            $ref: '#/components/schemas/detail'
+
+    detail:
+      type: object
+      required: [ message, field ]
+      properties:
+        message:
+          type: string
+          description: Описание ошибки
+        field:
+          type: string
+          description: Поле в котором произошла ошибка
+
     error:
       type: object
-      required: [ errors ]
+      required: [ error ]
       properties:
-        data:
-          nullable: true
-          default: null
         error:
-          type: object
-          required: [ status, target, message ]
-          description: Объект ошибки
-          properties:
-            status:
-              type: number
-              description: HTTP код ошибки
-            target:
-              type: number
-              description: Место где произошла ошибка
-            message:
-              type: string
-              description: Описание ошибки
-            details:
-              type: array
-              description: В каком поле произошла ошибка
-              items:
-                type: object
-                required: [ message ]
-                properties:
-                  message:
-                    type: string
-                    description: Описание ошибки
-                  target:
-                    type: string
-                    description: Поле в котором произошла ошибка
+          $ref: '#/components/schemas/errorMessage'

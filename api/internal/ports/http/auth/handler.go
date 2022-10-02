@@ -1,9 +1,9 @@
 package auth
 
 import (
+	"primedivident/internal/infrastructure/response"
 	"primedivident/internal/modules/auth/command"
 	"primedivident/internal/modules/auth/service/strategy"
-	"primedivident/pkg/response"
 )
 
 type HandlerAuth struct {

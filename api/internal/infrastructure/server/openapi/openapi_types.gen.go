@@ -31,30 +31,28 @@ type AuthUser struct {
 	Password string `json:"password" validate:"required,min=6"`
 }
 
+// Detail defines model for detail.
+type Detail struct {
+	// Поле в котором произошла ошибка
+	Field string `json:"field"`
+
+	// Описание ошибки
+	Message string `json:"message"`
+}
+
 // Error defines model for error.
 type Error struct {
-	Data *interface{} `json:"data"`
-
 	// Объект ошибки
-	Error *struct {
-		// В каком поле произошла ошибка
-		Details *[]struct {
-			// Описание ошибки
-			Message string `json:"message"`
+	Error ErrorMessage `json:"error"`
+}
 
-			// Поле в котором произошла ошибка
-			Target *string `json:"target,omitempty"`
-		} `json:"details,omitempty"`
+// Объект ошибки
+type ErrorMessage struct {
+	// В каком поле произошла ошибка
+	Details []Detail `json:"details"`
 
-		// Описание ошибки
-		Message string `json:"message"`
-
-		// HTTP код ошибки
-		Status float32 `json:"status"`
-
-		// Место где произошла ошибка
-		Target float32 `json:"target"`
-	} `json:"error,omitempty"`
+	// Описание ошибки
+	Message string `json:"message"`
 }
 
 // Instrument defines model for instrument.

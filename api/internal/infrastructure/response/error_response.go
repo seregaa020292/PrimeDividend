@@ -3,32 +3,23 @@ package response
 import (
 	"net/http"
 
+	"primedivident/internal/infrastructure/server/openapi"
 	"primedivident/pkg/errs"
 	"primedivident/pkg/errs/bugreport"
 )
 
-type (
-	errDetail struct {
-		Field   string `json:"field"`
-		Message string `json:"message"`
-	}
-	errResponse struct {
-		Message string      `json:"message"`
-		Details []errDetail `json:"details"`
-	}
-	ErrorResponse struct {
-		Data  *any        `json:"data"`
-		Error errResponse `json:"error"`
-
-		status int
-	}
-)
+type ErrorResponse struct {
+	openapi.Error
+	status int
+}
 
 func NewErrorResponse(err error) ErrorResponse {
 	return ErrorResponse{
-		Error: errResponse{
-			Message: newMessage(err),
-			Details: newDetails(err),
+		Error: openapi.Error{
+			openapi.ErrorMessage{
+				Details: newDetails(err),
+				Message: newMessage(err),
+			},
 		},
 		status: newStatus(err),
 	}
@@ -64,12 +55,12 @@ func newStatus(err error) int {
 	}
 }
 
-func newDetails(err error) []errDetail {
+func newDetails(err error) []openapi.Detail {
 	ctxErrors := errs.GetErrorContext(err)
-	details := make([]errDetail, len(ctxErrors))
+	details := make([]openapi.Detail, len(ctxErrors))
 
 	for i, v := range ctxErrors {
-		details[i] = errDetail(v)
+		details[i] = openapi.Detail(v)
 	}
 
 	return details
