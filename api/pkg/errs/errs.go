@@ -1,4 +1,4 @@
-package errorx
+package errs
 
 import (
 	"fmt"
@@ -12,6 +12,9 @@ const (
 	NoType ErrorType = iota
 	BadRequest
 	NotFound
+	Unauthorized
+	Forbidden
+	Conflict
 )
 
 type (
@@ -19,8 +22,9 @@ type (
 	ErrorType   uint
 	customError struct {
 		errorType     ErrorType
+		messageError  string
 		originalError error
-		context       errorContext
+		context       []errorContext
 	}
 	errorContext struct {
 		Field   string
@@ -28,19 +32,18 @@ type (
 	}
 )
 
-// New создает новую customError
+// New создает новый customError
 func (errorType ErrorType) New(msg string) error {
-	return customError{
-		errorType:     errorType,
-		originalError: errors.New(msg),
-	}
+	return Newf(msg)
 }
 
 // Newf создает новый customError с отформатированным сообщением
 func (errorType ErrorType) Newf(msg string, args ...interface{}) error {
 	return customError{
 		errorType:     errorType,
+		messageError:  fmt.Sprintf(msg, args...),
 		originalError: fmt.Errorf(msg, args...),
+		context:       []errorContext{},
 	}
 }
 
@@ -53,7 +56,9 @@ func (errorType ErrorType) Wrap(err error, msg string) error {
 func (errorType ErrorType) Wrapf(err error, msg string, args ...interface{}) error {
 	return customError{
 		errorType:     errorType,
+		messageError:  fmt.Sprintf(msg, args...),
 		originalError: errors.Wrapf(err, msg, args...),
+		context:       []errorContext{},
 	}
 }
 
@@ -62,19 +67,23 @@ func (error customError) Error() string {
 	return error.originalError.Error()
 }
 
+// Cause возвращает оригинальную ошибку
+func (error customError) Cause() error {
+	return error.originalError
+}
+
 // New создает ошибку без типа
 func New(msg string) error {
-	return customError{
-		errorType:     NoType,
-		originalError: errors.New(msg),
-	}
+	return Newf(msg)
 }
 
 // Newf создает ошибку без типа с отформатированным сообщением
 func Newf(msg string, args ...interface{}) error {
 	return customError{
 		errorType:     NoType,
+		messageError:  fmt.Sprintf(msg, args...),
 		originalError: errors.New(fmt.Sprintf(msg, args...)),
+		context:       []errorContext{},
 	}
 }
 
@@ -90,6 +99,7 @@ func Wrapf(err error, msg string, args ...interface{}) error {
 	if customErr, ok := err.(customError); ok {
 		return customError{
 			errorType:     customErr.errorType,
+			messageError:  customErr.messageError,
 			originalError: wrappedError,
 			context:       customErr.context,
 		}
@@ -97,6 +107,7 @@ func Wrapf(err error, msg string, args ...interface{}) error {
 
 	return customError{
 		errorType:     NoType,
+		messageError:  fmt.Sprintf(msg, args...),
 		originalError: wrappedError,
 	}
 }
@@ -116,30 +127,36 @@ func AddErrorContext(err error, field, message string) error {
 	if customErr, ok := err.(customError); ok {
 		return customError{
 			errorType:     customErr.errorType,
+			messageError:  customErr.messageError,
 			originalError: customErr.originalError,
-			context:       context,
+			context:       append(customErr.context, context),
 		}
 	}
 
 	return customError{
 		errorType:     NoType,
+		messageError:  err.Error(),
 		originalError: err,
-		context:       context,
+		context:       append([]errorContext{}, context),
 	}
 }
 
 // GetErrorContext возвращает контекст ошибки
-func GetErrorContext(err error) map[string]string {
-	emptyContext := errorContext{}
-
-	if customErr, ok := err.(customError); ok || customErr.context != emptyContext {
-		return map[string]string{
-			"field":   customErr.context.Field,
-			"message": customErr.context.Message,
-		}
+func GetErrorContext(err error) []errorContext {
+	if customErr, ok := err.(customError); ok {
+		return customErr.context
 	}
 
-	return nil
+	return []errorContext{}
+}
+
+// GetMessage возвращает оригинальную ошибку
+func GetMessage(err error) string {
+	if customErr, ok := err.(customError); ok {
+		return customErr.messageError
+	}
+
+	return err.Error()
 }
 
 // GetType возвращает тип ошибки
@@ -149,4 +166,11 @@ func GetType(err error) ErrorType {
 	}
 
 	return NoType
+}
+
+// IsCustom проверяет на кастомный тип ошибки
+func IsCustom(err error) bool {
+	_, ok := err.(customError)
+
+	return ok
 }

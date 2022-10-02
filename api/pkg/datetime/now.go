@@ -1,6 +1,7 @@
 package datetime
 
 import (
+	"log"
 	"sync"
 	"time"
 
@@ -16,7 +17,10 @@ var (
 
 func GetNow() *now.Now {
 	once.Do(func() {
-		location, _ := time.LoadLocation(consts.Timezone)
+		location, err := time.LoadLocation(consts.Timezone)
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		nowConfig := &now.Config{
 			WeekStartDay: time.Monday,

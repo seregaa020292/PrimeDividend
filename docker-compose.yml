@@ -78,6 +78,7 @@ services:
   api-postgres:
     image: postgres:13.3-alpine
     environment:
+      TZ: Europe/Moscow
       POSTGRES_DB: app
       POSTGRES_USER: app
       POSTGRES_PASSWORD_FILE: /run/secrets/api_db_password
@@ -92,6 +93,8 @@ services:
     image: redis:6-alpine
     ports:
       - "63791:6379"
+    environment:
+      TZ: Europe/Moscow
     restart: on-failure
     volumes:
       - api-redis:/data

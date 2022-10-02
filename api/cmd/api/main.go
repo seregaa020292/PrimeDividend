@@ -4,10 +4,13 @@ import (
 	"primedivident/internal/config"
 	"primedivident/internal/config/consts"
 	"primedivident/internal/infrastructure/wire"
+	"primedivident/pkg/datetime"
 	"primedivident/pkg/graceful"
 )
 
 func main() {
+	datetime.InitLocation()
+
 	cfg := config.GetConfig()
 
 	server := wire.Initialize(cfg)
