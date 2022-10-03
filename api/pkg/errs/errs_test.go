@@ -10,10 +10,10 @@ func TestContext(t *testing.T) {
 	err := BadRequest.New("an_error")
 	errWithContext := AddErrorContext(err, "a_field", "the field is empty")
 
-	expectedContext := map[string]string{"field": "a_field", "message": "the field is empty"}
+	expectedContext := []errorContext{{Field: "a_field", Message: "the field is empty"}}
 
-	assert.Equal(t, BadRequest, GetType(errWithContext))
-	assert.Equal(t, expectedContext, GetErrorContext(errWithContext))
+	assert.Equal(t, NoType, GetType(errWithContext))
+	assert.ElementsMatch(t, expectedContext, GetErrorContext(errWithContext))
 	assert.Equal(t, err.Error(), errWithContext.Error())
 }
 
@@ -22,10 +22,10 @@ func TestContextInNoTypeError(t *testing.T) {
 
 	errWithContext := AddErrorContext(err, "a_field", "the field is empty")
 
-	expectedContext := map[string]string{"field": "a_field", "message": "the field is empty"}
+	expectedContext := []errorContext{{Field: "a_field", Message: "the field is empty"}}
 
 	assert.Equal(t, NoType, GetType(errWithContext))
-	assert.Equal(t, expectedContext, GetErrorContext(errWithContext))
+	assert.ElementsMatch(t, expectedContext, GetErrorContext(errWithContext))
 	assert.Equal(t, err.Error(), errWithContext.Error())
 }
 
