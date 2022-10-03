@@ -41,11 +41,11 @@ func (c joinByEmail) Exec(cmd Credential) error {
 	}
 
 	if user.IsEmpty() {
-		if user, err = c.NewUser(cmd); err != nil {
+		if user, err = c.newUser(cmd); err != nil {
 			return err
 		}
 	} else {
-		if user, err = c.ExistUser(user); err != nil {
+		if user, err = c.existUser(user); err != nil {
 			return err
 		}
 	}
@@ -57,7 +57,7 @@ func (c joinByEmail) Exec(cmd Credential) error {
 	return nil
 }
 
-func (c joinByEmail) NewUser(cmd Credential) (entity.User, error) {
+func (c joinByEmail) newUser(cmd Credential) (entity.User, error) {
 	user, err := entity.NewUser(cmd.Email, cmd.Name, cmd.Password)
 	if err != nil {
 		return entity.User{}, errs.BadRequest.Wrap(err, errmsg.UnknownError)
@@ -70,7 +70,7 @@ func (c joinByEmail) NewUser(cmd Credential) (entity.User, error) {
 	return user, nil
 }
 
-func (c joinByEmail) ExistUser(user entity.User) (entity.User, error) {
+func (c joinByEmail) existUser(user entity.User) (entity.User, error) {
 	if !user.Status.IsWait() {
 		return entity.User{}, errs.BadRequest.New(errmsg.IsWaitStatus)
 	}
