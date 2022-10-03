@@ -6,7 +6,8 @@ import (
 	"primedivident/internal/decorator"
 	"primedivident/internal/modules/portfolio/entity"
 	"primedivident/internal/modules/portfolio/repository"
-	"primedivident/pkg/errorn"
+	"primedivident/pkg/errs"
+	"primedivident/pkg/errs/errmsg"
 )
 
 type (
@@ -37,7 +38,7 @@ func (c portfolioCreate) Exec(cmd PortfolioNew) error {
 		CurrencyID: cmd.CurrencyId,
 		Active:     true,
 	}); err != nil {
-		return errorn.ErrInsert.Wrap(err)
+		return errs.BadRequest.Wrap(err, errmsg.FailedAddData)
 	}
 
 	return nil

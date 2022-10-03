@@ -11,7 +11,8 @@ import (
 	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/categorize"
-	"primedivident/pkg/errorn"
+	"primedivident/pkg/errs"
+	"primedivident/pkg/errs/errmsg"
 	"primedivident/pkg/secure"
 )
 
@@ -49,7 +50,7 @@ func (s okStrategy) Login(code string, accountability auth.Accountability) (auth
 	var response responseOK
 
 	if err := s.ClientNetwork(&response, code, s.oauth, s.urlApi); err != nil {
-		return auth.Tokens{}, err
+		return auth.Tokens{}, errs.BadRequest.Wrap(err, errmsg.EncounteredRequestExternal)
 	}
 
 	network := entity.Network{
@@ -60,10 +61,15 @@ func (s okStrategy) Login(code string, accountability auth.Accountability) (auth
 
 	user, err := s.UserAttachNetwork(network, auth.Ok)
 	if err != nil {
-		return auth.Tokens{}, errorn.ErrUnauthorized.Wrap(err)
+		return auth.Tokens{}, errs.BadRequest.Wrap(err, errmsg.FailedUpdateData)
 	}
 
-	return s.CreateSessionTokens(user, accountability)
+	tokens, err := s.CreateSessionTokens(user, accountability)
+	if err != nil {
+		return auth.Tokens{}, errs.BadRequest.Wrap(err, errmsg.FailedAddData)
+	}
+
+	return tokens, nil
 }
 
 func (s okStrategy) urlApi(token *oauth2.Token) string {

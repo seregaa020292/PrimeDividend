@@ -3,7 +3,8 @@ package strategy
 import (
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/categorize"
-	"primedivident/pkg/errorn"
+	"primedivident/pkg/errs"
+	"primedivident/pkg/errs/errmsg"
 )
 
 type Strategy interface {
@@ -38,15 +39,15 @@ func (s strategy) Password() categorize.PasswordStrategies {
 func (s strategy) VerifyAccess(accessToken string) error {
 	_, err := s.service.JwtTokens.ValidateAccessToken(accessToken)
 
-	return errorn.ErrValidate.Wrap(err)
+	return errs.Forbidden.Wrap(err, errmsg.AccessDenied)
 }
 
 func (s strategy) VerifyRefresh(refreshToken string) error {
 	if _, err := s.service.JwtTokens.ValidateRefreshToken(refreshToken); err != nil {
 		if err := s.service.Repository.RemoveRefreshToken(refreshToken); err != nil {
-			return errorn.ErrDelete.Wrap(err)
+			return errs.BadRequest.Wrap(err, errmsg.FailedDeleteData)
 		}
-		return errorn.ErrValidate.Wrap(err)
+		return errs.BadRequest.Wrap(err, errmsg.ConfirmWhileMatching)
 	}
 
 	return nil
@@ -54,12 +55,21 @@ func (s strategy) VerifyRefresh(refreshToken string) error {
 
 func (s strategy) Logout(refreshToken string) error {
 	if err := s.service.JwtTokens.CorrectRefreshToken(refreshToken); err != nil {
-		return errorn.ErrValidate.Wrap(err)
+		return errs.BadRequest.Wrap(err, errmsg.CheckingWhileOccurred)
 	}
 
-	return s.service.Repository.RemoveRefreshToken(refreshToken)
+	if err := s.service.Repository.RemoveRefreshToken(refreshToken); err != nil {
+		return errs.BadRequest.Wrap(err, errmsg.FailedDeleteData)
+	}
+
+	return nil
 }
 
 func (s strategy) Refresh(refreshToken string, accountability auth.Accountability) (auth.Tokens, error) {
-	return s.service.UpdateSessionTokens(refreshToken, accountability)
+	tokens, err := s.service.UpdateSessionTokens(refreshToken, accountability)
+	if err != nil {
+		return auth.Tokens{}, errs.BadRequest.Wrap(err, errmsg.FailedUpdateData)
+	}
+
+	return tokens, nil
 }

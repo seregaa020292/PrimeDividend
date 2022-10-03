@@ -6,7 +6,8 @@ import (
 	"primedivident/internal/decorator"
 	"primedivident/internal/modules/portfolio/entity"
 	"primedivident/internal/modules/portfolio/repository"
-	"primedivident/pkg/errorn"
+	"primedivident/pkg/errs"
+	"primedivident/pkg/errs/errmsg"
 )
 
 type (
@@ -29,7 +30,7 @@ func NewPortfolioById(
 func (q portfolioById) Fetch(portfolioId PortfolioId) (entity.Portfolio, error) {
 	portfolio, err := q.repository.FindById(uuid.UUID(portfolioId))
 	if err != nil {
-		return entity.Portfolio{}, errorn.ErrSelect.Wrap(err)
+		return entity.Portfolio{}, errs.NotFound.Wrap(err, errmsg.CouldNotBeFound)
 	}
 
 	return portfolio, nil

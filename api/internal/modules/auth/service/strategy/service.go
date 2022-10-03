@@ -10,7 +10,6 @@ import (
 	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/repository"
-	"primedivident/pkg/errorn"
 )
 
 type Service struct {
@@ -56,16 +55,16 @@ func (s Service) CreateSessionTokens(
 func (s Service) UpdateSessionTokens(refreshToken string, accountability auth.Accountability) (auth.Tokens, error) {
 	user, _, err := s.Repository.FindUserSession(refreshToken, accountability)
 	if err != nil {
-		return auth.Tokens{}, errorn.ErrNotFound.Wrap(err)
+		return auth.Tokens{}, err
 	}
 
 	genTokens, err := s.JwtTokens.GenTokens(user.JwtPayload())
 	if err != nil {
-		return auth.Tokens{}, errorn.ErrUnknown.Wrap(err)
+		return auth.Tokens{}, err
 	}
 
 	if err := s.Repository.UpdateRefreshToken(refreshToken, genTokens.RefreshToken); err != nil {
-		return auth.Tokens{}, errorn.ErrUpdate.Wrap(err)
+		return auth.Tokens{}, err
 	}
 
 	return genTokens, nil

@@ -2,7 +2,7 @@ package repository
 
 import (
 	"primedivident/internal/models/app/public/model"
-	table "primedivident/internal/models/app/public/table"
+	"primedivident/internal/models/app/public/table"
 	"primedivident/pkg/db/postgres"
 )
 

@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -48,4 +49,11 @@ func (t Token) IsExpired(expires time.Time) bool {
 
 func (t Token) IsExpiredByNow() bool {
 	return t.IsExpired(time.Now())
+}
+
+func (t Token) ErrorIsExpiredByNow() error {
+	if t.IsExpiredByNow() {
+		return errors.New("token expired")
+	}
+	return nil
 }

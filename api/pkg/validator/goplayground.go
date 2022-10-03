@@ -1,19 +1,19 @@
 package validator
 
 import (
-	"fmt"
 	"log"
 	"reflect"
 	"strings"
-
-	"primedivident/pkg/errorn"
-	"primedivident/pkg/utils/gog"
 
 	"github.com/go-playground/locales/ru"
 	ut "github.com/go-playground/universal-translator"
 	goPlayground "github.com/go-playground/validator/v10"
 	ruTranslations "github.com/go-playground/validator/v10/translations/ru"
 	"github.com/google/uuid"
+
+	"primedivident/pkg/errs"
+	"primedivident/pkg/errs/errmsg"
+	"primedivident/pkg/utils/gog"
 )
 
 type playgroundValidator struct {
@@ -82,25 +82,15 @@ func (v playgroundValidator) Var(field any, tag string) error {
 		return err
 	}
 
-	return errorn.ErrValidate.Additional(errorn.DetailError{
-		Target: "variable",
-		Message: fmt.Sprintf(
-			"Ошибка %s%s",
-			fieldErrors[0].Value(),
-			fieldErrors[0].Translate(v.translator),
-		),
-	})
+	return v.messages(fieldErrors)
 }
 
 func (v playgroundValidator) messages(fieldErrors goPlayground.ValidationErrors) error {
-	var messages []errorn.DetailError
+	err := errs.BadRequest.New(errmsg.ValidationError)
 
 	for _, fieldErr := range fieldErrors {
-		messages = append(messages, errorn.DetailError{
-			Target:  fieldErr.Field(),
-			Message: fieldErr.Translate(v.translator),
-		})
+		err = errs.AddErrorContext(err, fieldErr.Field(), fieldErr.Translate(v.translator))
 	}
 
-	return errorn.ErrValidate.Additional(messages...)
+	return err
 }

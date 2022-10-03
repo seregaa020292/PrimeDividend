@@ -11,7 +11,8 @@ import (
 	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/categorize"
-	"primedivident/pkg/errorn"
+	"primedivident/pkg/errs"
+	"primedivident/pkg/errs/errmsg"
 )
 
 const oauthUrlYandex = "https://login.yandex.ru/info"
@@ -44,7 +45,7 @@ func (s yandexStrategy) Login(code string, accountability auth.Accountability) (
 	if err := s.ClientNetwork(&response, code, s.oauth, func(token *oauth2.Token) string {
 		return oauthUrlYandex
 	}); err != nil {
-		return auth.Tokens{}, err
+		return auth.Tokens{}, errs.BadRequest.Wrap(err, errmsg.EncounteredRequestExternal)
 	}
 
 	network := entity.Network{
@@ -55,8 +56,13 @@ func (s yandexStrategy) Login(code string, accountability auth.Accountability) (
 
 	user, err := s.UserAttachNetwork(network, auth.Yandex)
 	if err != nil {
-		return auth.Tokens{}, errorn.ErrUnauthorized.Wrap(err)
+		return auth.Tokens{}, errs.BadRequest.Wrap(err, errmsg.FailedUpdateData)
 	}
 
-	return s.CreateSessionTokens(user, accountability)
+	tokens, err := s.CreateSessionTokens(user, accountability)
+	if err != nil {
+		return auth.Tokens{}, errs.BadRequest.Wrap(err, errmsg.FailedAddData)
+	}
+
+	return tokens, nil
 }

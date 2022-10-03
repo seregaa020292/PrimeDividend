@@ -7,6 +7,8 @@ import (
 	"github.com/google/uuid"
 
 	"primedivident/pkg/datetime"
+	"primedivident/pkg/errs"
+	"primedivident/pkg/errs/errmsg"
 	"primedivident/pkg/utils"
 )
 
@@ -15,7 +17,7 @@ const OauthState = "oauth-state"
 func ValidateOauthState(state string, r *http.Request) error {
 	oauthState, err := r.Cookie(OauthState)
 	if err != nil {
-		return err
+		return errs.BadRequest.Wrap(err, errmsg.FailedGetData)
 	}
 
 	if state != oauthState.Value {

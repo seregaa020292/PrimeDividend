@@ -6,7 +6,8 @@ import (
 	"primedivident/internal/infrastructure/server/openapi"
 	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/modules/auth/service/strategy/auth"
-	"primedivident/pkg/errorn"
+	"primedivident/pkg/errs"
+	"primedivident/pkg/errs/errmsg"
 )
 
 func (h HandlerAuth) JoinNetwork(w http.ResponseWriter, r *http.Request, network openapi.Network) {
@@ -15,7 +16,7 @@ func (h HandlerAuth) JoinNetwork(w http.ResponseWriter, r *http.Request, network
 	strategyNetwork := h.strategy.Network().Get(auth.Name(network))
 
 	if strategyNetwork == nil {
-		respond.Err(errorn.ErrNotFound)
+		respond.Err(errs.NotFound.New(errmsg.CouldNotBeFound))
 		return
 	}
 

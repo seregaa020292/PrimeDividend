@@ -13,7 +13,8 @@ import (
 
 	"primedivident/internal/infrastructure/response"
 	"primedivident/internal/modules/auth/service/strategy"
-	"primedivident/pkg/errorn"
+	"primedivident/pkg/errs"
+	"primedivident/pkg/errs/errmsg"
 )
 
 func authValidator(swagger *openapi3.T, strategy strategy.Strategy) func(next http.Handler) http.Handler {
@@ -29,12 +30,12 @@ func authValidator(swagger *openapi3.T, strategy strategy.Strategy) func(next ht
 		},
 		ErrorHandler: func(w http.ResponseWriter, message string, statusCode int) {
 			respond := response.NewRespondBuilder(w, &http.Request{})
+			err := errs.New(message)
 
-			var err error
 			if statusCode == 400 {
-				err = errorn.ErrNotFound
+				err = errs.NotFound.Wrap(err, errmsg.CouldNotBeFound)
 			} else {
-				err = errorn.ErrForbidden.Wrap(fmt.Errorf(message))
+				err = errs.Forbidden.Wrap(err, errmsg.AccessDenied)
 			}
 
 			respond.Err(err)

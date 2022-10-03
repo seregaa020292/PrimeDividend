@@ -5,7 +5,7 @@ import (
 
 	"primedivident/internal/infrastructure/server/openapi"
 	"primedivident/pkg/errs"
-	"primedivident/pkg/errs/bugreport"
+	"primedivident/pkg/errs/errmsg"
 )
 
 type ErrorResponse struct {
@@ -35,7 +35,7 @@ func newMessage(err error) string {
 		return errs.GetMessage(err)
 	}
 
-	return bugreport.ServerError
+	return errmsg.ServerError
 }
 
 func newStatus(err error) int {

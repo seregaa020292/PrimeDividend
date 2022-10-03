@@ -6,7 +6,6 @@ import (
 	"primedivident/internal/infrastructure/server/openapi"
 	"primedivident/internal/modules/auth/dto"
 	"primedivident/internal/modules/auth/service/strategy"
-	"primedivident/pkg/errorn"
 )
 
 func (h HandlerAuth) RefreshToken(w http.ResponseWriter, r *http.Request) {
@@ -14,13 +13,13 @@ func (h HandlerAuth) RefreshToken(w http.ResponseWriter, r *http.Request) {
 
 	refreshToken, err := strategy.GetCookieRefreshToken(r)
 	if err != nil {
-		respond.Err(errorn.ErrForbidden.Wrap(err))
+		respond.Err(err)
 		return
 	}
 
 	if err := h.strategy.VerifyRefresh(refreshToken); err != nil {
 		strategy.RemoveCookieRefreshToken(w, r)
-		respond.Err(errorn.ErrForbidden.Wrap(err))
+		respond.Err(err)
 		return
 	}
 

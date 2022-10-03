@@ -1,14 +1,14 @@
 package auth
 
 import (
-	"fmt"
 	"net/http"
 
 	"primedivident/internal/infrastructure/server/openapi"
 	"primedivident/internal/modules/auth/dto"
 	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/modules/auth/service/strategy/auth"
-	"primedivident/pkg/errorn"
+	"primedivident/pkg/errs"
+	"primedivident/pkg/errs/errmsg"
 )
 
 func (h HandlerAuth) ConfirmNetwork(
@@ -20,14 +20,13 @@ func (h HandlerAuth) ConfirmNetwork(
 	respond := h.responder.Http(w, r)
 
 	if err := strategy.ValidateOauthState(params.State, r); err != nil {
-		respond.Err(errorn.ErrForbidden.Wrap(err))
+		respond.Err(err)
 		return
 	}
 
 	strategyNetwork := h.strategy.Network().Get(auth.Name(network))
 	if strategyNetwork == nil {
-		err := fmt.Errorf("strategy %s not found", network)
-		respond.Err(errorn.ErrNotFound.Wrap(err))
+		respond.Err(errs.NotFound.New(errmsg.CouldNotBeFound))
 		return
 	}
 
