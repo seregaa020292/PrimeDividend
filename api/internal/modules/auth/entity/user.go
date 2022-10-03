@@ -92,3 +92,9 @@ func (u User) ErrorIsEmpty() error {
 
 	return nil
 }
+
+func (u *User) SetGenToken() Token {
+	u.Token = NewTokenTTL()
+
+	return u.Token
+}

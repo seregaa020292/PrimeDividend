@@ -75,13 +75,11 @@ func (c joinByEmail) existUser(user entity.User) (entity.User, error) {
 		return entity.User{}, errs.BadRequest.New(errmsg.CheckingWhileOccurred)
 	}
 
-	if err := user.Token.ErrorIsExpiredByNow(); err != nil {
-		return entity.User{}, errs.BadRequest.Wrap(err, errmsg.CheckTimeExpired)
+	if !user.Token.IsExpiredByNow() {
+		return entity.User{}, errs.BadRequest.New(errmsg.CheckingWhileOccurred)
 	}
 
-	user.Token = entity.NewTokenTTL()
-
-	if err := c.repository.UpdateTokeJoin(user.ID, user.Token); err != nil {
+	if err := c.repository.UpdateTokeJoin(user.ID, user.SetGenToken()); err != nil {
 		return entity.User{}, errs.BadRequest.Wrap(err, errmsg.FailedUpdateData)
 	}
 

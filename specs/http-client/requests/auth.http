@@ -3,7 +3,7 @@ POST {{host}}/auth/email
 Content-type: application/json
 
 {
-  "email": "test1@mail.ru",
+  "email": "test@mail.ru",
   "name": "Вася",
   "password": "123456"
 }
@@ -13,7 +13,7 @@ POST {{host}}/auth/email/confirm
 Content-type: application/json
 
 {
-  "token": "9c6dd366-8b9b-4b9a-baf6-7a8b52b578b1"
+  "token": "c7d0d58f-ad95-454d-9dc6-e70f4baa4150"
 }
 
 #### Аутентификация по Email
