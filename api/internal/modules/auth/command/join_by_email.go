@@ -72,7 +72,7 @@ func (c joinByEmail) newUser(cmd Credential) (entity.User, error) {
 
 func (c joinByEmail) existUser(user entity.User) (entity.User, error) {
 	if !user.Status.IsWait() {
-		return entity.User{}, errs.BadRequest.New(errmsg.IsWaitStatus)
+		return entity.User{}, errs.BadRequest.New(errmsg.CheckingWhileOccurred)
 	}
 
 	if err := user.Token.ErrorIsExpiredByNow(); err != nil {
