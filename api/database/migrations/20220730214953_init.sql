@@ -17,7 +17,7 @@ CREATE TABLE users
     avatar             VARCHAR(512),
     status             VARCHAR(250)             NOT NULL CHECK (status <> ''),
     token_join_value   UUID,
-    token_join_expires TIMESTAMP,
+    token_join_expires TIMESTAMP WITH TIME ZONE,
     created_at         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at         TIMESTAMP WITH TIME ZONE          DEFAULT CURRENT_TIMESTAMP
 );

@@ -18,7 +18,7 @@ func (s Session) IsExpired(expires time.Time) bool {
 }
 
 func (s Session) IsExpiredByNow() bool {
-	return s.IsExpired(time.Now().UTC())
+	return s.IsExpired(time.Now())
 }
 
 func (s Session) ErrorIsExpiredByNow() error {

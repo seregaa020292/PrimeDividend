@@ -23,6 +23,7 @@ services:
         USER_ID: 1000
         GROUP_ID: 1000
     environment:
+      TZ: Europe/Moscow
       APP_NAME: PrimeDividend
       APP_ENV: development
       SITE_ORIGIN: http://localhost

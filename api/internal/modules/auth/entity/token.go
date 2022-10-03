@@ -47,5 +47,5 @@ func (t Token) IsExpired(expires time.Time) bool {
 }
 
 func (t Token) IsExpiredByNow() bool {
-	return t.IsExpired(time.Now().UTC())
+	return t.IsExpired(time.Now())
 }
