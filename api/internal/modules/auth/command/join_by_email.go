@@ -35,48 +35,55 @@ func NewJoinByEmail(
 }
 
 func (c joinByEmail) Exec(cmd Credential) error {
-	if user, err := c.repository.FindByEmail(cmd.Email); err != nil {
+	user, err := c.repository.FindByEmail(cmd.Email)
+	if err != nil {
 		return errs.NotFound.Wrap(err, errmsg.CouldNotBeFound)
+	}
+
+	if user.IsEmpty() {
+		if user, err = c.NewUser(cmd); err != nil {
+			return err
+		}
 	} else {
-		if !user.IsEmpty() {
-			return c.existedUser(user)
+		if user, err = c.ExistUser(user); err != nil {
+			return err
 		}
 	}
 
-	user, err := entity.NewUser(cmd.Email, cmd.Name, cmd.Password)
-	if err != nil {
-		return errs.BadRequest.Wrap(err, errmsg.UnknownError)
-	}
-
-	if err := c.repository.Add(dto.ModelUserByEntity(user)); err != nil {
-		return errs.BadRequest.Wrap(err, errmsg.FailedAddData)
-	}
-
-	return c.sendEmail(user.Email, user.Token.String())
-}
-
-func (c joinByEmail) existedUser(user entity.User) error {
-	if !user.Status.IsWait() {
-		return errs.BadRequest.New(errmsg.IsWaitStatus)
-	}
-
-	if err := user.Token.ErrorIsExpiredByNow(); err != nil {
-		return errs.BadRequest.Wrap(err, errmsg.CheckTimeExpired)
-	}
-
-	token := entity.NewTokenTTL()
-
-	if err := c.repository.UpdateTokeJoin(user.ID, token); err != nil {
-		return errs.BadRequest.Wrap(err, errmsg.FailedUpdateData)
-	}
-
-	return c.sendEmail(user.Email, token.String())
-}
-
-func (c joinByEmail) sendEmail(emailAddr, token string) error {
-	if err := c.email.Send(email.JoinData{Email: emailAddr, Token: token}); err != nil {
+	if err := c.email.Send(email.JoinData{Email: user.Email, Token: user.Token.String()}); err != nil {
 		return errs.BadRequest.Wrap(err, errmsg.FailedSendMessage)
 	}
 
 	return nil
+}
+
+func (c joinByEmail) NewUser(cmd Credential) (entity.User, error) {
+	user, err := entity.NewUser(cmd.Email, cmd.Name, cmd.Password)
+	if err != nil {
+		return entity.User{}, errs.BadRequest.Wrap(err, errmsg.UnknownError)
+	}
+
+	if err := c.repository.Add(dto.ModelUserByEntity(user)); err != nil {
+		return entity.User{}, errs.BadRequest.Wrap(err, errmsg.FailedAddData)
+	}
+
+	return user, nil
+}
+
+func (c joinByEmail) ExistUser(user entity.User) (entity.User, error) {
+	if !user.Status.IsWait() {
+		return entity.User{}, errs.BadRequest.New(errmsg.IsWaitStatus)
+	}
+
+	if err := user.Token.ErrorIsExpiredByNow(); err != nil {
+		return entity.User{}, errs.BadRequest.Wrap(err, errmsg.CheckTimeExpired)
+	}
+
+	user.Token = entity.NewTokenTTL()
+
+	if err := c.repository.UpdateTokeJoin(user.ID, user.Token); err != nil {
+		return entity.User{}, errs.BadRequest.Wrap(err, errmsg.FailedUpdateData)
+	}
+
+	return user, nil
 }
