@@ -44,6 +44,10 @@ func (t Token) IsEqual(value string) bool {
 }
 
 func (t Token) IsExpired(expires time.Time) bool {
+	if t.Expires == nil {
+		return false
+	}
+
 	return t.Expires.Before(expires)
 }
 
