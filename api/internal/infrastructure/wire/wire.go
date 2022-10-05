@@ -7,10 +7,11 @@ import (
 	"github.com/google/wire"
 
 	"primedivident/internal/config"
-	"primedivident/internal/infrastructure/response"
 	"primedivident/internal/infrastructure/server"
 	"primedivident/internal/infrastructure/server/handlers"
-	"primedivident/internal/infrastructure/server/middlewares"
+	"primedivident/internal/infrastructure/server/response"
+	"primedivident/internal/infrastructure/server/routes"
+	"primedivident/internal/infrastructure/websocket"
 	wireGroup "primedivident/internal/infrastructure/wire/wire_group"
 	"primedivident/pkg/validator"
 )
@@ -23,6 +24,7 @@ func Initialize(cfg config.Config) server.Server {
 		ProvideTemplate,
 		ProvideJwtTokens,
 
+		websocket.NewUpgrader,
 		validator.GetValidator,
 		response.NewRespond,
 
@@ -36,8 +38,9 @@ func Initialize(cfg config.Config) server.Server {
 		wireGroup.Register,
 		wireGroup.User,
 
-		middlewares.NewMiddlewares,
-		handlers.NewHandlers,
+		handlers.NewWsHandlers,
+		handlers.NewHttpHandlers,
+		routes.NewRoutes,
 		server.NewServer,
 	)
 

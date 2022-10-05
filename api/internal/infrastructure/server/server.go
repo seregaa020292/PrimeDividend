@@ -5,45 +5,25 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
-
 	"primedivident/internal/config/consts"
-)
-
-type (
-	Middlewares interface {
-		Setup(router chi.Router)
-	}
-	Handlers interface {
-		Setup(router chi.Router)
-	}
+	"primedivident/internal/infrastructure/server/routes"
 )
 
 type Server struct {
-	server      *http.Server
-	middlewares Middlewares
-	handlers    Handlers
+	server *http.Server
 }
 
-func NewServer(middlewares Middlewares, handlers Handlers) Server {
+func NewServer(routes routes.Routes) Server {
 	return Server{
-		middlewares: middlewares,
-		handlers:    handlers,
+		server: &http.Server{
+			ReadHeaderTimeout: consts.ServerReadHeaderTimeout,
+			Addr:              consts.ServerAddr,
+			Handler:           routes.Handle(),
+		},
 	}
 }
 
 func (s *Server) Run() {
-	router := chi.NewRouter()
-
-	s.middlewares.Setup(router)
-	s.handlers.Setup(router)
-
-	s.server = &http.Server{
-		ReadHeaderTimeout: consts.ServerReadHeaderTimeout,
-		Addr:              consts.ServerAddr,
-		Handler:           router,
-	}
-
 	log.Println("Starting HTTP server")
 
 	if err := s.server.ListenAndServe(); err != nil {

@@ -1,7 +1,7 @@
 package instrument
 
 import (
-	"primedivident/internal/infrastructure/response"
+	"primedivident/internal/infrastructure/server/response"
 	"primedivident/internal/modules/instrument/query"
 	"primedivident/internal/presenters/instrument"
 )

@@ -11,7 +11,7 @@ import (
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	strategyRepository "primedivident/internal/modules/auth/service/strategy/repository"
 	"primedivident/internal/modules/auth/service/strategy/strategies"
-	port "primedivident/internal/ports/http/auth"
+	http "primedivident/internal/ports/http/auth"
 )
 
 func ProvideStrategy(cfg config.Config, strategyService strategy.Service) strategy.Strategy {
@@ -34,5 +34,5 @@ var Auth = wire.NewSet(
 	email.NewConfirmUser,
 	command.NewJoinByEmail,
 	command.NewConfirmByToken,
-	port.NewHandler,
+	http.NewHandler,
 )

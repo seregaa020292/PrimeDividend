@@ -19,6 +19,7 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/google/uuid v1.3.0
 	github.com/google/wire v0.5.0
+	github.com/gorilla/websocket v1.5.0
 	github.com/ilyakaznacheev/cleanenv v1.3.0
 	github.com/jackc/pgx v3.6.2+incompatible
 	github.com/jinzhu/now v1.1.5

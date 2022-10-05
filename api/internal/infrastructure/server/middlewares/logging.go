@@ -22,7 +22,7 @@ type (
 	}
 )
 
-func newStructuredLogger() middlewareFunc {
+func NewStructLogger() func(next http.Handler) http.Handler {
 	return middleware.RequestLogger(&StructLogger{
 		Logger: logger.GetLogger(),
 	})

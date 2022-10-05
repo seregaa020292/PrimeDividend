@@ -1,7 +1,7 @@
 package portfolio
 
 import (
-	"primedivident/internal/infrastructure/response"
+	"primedivident/internal/infrastructure/server/response"
 	"primedivident/internal/modules/portfolio/command"
 	"primedivident/internal/modules/portfolio/query"
 	"primedivident/internal/presenters/portfolio"

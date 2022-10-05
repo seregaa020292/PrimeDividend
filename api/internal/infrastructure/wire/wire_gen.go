@@ -8,10 +8,11 @@ package wire
 
 import (
 	"primedivident/internal/config"
-	"primedivident/internal/infrastructure/response"
 	"primedivident/internal/infrastructure/server"
 	"primedivident/internal/infrastructure/server/handlers"
-	"primedivident/internal/infrastructure/server/middlewares"
+	"primedivident/internal/infrastructure/server/response"
+	"primedivident/internal/infrastructure/server/routes"
+	"primedivident/internal/infrastructure/websocket"
 	"primedivident/internal/infrastructure/wire/wire_group"
 	"primedivident/internal/modules/auth/command"
 	repository2 "primedivident/internal/modules/auth/repository"
@@ -32,6 +33,7 @@ import (
 	"primedivident/internal/ports/http/provider"
 	"primedivident/internal/ports/http/register"
 	"primedivident/internal/ports/http/user"
+	market2 "primedivident/internal/ports/ws/market"
 	"primedivident/internal/presenters/instrument"
 	"primedivident/internal/presenters/portfolio"
 	"primedivident/pkg/validator"
@@ -40,7 +42,6 @@ import (
 // Injectors from wire.go:
 
 func Initialize(cfg config.Config) server.Server {
-	serverMiddlewares := middlewares.NewMiddlewares(cfg)
 	jwtTokens := ProvideJwtTokens(cfg)
 	postgres := ProvidePostgres(cfg)
 	repositoryRepository := repository.NewRepository(postgres)
@@ -72,7 +73,11 @@ func Initialize(cfg config.Config) server.Server {
 	handlerProvider := provider.NewHandler()
 	handlerRegister := register.NewHandler()
 	handlerUser := user.NewHandler()
-	serverHandlers := handlers.NewHandlers(strategyStrategy, handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
-	serverServer := server.NewServer(serverMiddlewares, serverHandlers)
+	httpHandlers := handlers.NewHttpHandlers(handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
+	upgrader := websocket.NewUpgrader()
+	marketHandlerMarket := market2.NewHandlerMarket(responder, upgrader)
+	wsHandlers := handlers.NewWsHandlers(marketHandlerMarket)
+	routesRoutes := routes.NewRoutes(strategyStrategy, httpHandlers, wsHandlers)
+	serverServer := server.NewServer(routesRoutes)
 	return serverServer
 }

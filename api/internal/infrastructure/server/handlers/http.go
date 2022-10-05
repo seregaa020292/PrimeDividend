@@ -1,16 +1,12 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 
-	"github.com/getkin/kin-openapi/routers/gorillamux"
 	"github.com/go-chi/chi/v5"
 
-	"primedivident/internal/infrastructure/response"
-	"primedivident/internal/infrastructure/server"
 	"primedivident/internal/infrastructure/server/openapi"
-	"primedivident/internal/modules/auth/service/strategy"
+	"primedivident/internal/infrastructure/server/response"
 	"primedivident/internal/ports/http/asset"
 	"primedivident/internal/ports/http/auth"
 	"primedivident/internal/ports/http/currency"
@@ -22,12 +18,10 @@ import (
 	"primedivident/internal/ports/http/user"
 )
 
-// Handlers implements openapi.ServerInterface
-var _ openapi.ServerInterface = (*Handlers)(nil) //nolint:typecheck
+// HttpHandlers implements openapi.ServerInterface
+var _ openapi.ServerInterface = (*HttpHandlers)(nil) //nolint:typecheck
 
-type Handlers struct {
-	strategy strategy.Strategy
-
+type HttpHandlers struct {
 	auth.HandlerAuth
 	asset.HandlerAsset
 	currency.HandlerCurrency
@@ -39,9 +33,7 @@ type Handlers struct {
 	user.HandlerUser
 }
 
-func NewHandlers(
-	strategy strategy.Strategy,
-
+func NewHttpHandlers(
 	auth auth.HandlerAuth,
 	asset asset.HandlerAsset,
 	currency currency.HandlerCurrency,
@@ -51,10 +43,8 @@ func NewHandlers(
 	provider provider.HandlerProvider,
 	register register.HandlerRegister,
 	user user.HandlerUser,
-) server.Handlers {
-	return Handlers{
-		strategy: strategy,
-
+) HttpHandlers {
+	return HttpHandlers{
 		HandlerAuth:       auth,
 		HandlerAsset:      asset,
 		HandlerCurrency:   currency,
@@ -67,23 +57,10 @@ func NewHandlers(
 	}
 }
 
-func (handlers Handlers) Setup(router chi.Router) {
-	swagger, err := openapi.GetSwagger()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	swagger.Servers = nil
-
-	router.Use(authValidator(swagger, handlers.strategy))
-
-	routerSwagger, _ := gorillamux.NewRouter(swagger)
-
-	openapi.HandlerWithOptions(handlers, openapi.ChiServerOptions{ //nolint:typecheck
-		BaseRouter: router,
-		Middlewares: []openapi.MiddlewareFunc{
-			custom(routerSwagger),
-		},
+func (handlers HttpHandlers) Handle(router chi.Router, middlewares []openapi.MiddlewareFunc) {
+	openapi.HandlerWithOptions(handlers, openapi.ChiServerOptions{
+		BaseRouter:  router,
+		Middlewares: middlewares,
 		ErrorHandlerFunc: func(w http.ResponseWriter, r *http.Request, err error) {
 			respond := response.NewRespondBuilder(w, r)
 			respond.Err(err)

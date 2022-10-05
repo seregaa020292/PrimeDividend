@@ -1,4 +1,4 @@
-package handlers
+package middlewares
 
 import (
 	"context"
@@ -9,15 +9,13 @@ import (
 	middleware "github.com/deepmap/oapi-codegen/pkg/chi-middleware"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/getkin/kin-openapi/openapi3filter"
-	"github.com/getkin/kin-openapi/routers"
 
-	"primedivident/internal/infrastructure/response"
-	"primedivident/internal/modules/auth/service/strategy"
+	"primedivident/internal/infrastructure/server/response"
 	"primedivident/pkg/errs"
 	"primedivident/pkg/errs/errmsg"
 )
 
-func authValidator(swagger *openapi3.T, strategy strategy.Strategy) func(next http.Handler) http.Handler {
+func AuthSwagger(swagger *openapi3.T, verify func(token string) error) func(next http.Handler) http.Handler {
 	return middleware.OapiRequestValidatorWithOptions(swagger, &middleware.Options{
 		Options: openapi3filter.Options{
 			AuthenticationFunc: func(ctx context.Context, input *openapi3filter.AuthenticationInput) error {
@@ -25,7 +23,7 @@ func authValidator(swagger *openapi3.T, strategy strategy.Strategy) func(next ht
 				scheme := fmt.Sprintf("%s ", input.SecurityScheme.Scheme)
 				accessToken := strings.Replace(bearerToken, scheme, "", 1)
 
-				return strategy.VerifyAccess(accessToken)
+				return verify(accessToken)
 			},
 		},
 		ErrorHandler: func(w http.ResponseWriter, message string, statusCode int) {
@@ -41,20 +39,4 @@ func authValidator(swagger *openapi3.T, strategy strategy.Strategy) func(next ht
 			respond.Err(err)
 		},
 	})
-}
-
-func custom(router routers.Router) func(next http.HandlerFunc) http.HandlerFunc {
-	return func(next http.HandlerFunc) http.HandlerFunc {
-		return func(w http.ResponseWriter, r *http.Request) {
-			route, _, err := router.FindRoute(r)
-			if err != nil {
-				panic(err)
-			}
-
-			// TODO:
-			_ = route.Operation.OperationID
-
-			next(w, r)
-		}
-	}
 }
