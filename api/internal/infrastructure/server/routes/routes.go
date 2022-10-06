@@ -48,7 +48,7 @@ func (r Routes) Handle() chi.Router {
 	router.Use(middleware.NoCache)
 
 	r.http.Handle(router, []openapi.MiddlewareFunc{
-		middlewares.AuthSwagger(swagger.Router, r.strategy.VerifyAccess),
+		middlewares.AuthValidate(swagger.Router, r.strategy.VerifyAccess),
 	})
 
 	router.Route("/ws", func(router chi.Router) {

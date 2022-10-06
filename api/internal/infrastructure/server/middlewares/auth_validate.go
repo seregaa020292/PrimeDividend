@@ -14,7 +14,7 @@ import (
 	"primedivident/pkg/errs/errmsg"
 )
 
-func AuthSwagger(router routers.Router, verify func(token string) error) func(next http.HandlerFunc) http.HandlerFunc {
+func AuthValidate(router routers.Router, verify func(token string) error) func(next http.HandlerFunc) http.HandlerFunc {
 	return func(next http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			respond := response.NewRespondBuilder(w, r)
