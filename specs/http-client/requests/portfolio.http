@@ -8,8 +8,10 @@ Accept: application/xml
 #### Создать новый портфель
 POST {{host}}/portfolio
 Content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoiODE4M2I4OGUtMGM0Ny00Yjk5LThlZDMtODA1MGVlOGFlMTlhIiwicm9sZSI6InVzZXIifSwiaXNzIjoiUHJpbWVEaXZpZGVuZCIsImV4cCI6MTY2NTA3NDQ4OSwiaWF0IjoxNjY1MDczNTg5fQ.qVq5RaA5aZsWOj0s9G1XB3vudOCvlWI8UiJqeRD2_Eg
 
 {
-  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "createdAt": "2020-03-22"
+  "title": "string",
+  "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "currencyId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
 }

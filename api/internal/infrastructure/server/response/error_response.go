@@ -16,7 +16,7 @@ type ErrorResponse struct {
 func NewErrorResponse(err error) ErrorResponse {
 	return ErrorResponse{
 		Error: openapi.Error{
-			openapi.ErrorMessage{
+			Error: openapi.ErrorMessage{
 				Details: newDetails(err),
 				Message: newMessage(err),
 			},

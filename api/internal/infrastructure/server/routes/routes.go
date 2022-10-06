@@ -46,13 +46,20 @@ func (r Routes) Handle() chi.Router {
 		middleware.SetHeader("X-Frame-Options", "deny"),
 	)
 	router.Use(middleware.NoCache)
-	router.Use(middlewares.AuthSwagger(swagger.Swagger, r.strategy.VerifyAccess))
 
 	r.http.Handle(router, []openapi.MiddlewareFunc{
-		middlewares.Custom(swagger.Router),
+		middlewares.AuthSwagger(swagger.Router, r.strategy.VerifyAccess),
 	})
 
-	router.Get("/ws", r.ws.Market.Quotes)
+	router.Route("/ws", func(router chi.Router) {
+		router.Group(func(router chi.Router) {
+			//router.Use(middlewares.Auth)
+			router.Get("/quotes", r.ws.Market.Quotes)
+		})
+	})
+
+	router.NotFound(middlewares.NotFound)
+	router.MethodNotAllowed(middlewares.NotAllowed)
 
 	return router
 }

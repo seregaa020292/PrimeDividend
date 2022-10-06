@@ -37,9 +37,11 @@ func (s strategy) Password() categorize.PasswordStrategies {
 }
 
 func (s strategy) VerifyAccess(accessToken string) error {
-	_, err := s.service.JwtTokens.ValidateAccessToken(accessToken)
+	if _, err := s.service.JwtTokens.ValidateAccessToken(accessToken); err != nil {
+		return errs.Forbidden.Wrap(err, errmsg.AccessDenied)
+	}
 
-	return errs.Forbidden.Wrap(err, errmsg.AccessDenied)
+	return nil
 }
 
 func (s strategy) VerifyRefresh(refreshToken string) error {

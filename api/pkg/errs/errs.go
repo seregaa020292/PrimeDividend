@@ -15,6 +15,7 @@ const (
 	Unauthorized
 	Forbidden
 	Conflict
+	ServerError
 )
 
 type (
@@ -34,7 +35,7 @@ type (
 
 // New создает новый customError
 func (errorType ErrorType) New(msg string) error {
-	return Newf(msg)
+	return errorType.Newf(msg)
 }
 
 // Newf создает новый customError с отформатированным сообщением
