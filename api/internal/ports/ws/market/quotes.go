@@ -3,6 +3,8 @@ package market
 import (
 	"log"
 	"net/http"
+
+	"github.com/gorilla/websocket"
 )
 
 func (h HandlerMarket) Quotes(w http.ResponseWriter, r *http.Request) {
@@ -14,5 +16,5 @@ func (h HandlerMarket) Quotes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println(conn)
+	log.Println(conn.WriteMessage(websocket.TextMessage, []byte("test")))
 }
