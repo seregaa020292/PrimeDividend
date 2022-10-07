@@ -1,6 +1,7 @@
 package strategy
 
 import (
+	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/categorize"
 	"primedivident/pkg/errs"
@@ -10,7 +11,7 @@ import (
 type Strategy interface {
 	Network() categorize.NetworkStrategies
 	Password() categorize.PasswordStrategies
-	VerifyAccess(accessToken string) error
+	VerifyAccess(accessToken string) (entity.JwtPayload, error)
 	VerifyRefresh(refreshToken string) error
 	Logout(refreshToken string) error
 	Refresh(refreshToken string, accountability auth.Accountability) (auth.Tokens, error)
@@ -36,12 +37,13 @@ func (s strategy) Password() categorize.PasswordStrategies {
 	return s.categorize.Passwords
 }
 
-func (s strategy) VerifyAccess(accessToken string) error {
-	if _, err := s.service.JwtTokens.ValidateAccessToken(accessToken); err != nil {
-		return errs.Forbidden.Wrap(err, errmsg.AccessDenied)
+func (s strategy) VerifyAccess(accessToken string) (entity.JwtPayload, error) {
+	jwtPayload, err := s.service.JwtTokens.ValidateAccessToken(accessToken)
+	if err != nil {
+		return entity.JwtPayload{}, errs.Unauthorized.Wrap(err, errmsg.AccessDenied)
 	}
 
-	return nil
+	return jwtPayload, nil
 }
 
 func (s strategy) VerifyRefresh(refreshToken string) error {

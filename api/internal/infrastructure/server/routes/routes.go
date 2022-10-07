@@ -34,6 +34,14 @@ func (r Routes) Handle() chi.Router {
 	router := chi.NewRouter()
 	swagger := openapi.NewSwagger()
 
+	authValidate := middlewares.AuthValidate{
+		Router:   swagger.Router,
+		Strategy: r.strategy,
+	}
+	auth := middlewares.Auth{
+		Strategy: r.strategy,
+	}
+
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
 	router.Use(middleware.Heartbeat("/health"))
@@ -48,12 +56,12 @@ func (r Routes) Handle() chi.Router {
 	router.Use(middleware.NoCache)
 
 	r.http.Handle(router, []openapi.MiddlewareFunc{
-		middlewares.AuthValidate(swagger.Router, r.strategy.VerifyAccess),
+		authValidate.Middleware,
 	})
 
 	router.Route("/ws", func(router chi.Router) {
 		router.Group(func(router chi.Router) {
-			//router.Use(middlewares.Auth)
+			router.Use(auth.Middleware)
 			router.Get("/quotes", r.ws.Market.Quotes)
 		})
 	})

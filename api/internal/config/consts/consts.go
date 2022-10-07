@@ -25,8 +25,8 @@ const (
 
 	TimeoutShutdown = 10 * time.Second
 
-	TokenJoinTTL = 1 * time.Hour
-
+	TokenType       = "Bearer"
+	TokenJoinTTL    = 1 * time.Hour
 	MaxAuthSessions = 10
 
 	VkOauthRedirectUrl     = "/api/auth/vk/callback"
