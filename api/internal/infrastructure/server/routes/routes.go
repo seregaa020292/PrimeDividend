@@ -49,10 +49,7 @@ func (r Routes) Handle() chi.Router {
 	router.Use(middlewares.NewStructLogger())
 	router.Use(middleware.Recoverer)
 	router.Use(middlewares.CorsHandler())
-	router.Use(
-		middleware.SetHeader("X-Content-Type-Options", "nosniff"),
-		middleware.SetHeader("X-Frame-Options", "deny"),
-	)
+	router.Use(middlewares.Headers...)
 	router.Use(middleware.NoCache)
 
 	r.http.Handle(router, []openapi.MiddlewareFunc{
