@@ -8,11 +8,15 @@ import (
 	"primedivident/internal/modules/auth/service/strategy"
 )
 
-type Auth struct {
-	Strategy strategy.Strategy
+type auth struct {
+	strategy strategy.Strategy
 }
 
-func (a Auth) Middleware(next http.Handler) http.Handler {
+func NewAuth(strategy strategy.Strategy) auth {
+	return auth{strategy: strategy}
+}
+
+func (a auth) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		respond := response.NewRespondBuilder(w, r)
 
@@ -22,7 +26,7 @@ func (a Auth) Middleware(next http.Handler) http.Handler {
 			return
 		}
 
-		jwtPayload, err := a.Strategy.VerifyAccess(token)
+		jwtPayload, err := a.strategy.VerifyAccess(token)
 		if err != nil {
 			respond.Err(err)
 			return

@@ -14,16 +14,23 @@ import (
 	"primedivident/pkg/errs/errmsg"
 )
 
-type AuthValidate struct {
-	Router   routers.Router
-	Strategy strategy.Strategy
+type authValidate struct {
+	router   routers.Router
+	strategy strategy.Strategy
 }
 
-func (a AuthValidate) Middleware(next http.HandlerFunc) http.HandlerFunc {
+func NewAuthValidate(router routers.Router, strategy strategy.Strategy) authValidate {
+	return authValidate{
+		router:   router,
+		strategy: strategy,
+	}
+}
+
+func (a authValidate) Middleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		respond := response.NewRespondBuilder(w, r)
 
-		route, pathParams, err := a.Router.FindRoute(r)
+		route, pathParams, err := a.router.FindRoute(r)
 		if err != nil {
 			respond.Err(err)
 			return
@@ -36,7 +43,7 @@ func (a AuthValidate) Middleware(next http.HandlerFunc) http.HandlerFunc {
 			Options: &openapi3filter.Options{
 				AuthenticationFunc: func(ctx context.Context, input *openapi3filter.AuthenticationInput) error {
 					token := helper.TokenPayload(input.RequestValidationInput.Request.Header.Get("Authorization"))
-					_, err := a.Strategy.VerifyAccess(token)
+					_, err := a.strategy.VerifyAccess(token)
 
 					return err
 				},

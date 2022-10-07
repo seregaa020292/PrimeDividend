@@ -34,13 +34,8 @@ func (r Routes) Handle() chi.Router {
 	router := chi.NewRouter()
 	swagger := openapi.NewSwagger()
 
-	authValidate := middlewares.AuthValidate{
-		Router:   swagger.Router,
-		Strategy: r.strategy,
-	}
-	auth := middlewares.Auth{
-		Strategy: r.strategy,
-	}
+	authValidate := middlewares.NewAuthValidate(swagger.Router, r.strategy)
+	auth := middlewares.NewAuth(r.strategy)
 
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
