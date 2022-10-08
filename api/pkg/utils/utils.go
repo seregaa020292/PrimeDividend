@@ -16,6 +16,18 @@ import (
 	"time"
 )
 
+func Panic(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func Fatalln(err error) {
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
+
 func DownloadFile(filepath string, url string) error {
 	out, err := os.Create(filepath)
 	if err != nil {

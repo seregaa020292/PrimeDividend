@@ -10,7 +10,7 @@ import (
 func NotFound(w http.ResponseWriter, r *http.Request) {
 	respond := response.NewRespondBuilder(w, r)
 
-	err := errs.NotFound.New("не найдено")
+	err := errs.NotFound.New("Не найдено")
 
 	respond.Err(err)
 }

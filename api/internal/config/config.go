@@ -13,6 +13,7 @@ type Config struct {
 	Postgres Postgres
 	Networks Networks
 	Jwt      Jwt
+	Tinkoff  Tinkoff
 }
 
 var (

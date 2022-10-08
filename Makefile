@@ -88,6 +88,15 @@ api-gen-gojet:
 	docker-compose exec api-go gojet -path=./internal/models -ignore-tables=goose_db_version
 
 # ==============================================================================
+# Console commands
+
+cli-build:
+	docker-compose exec api-go go build -o bin/cli cmd/cli/main.go
+
+cli-run:
+	docker-compose exec api-go go run cmd/cli/main.go $(p)
+
+# ==============================================================================
 # Migrate postgresql
 
 migrate-create:

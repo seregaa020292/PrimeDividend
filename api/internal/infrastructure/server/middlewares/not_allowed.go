@@ -10,7 +10,7 @@ import (
 func NotAllowed(w http.ResponseWriter, r *http.Request) {
 	respond := response.NewRespondBuilder(w, r)
 
-	err := errs.NotFound.New("метод не поддерживается")
+	err := errs.NotFound.New("Метод не поддерживается")
 
 	respond.Err(err)
 }

@@ -140,7 +140,8 @@ INSERT INTO currencies (id, title, description)
 VALUES ('e6dffe5f-af39-44c4-a9f2-4938cceb7f7c', 'RUB', 'Рубль'),
        ('fd39d16f-db12-4aa2-80d6-a2917dbc8715', 'USD', 'Доллар'),
        ('9c093338-0079-45af-80b7-c58c991d4535', 'EUR', 'Евро'),
-       ('3f909b14-f18b-4b8b-95b3-19a2fcf1f9d7', 'CNY', 'Юань');
+       ('3f909b14-f18b-4b8b-95b3-19a2fcf1f9d7', 'CNY', 'Юань'),
+       ('e088d3e2-361f-489a-8646-ec47932c7c4b', 'HKD', 'Гонконгский доллар');
 
 INSERT INTO instruments (id, title, description)
 VALUES ('2ca3707d-03b6-4f12-8f1a-6c8ec522ac95', 'STOCK', 'Акции'),
