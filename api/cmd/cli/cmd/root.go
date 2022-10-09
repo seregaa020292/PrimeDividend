@@ -14,11 +14,9 @@ var (
 )
 
 func init() {
-	cobra.OnInitialize(initConfig)
-}
-
-func initConfig() {
-	cfg = config.GetConfig()
+	cobra.OnInitialize(func() {
+		cfg = config.GetConfig()
+	})
 }
 
 func Execute() {

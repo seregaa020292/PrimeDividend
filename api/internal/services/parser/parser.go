@@ -1,4 +1,4 @@
-package parse
+package parser
 
 import (
 	"encoding/json"
@@ -17,24 +17,27 @@ import (
 	registerRepo "primedivident/internal/modules/register/repository"
 )
 
-type Parse struct {
+type Parser struct {
 	config         config.Tinkoff
 	instrumentRepo instrumentRepo.Repository
 	currencyRepo   currencyRepo.Repository
 	providerRepo   providerRepo.Repository
 	marketRepo     marketRepo.Repository
 	registerRepo   registerRepo.Repository
+	provider       model.Providers
+	instrumentsMap map[string]uuid.UUID
+	currenciesMap  map[string]uuid.UUID
 }
 
-func NewParse(
+func NewParser(
 	config config.Tinkoff,
 	instrumentRepo instrumentRepo.Repository,
 	currencyRepo currencyRepo.Repository,
 	providerRepo providerRepo.Repository,
 	marketRepo marketRepo.Repository,
 	registerRepo registerRepo.Repository,
-) Parse {
-	return Parse{
+) Parser {
+	return Parser{
 		config:         config,
 		instrumentRepo: instrumentRepo,
 		currencyRepo:   currencyRepo,
@@ -65,14 +68,7 @@ type (
 	}
 )
 
-func (p Parse) Execute(instrument string) error {
-	type mapUUID map[string]uuid.UUID
-	var responseStock responseStock
-
-	if err := p.httpRequest(&responseStock, instrument); err != nil {
-		return err
-	}
-
+func (p Parser) Select() error {
 	instruments, err := p.instrumentRepo.GetAll()
 	if err != nil {
 		return err
@@ -83,19 +79,28 @@ func (p Parse) Execute(instrument string) error {
 		return err
 	}
 
-	provider, err := p.providerRepo.GetByTitle("Tinkoff")
-	if err != nil {
+	if p.provider, err = p.providerRepo.GetByTitle("Tinkoff"); err != nil {
 		return err
 	}
 
-	instrumentsMap := make(mapUUID)
+	p.instrumentsMap = make(map[string]uuid.UUID)
 	for _, v := range instruments {
-		instrumentsMap[v.Title] = v.ID
+		p.instrumentsMap[v.Title] = v.ID
 	}
 
-	currenciesMap := make(mapUUID)
+	p.currenciesMap = make(map[string]uuid.UUID)
 	for _, v := range currencies {
-		currenciesMap[v.Title] = v.ID
+		p.currenciesMap[v.Title] = v.ID
+	}
+
+	return nil
+}
+
+func (p Parser) Execute(instrument string) error {
+	var responseStock responseStock
+
+	if err := p.httpRequest(&responseStock, instrument); err != nil {
+		return err
 	}
 
 	for _, stock := range responseStock.Payload.Instruments {
@@ -103,8 +108,8 @@ func (p Parse) Execute(instrument string) error {
 			Title:        stock.Name,
 			Ticker:       stock.Ticker,
 			ImageURL:     nil,
-			CurrencyID:   currenciesMap[stock.Currency],
-			InstrumentID: instrumentsMap[strings.ToUpper(stock.Type)],
+			CurrencyID:   p.currenciesMap[stock.Currency],
+			InstrumentID: p.instrumentsMap[strings.ToUpper(stock.Type)],
 		})
 		if err != nil {
 			if strings.Contains(err.Error(), "23505") {
@@ -117,7 +122,7 @@ func (p Parse) Execute(instrument string) error {
 
 		if _, err := p.registerRepo.Add(model.Registers{
 			Identify:   stock.Figi,
-			ProviderID: provider.ID,
+			ProviderID: p.provider.ID,
 			MarketID:   market.ID,
 		}); err != nil {
 			if strings.Contains(err.Error(), "23505") {
@@ -131,7 +136,7 @@ func (p Parse) Execute(instrument string) error {
 	return nil
 }
 
-func (p Parse) httpRequest(body any, entity string) error {
+func (p Parser) httpRequest(body any, entity string) error {
 	url := fmt.Sprintf("https://api-invest.tinkoff.ru/openapi/sandbox/market/%s", entity)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
