@@ -2,17 +2,24 @@ package market
 
 import (
 	"primedivident/internal/infrastructure/server/response"
-	"primedivident/internal/infrastructure/websocket"
+	"primedivident/internal/infrastructure/socket"
+	"primedivident/internal/modules/market/service/quotes"
 )
 
 type HandlerMarket struct {
 	responder response.Responder
-	websocket websocket.Upgrader
+	socket    socket.Upgrader
+	quotes    *quotes.Quotes
 }
 
-func NewHandlerMarket(responder response.Responder, websocket websocket.Upgrader) HandlerMarket {
+func NewHandlerMarket(
+	responder response.Responder,
+	socket socket.Upgrader,
+	quotes *quotes.Quotes,
+) HandlerMarket {
 	return HandlerMarket{
 		responder: responder,
-		websocket: websocket,
+		socket:    socket,
+		quotes:    quotes,
 	}
 }

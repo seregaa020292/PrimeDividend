@@ -1,4 +1,4 @@
-package websocket
+package socket
 
 import (
 	"net/http"
@@ -9,11 +9,11 @@ import (
 const bufferSize = 1024
 
 type Upgrader struct {
-	*websocket.Upgrader
+	websocket.Upgrader
 }
 
 func NewUpgrader() Upgrader {
-	upgrader := &websocket.Upgrader{
+	upgrader := websocket.Upgrader{
 		ReadBufferSize:  bufferSize,
 		WriteBufferSize: bufferSize,
 	}

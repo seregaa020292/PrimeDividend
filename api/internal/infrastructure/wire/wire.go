@@ -11,7 +11,7 @@ import (
 	"primedivident/internal/infrastructure/server/handlers"
 	"primedivident/internal/infrastructure/server/response"
 	"primedivident/internal/infrastructure/server/routes"
-	"primedivident/internal/infrastructure/websocket"
+	"primedivident/internal/infrastructure/socket"
 	wireGroup "primedivident/internal/infrastructure/wire/wire_group"
 	"primedivident/pkg/validator"
 )
@@ -24,7 +24,7 @@ func Initialize(cfg config.Config) server.Server {
 		ProvideTemplate,
 		ProvideJwtTokens,
 
-		websocket.NewUpgrader,
+		socket.NewUpgrader,
 		validator.GetValidator,
 		response.NewRespond,
 

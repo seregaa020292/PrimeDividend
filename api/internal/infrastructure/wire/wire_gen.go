@@ -12,7 +12,7 @@ import (
 	"primedivident/internal/infrastructure/server/handlers"
 	"primedivident/internal/infrastructure/server/response"
 	"primedivident/internal/infrastructure/server/routes"
-	"primedivident/internal/infrastructure/websocket"
+	"primedivident/internal/infrastructure/socket"
 	"primedivident/internal/infrastructure/wire/wire_group"
 	"primedivident/internal/modules/auth/command"
 	repository2 "primedivident/internal/modules/auth/repository"
@@ -21,6 +21,7 @@ import (
 	"primedivident/internal/modules/auth/service/strategy/repository"
 	"primedivident/internal/modules/instrument/query"
 	repository3 "primedivident/internal/modules/instrument/repository"
+	"primedivident/internal/modules/market/service/quotes"
 	command2 "primedivident/internal/modules/portfolio/command"
 	query2 "primedivident/internal/modules/portfolio/query"
 	repository4 "primedivident/internal/modules/portfolio/repository"
@@ -74,8 +75,9 @@ func Initialize(cfg config.Config) server.Server {
 	handlerRegister := register.NewHandler()
 	handlerUser := user.NewHandler()
 	httpHandlers := handlers.NewHttpHandlers(handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
-	upgrader := websocket.NewUpgrader()
-	marketHandlerMarket := market2.NewHandlerMarket(responder, upgrader)
+	upgrader := socket.NewUpgrader()
+	quotesQuotes := quotes.NewQuotes()
+	marketHandlerMarket := market2.NewHandlerMarket(responder, upgrader, quotesQuotes)
 	wsHandlers := handlers.NewWsHandlers(marketHandlerMarket)
 	routesRoutes := routes.NewRoutes(strategyStrategy, httpHandlers, wsHandlers)
 	serverServer := server.NewServer(routesRoutes)
