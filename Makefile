@@ -19,6 +19,7 @@ full-done: api-done front-done
 full-check: full-lint full-test
 full-lint: api-lint front-lint
 full-test: api-test front-test
+full-upgrade: api-mod-update front-yarn-upgrade
 
 # ==============================================================================
 # Docker support
@@ -54,14 +55,16 @@ api-done:
 api-mod-tidy:
 	docker-compose exec api-go go mod tidy
 
-api-mod-install:
-	docker-compose exec api-go go mod install
+api-mod-vendor:
+	docker-compose exec api-go go mod vendor
+
+api-mod-update:
+	docker-compose exec api-go go get -u ./...
+	docker-compose exec api-go go mod tidy
+	docker-compose exec api-go go mod vendor
 
 api-mod-download:
 	docker-compose exec api-go go mod download
-
-api-mod-vendor:
-	docker-compose exec api-go go mod vendor
 
 api-wait-db:
 	docker-compose exec api-go wait-for-it api-postgres:5432 -t 30
@@ -136,7 +139,7 @@ front-yarn-install:
 	docker-compose exec front-node yarn install
 
 front-yarn-upgrade:
-	docker-compose exec front-node yarn upgrade
+	docker-compose exec front-node yarn upgrade --latest
 
 front-lint:
 	docker-compose exec front-node yarn lint

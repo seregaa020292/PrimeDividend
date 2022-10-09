@@ -28,6 +28,12 @@ func Fatalln(err error) {
 	}
 }
 
+func Println(err error) {
+	if err != nil {
+		log.Println(err)
+	}
+}
+
 func DownloadFile(filepath string, url string) error {
 	out, err := os.Create(filepath)
 	if err != nil {

@@ -15,6 +15,7 @@ import (
 	marketRepo "primedivident/internal/modules/market/repository"
 	providerRepo "primedivident/internal/modules/provider/repository"
 	registerRepo "primedivident/internal/modules/register/repository"
+	"primedivident/pkg/utils"
 )
 
 type Parser struct {
@@ -44,6 +45,8 @@ func NewParser(
 		providerRepo:   providerRepo,
 		marketRepo:     marketRepo,
 		registerRepo:   registerRepo,
+		instrumentsMap: make(map[string]uuid.UUID),
+		currenciesMap:  make(map[string]uuid.UUID),
 	}
 }
 
@@ -79,16 +82,15 @@ func (p Parser) Select() error {
 		return err
 	}
 
-	if p.provider, err = p.providerRepo.GetByTitle("Tinkoff"); err != nil {
+	p.provider, err = p.providerRepo.GetByTitle("Tinkoff")
+	if err != nil {
 		return err
 	}
 
-	p.instrumentsMap = make(map[string]uuid.UUID)
 	for _, v := range instruments {
 		p.instrumentsMap[v.Title] = v.ID
 	}
 
-	p.currenciesMap = make(map[string]uuid.UUID)
 	for _, v := range currencies {
 		p.currenciesMap[v.Title] = v.ID
 	}
@@ -151,10 +153,10 @@ func (p Parser) httpRequest(body any, entity string) error {
 		return err
 	}
 
-	defer response.Body.Close()
+	defer utils.Println(response.Body.Close())
 
 	if response.StatusCode != http.StatusOK {
-		return fmt.Errorf("error response api-invest.tinkoff: %s", response.Status)
+		return fmt.Errorf("error response: %s", response.Status)
 	}
 
 	return json.NewDecoder(response.Body).Decode(body)
