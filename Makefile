@@ -138,6 +138,9 @@ front-done:
 front-yarn-install:
 	docker-compose exec front-node yarn install
 
+front-yarn-add:
+	docker-compose exec front-node yarn add $(p)
+
 front-yarn-upgrade:
 	docker-compose exec front-node yarn upgrade --latest
 
