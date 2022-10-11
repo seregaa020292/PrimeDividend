@@ -12,7 +12,7 @@ func TestContext(t *testing.T) {
 
 	expectedContext := []errorContext{{Field: "a_field", Message: "the field is empty"}}
 
-	assert.Equal(t, NoType, GetType(errWithContext))
+	assert.Equal(t, BadRequest, GetType(errWithContext))
 	assert.ElementsMatch(t, expectedContext, GetErrorContext(errWithContext))
 	assert.Equal(t, err.Error(), errWithContext.Error())
 }

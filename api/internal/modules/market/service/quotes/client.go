@@ -3,50 +3,94 @@ package quotes
 import (
 	"encoding/json"
 	"log"
+	"time"
 
-	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 
 	"primedivident/internal/modules/auth/entity"
 	"primedivident/pkg/utils"
 )
 
-type (
-	Clients map[uuid.UUID]Client
-	Client  struct {
-		User   entity.JwtPayload
-		Conn   *websocket.Conn
-		Quotes *Quotes
-	}
+const (
+	pongWait   = time.Second * 60
+	pingPeriod = (pongWait * 9) / 10
 )
 
+type Client struct {
+	User    entity.JwtPayload
+	Conn    *websocket.Conn
+	Quotes  *Quotes
+	Message chan []byte
+}
+
+func NewClient(user entity.JwtPayload, conn *websocket.Conn, quotes *Quotes) Client {
+	return Client{
+		User:    user,
+		Conn:    conn,
+		Quotes:  quotes,
+		Message: make(chan []byte),
+	}
+}
+
 func (c Client) Read() {
+	defer c.leave()
+
 	for {
-		_, _, err := c.Conn.ReadMessage()
-		if err != nil {
-			log.Println(err)
+		var message Message
+		if err := c.Conn.ReadJSON(&message); err != nil {
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+				log.Printf("unexpected close error: %v\n", err)
+			}
 			break
 		}
+
+		c.handleMessage(message)
+	}
+}
+
+func (c Client) Write() {
+	ticker := time.NewTicker(pingPeriod)
+
+	defer func() {
+		ticker.Stop()
+		utils.Println(c.Conn.Close())
+	}()
+
+	for {
+		select {
+		case message, ok := <-c.Message:
+			if !ok {
+				utils.Println(c.Conn.WriteMessage(websocket.CloseMessage, []byte{}))
+				return
+			}
+
+			utils.Println(c.Conn.WriteMessage(websocket.TextMessage, message))
+		case <-ticker.C:
+			if err := c.Conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+				return
+			}
+		}
+	}
+}
+
+func (c Client) Send(message Message) {
+	msg, err := json.Marshal(message)
+	if err != nil {
+		log.Println(err)
+		return
 	}
 
+	c.Message <- msg
+}
+
+func (c Client) Close() {
+	close(c.Message)
+	utils.Println(c.Conn.Close())
+}
+
+func (c Client) leave() {
 	c.Quotes.leave <- c
 }
 
-func (c Client) Write(message Message) {
-	msg, err := json.Marshal(message)
-
-	utils.Println(err)
-
-	utils.Println(c.Conn.WriteMessage(websocket.TextMessage, msg))
-}
-
-func (c Clients) Add(client Client) {
-	if _, ok := c[client.User.ID]; !ok {
-		c[client.User.ID] = client
-	}
-}
-
-func (c Clients) Exist(client Client) bool {
-	_, ok := c[client.User.ID]
-	return ok
+func (c Client) handleMessage(message Message) {
 }

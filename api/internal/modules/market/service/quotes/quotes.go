@@ -4,7 +4,6 @@ import (
 	"github.com/gorilla/websocket"
 
 	"primedivident/internal/modules/auth/entity"
-	"primedivident/pkg/utils"
 )
 
 type Quotes struct {
@@ -22,15 +21,12 @@ func NewQuotes() *Quotes {
 }
 
 func (q Quotes) Join(user entity.JwtPayload, conn *websocket.Conn) {
-	client := Client{
-		User:   user,
-		Conn:   conn,
-		Quotes: &q,
-	}
+	client := NewClient(user, conn, &q)
 
 	q.join <- client
 
 	go client.Read()
+	go client.Write()
 }
 
 func (q Quotes) Run() {
@@ -46,7 +42,7 @@ func (q Quotes) Run() {
 
 func (q Quotes) broadcast(message Message) {
 	for _, client := range q.clients {
-		client.Write(message)
+		client.Send(message)
 	}
 }
 
@@ -56,7 +52,7 @@ func (q Quotes) add(client Client) {
 
 func (q Quotes) disconnect(client Client) {
 	if q.clients.Exist(client) {
-		defer utils.Println(client.Conn.Close())
+		defer client.Close()
 
 		delete(q.clients, client.User.ID)
 	}
