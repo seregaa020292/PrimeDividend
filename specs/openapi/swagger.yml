@@ -68,8 +68,8 @@ paths:
       responses:
         200:
           $ref: '#/components/responses/200'
-        500:
-          $ref: '#/components/responses/500'
+        400:
+          $ref: '#/components/responses/400'
   /auth/email/login:
     post:
       tags: [ auth ]
@@ -91,8 +91,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/authToken'
-        500:
-          $ref: '#/components/responses/500'
+        400:
+          $ref: '#/components/responses/400'
   /auth/{network}:
     get:
       tags: [ auth ]
@@ -103,8 +103,8 @@ paths:
       responses:
         301:
           $ref: '#/components/responses/301'
-        500:
-          $ref: '#/components/responses/500'
+        400:
+          $ref: '#/components/responses/400'
   /auth/{network}/callback:
     get:
       tags: [ auth ]
@@ -124,8 +124,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/authToken'
-        500:
-          $ref: '#/components/responses/500'
+        400:
+          $ref: '#/components/responses/400'
   /auth/refresh-token:
     post:
       tags: [ auth ]
@@ -171,8 +171,28 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/portfolio'
-        500:
-          $ref: '#/components/responses/500'
+        400:
+          $ref: '#/components/responses/400'
+
+    patch:
+      tags: [ portfolio ]
+      operationId: updatePortfolio
+      summary: Редактирование портфеля
+      parameters:
+        - $ref: '#/components/parameters/portfolioId'
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/portfolioUpdate'
+      responses:
+        204:
+          $ref: '#/components/responses/204'
+        400:
+          $ref: '#/components/responses/400'
 
   /portfolio:
     post:
@@ -186,12 +206,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/portfolioUpdate'
+              $ref: '#/components/schemas/portfolioAdd'
       responses:
         204:
           $ref: '#/components/responses/204'
-        500:
-          $ref: '#/components/responses/500'
+        400:
+          $ref: '#/components/responses/400'
 
   /instrument:
     get:
@@ -207,8 +227,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/instruments'
-        500:
-          $ref: '#/components/responses/500'
+        400:
+          $ref: '#/components/responses/400'
 
 components:
   securitySchemes:
@@ -343,32 +363,54 @@ components:
             validate: required
     portfolio:
       type: object
-      required: [ id, createdAt ]
+      required: [ id, title, active, userId, currencyId, createdAt ]
       properties:
         id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        active:
+          type: boolean
+        userId:
+          type: string
+          format: uuid
+        currencyId:
           type: string
           format: uuid
         createdAt:
           type: string
           format: date-time
-    portfolioUpdate:
+        updatedAt:
+          type: string
+          format: date-time
+    portfolioAdd:
       type: object
-      required: [ title, userId, currencyId ]
+      required: [ title, currencyId ]
       properties:
         title:
           type: string
           x-oapi-codegen-extra-tags:
             validate: required
-        userId:
-          type: string
-          format: uuid
-          x-oapi-codegen-extra-tags:
-            validate: required,uuid
         currencyId:
           type: string
           format: uuid
           x-oapi-codegen-extra-tags:
             validate: required,uuid
+    portfolioUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: omitempty,required
+        active:
+          type: boolean
+        currencyId:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: omitempty,required,uuid
 
     instruments:
       type: array
@@ -412,6 +454,13 @@ components:
               description: Всего элементов
               minimum: 1
 
+    error:
+      type: object
+      required: [ error ]
+      properties:
+        error:
+          $ref: '#/components/schemas/errorMessage'
+
     errorMessage:
       type: object
       required: [ message, details ]
@@ -436,10 +485,3 @@ components:
         field:
           type: string
           description: Поле в котором произошла ошибка
-
-    error:
-      type: object
-      required: [ error ]
-      properties:
-        error:
-          $ref: '#/components/schemas/errorMessage'

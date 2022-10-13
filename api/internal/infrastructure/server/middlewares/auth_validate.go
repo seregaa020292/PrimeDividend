@@ -9,6 +9,7 @@ import (
 
 	"primedivident/internal/infrastructure/server/middlewares/helper"
 	"primedivident/internal/infrastructure/server/response"
+	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/pkg/errs"
 	"primedivident/pkg/errs/errmsg"
@@ -36,14 +37,20 @@ func (a authValidate) Middleware(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
+		var jwtPayload entity.JwtPayload
+
 		requestValidationInput := &openapi3filter.RequestValidationInput{
 			Request:    r,
 			PathParams: pathParams,
 			Route:      route,
 			Options: &openapi3filter.Options{
 				AuthenticationFunc: func(ctx context.Context, input *openapi3filter.AuthenticationInput) error {
-					token := helper.TokenPayload(input.RequestValidationInput.Request.Header.Get("Authorization"))
-					_, err := a.strategy.VerifyAccess(token)
+					token, err := helper.TokenFromRequest(input.RequestValidationInput.Request)
+					if err != nil {
+						return err
+					}
+
+					jwtPayload, err = a.strategy.VerifyAccess(token)
 
 					return err
 				},
@@ -65,6 +72,7 @@ func (a authValidate) Middleware(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		next(w, r)
+		ctx := helper.UserSetCtx(r.Context(), jwtPayload)
+		next(w, r.WithContext(ctx))
 	}
 }

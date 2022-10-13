@@ -98,7 +98,7 @@ CREATE TABLE registers
 CREATE TABLE portfolios
 (
     id          UUID PRIMARY KEY                  DEFAULT uuid_generate_v4(),
-    title       VARCHAR(250),
+    title       VARCHAR(250)             NOT NULL,
     active      BOOLEAN                  NOT NULL DEFAULT FALSE,
     user_id     UUID                     NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     currency_id UUID                     NOT NULL REFERENCES currencies (id) ON DELETE CASCADE,

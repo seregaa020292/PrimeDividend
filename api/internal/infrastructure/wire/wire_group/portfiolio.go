@@ -15,5 +15,6 @@ var Portfolio = wire.NewSet(
 	repository.NewRepository,
 	query.NewPortfolioById,
 	command.NewPortfolioCreate,
+	command.NewPortfolioEdit,
 	http.NewHandler,
 )

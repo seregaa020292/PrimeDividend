@@ -12,6 +12,7 @@ type HandlerPortfolio struct {
 	presenter          portfolio.Presenter
 	queryPortfolioById query.PortfolioById
 	cmdPortfolioCreate command.PortfolioCreate
+	cmdPortfolioEdit   command.PortfolioEdit
 }
 
 func NewHandler(
@@ -19,11 +20,13 @@ func NewHandler(
 	presenter portfolio.Presenter,
 	queryPortfolioById query.PortfolioById,
 	cmdPortfolioCreate command.PortfolioCreate,
+	cmdPortfolioEdit command.PortfolioEdit,
 ) HandlerPortfolio {
 	return HandlerPortfolio{
 		responder:          responder,
 		presenter:          presenter,
 		queryPortfolioById: queryPortfolioById,
 		cmdPortfolioCreate: cmdPortfolioCreate,
+		cmdPortfolioEdit:   cmdPortfolioEdit,
 	}
 }

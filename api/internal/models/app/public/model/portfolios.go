@@ -14,7 +14,7 @@ import (
 
 type Portfolios struct {
 	ID         uuid.UUID `sql:"primary_key"`
-	Title      *string
+	Title      string
 	Active     bool
 	UserID     uuid.UUID
 	CurrencyID uuid.UUID

@@ -13,7 +13,7 @@ POST {{host}}/auth/email/confirm
 Content-type: application/json
 
 {
-  "token": "c7d0d58f-ad95-454d-9dc6-e70f4baa4150"
+  "token": "54655ab4-0d7c-486b-83bd-0bcef84db7a1"
 }
 
 #### Аутентификация по Email
@@ -31,8 +31,8 @@ Content-type: application/json
 
 #### Обновить токены
 POST {{host}}/auth/refresh-token
-Cookie: refresh-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiZTRiMjc0YjQtOTY2Zi00ZGRhLTk4OGQtNDY1ZmZhZTllMDg5IiwiaXNzIjoiUHJpbWVEaXZpZGVuZCIsImV4cCI6MTY2OTczMzY3MiwiaWF0IjoxNjY0NTQ5NjcyfQ.3091bdJgdReAoZ5DkNaVfVnwivoq4Jq0ogYQSoPeBOY
+Cookie: refresh-token={{refreshToken}}
 
 #### Выход из аккаунта
 POST {{host}}/auth/logout
-Cookie: refresh-token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiNDkwYTAyN2EtN2Y1NC00YzI0LTkyZGUtMjdhYzkyNjhiZDcxIiwiaXNzIjoiUHJpbWVEaXZpZGVuZCIsImV4cCI6MTY2OTU4MjEwNCwiaWF0IjoxNjY0Mzk4MTA0fQ.tTPyBr_xO0W9SDLzRyZvTFCmQQ0WcijNLg1XGxtMMgI
+Cookie: refresh-token={{refreshToken}}

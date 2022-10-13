@@ -8,7 +8,7 @@ import (
 	"primedivident/internal/modules/portfolio/command"
 )
 
-func (h HandlerPortfolio) CreatePortfolio(w http.ResponseWriter, r *http.Request) {
+func (h HandlerPortfolio) UpdatePortfolio(w http.ResponseWriter, r *http.Request, portfolioId openapi.PortfolioId) {
 	respond := h.responder.Http(w, r)
 
 	user, err := helper.UserFromCtx(r.Context())
@@ -17,17 +17,19 @@ func (h HandlerPortfolio) CreatePortfolio(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	var portfolio openapi.PortfolioAdd
+	var portfolio openapi.PortfolioUpdate
 
 	if err := respond.DecodeValidate(&portfolio); err != nil {
 		respond.Err(err)
 		return
 	}
 
-	if err := h.cmdPortfolioCreate.Exec(command.PortfolioNew{
-		Title:      portfolio.Title,
-		UserID:     user.ID,
-		CurrencyID: portfolio.CurrencyId,
+	if err := h.cmdPortfolioEdit.Exec(command.PortfolioUpdate{
+		UserID:      user.ID,
+		PortfolioID: portfolioId,
+		Title:       portfolio.Title,
+		CurrencyID:  portfolio.CurrencyId,
+		Active:      portfolio.Active,
 	}); err != nil {
 		respond.Err(err)
 		return

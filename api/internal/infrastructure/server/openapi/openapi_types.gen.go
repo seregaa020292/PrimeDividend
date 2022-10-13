@@ -73,15 +73,26 @@ type LoginUser struct {
 
 // Portfolio defines model for portfolio.
 type Portfolio struct {
-	CreatedAt time.Time          `json:"createdAt"`
-	Id        openapi_types.UUID `json:"id"`
+	Active     bool               `json:"active"`
+	CreatedAt  time.Time          `json:"createdAt"`
+	CurrencyId openapi_types.UUID `json:"currencyId"`
+	Id         openapi_types.UUID `json:"id"`
+	Title      string             `json:"title"`
+	UpdatedAt  *time.Time         `json:"updatedAt,omitempty"`
+	UserId     openapi_types.UUID `json:"userId"`
+}
+
+// PortfolioAdd defines model for portfolioAdd.
+type PortfolioAdd struct {
+	CurrencyId openapi_types.UUID `json:"currencyId" validate:"required,uuid"`
+	Title      string             `json:"title" validate:"required"`
 }
 
 // PortfolioUpdate defines model for portfolioUpdate.
 type PortfolioUpdate struct {
-	CurrencyId openapi_types.UUID `json:"currencyId" validate:"required,uuid"`
-	Title      string             `json:"title" validate:"required"`
-	UserId     openapi_types.UUID `json:"userId" validate:"required,uuid"`
+	Active     *bool               `json:"active,omitempty"`
+	CurrencyId *openapi_types.UUID `json:"currencyId,omitempty" validate:"omitempty,required,uuid"`
+	Title      *string             `json:"title,omitempty" validate:"omitempty,required"`
 }
 
 // Code defines model for code.
@@ -121,7 +132,10 @@ type ConfirmNetworkParams struct {
 }
 
 // CreatePortfolioJSONBody defines parameters for CreatePortfolio.
-type CreatePortfolioJSONBody = PortfolioUpdate
+type CreatePortfolioJSONBody = PortfolioAdd
+
+// UpdatePortfolioJSONBody defines parameters for UpdatePortfolio.
+type UpdatePortfolioJSONBody = PortfolioUpdate
 
 // JoinEmailJSONRequestBody defines body for JoinEmail for application/json ContentType.
 type JoinEmailJSONRequestBody = JoinEmailJSONBody
@@ -134,3 +148,6 @@ type LoginEmailJSONRequestBody = LoginEmailJSONBody
 
 // CreatePortfolioJSONRequestBody defines body for CreatePortfolio for application/json ContentType.
 type CreatePortfolioJSONRequestBody = CreatePortfolioJSONBody
+
+// UpdatePortfolioJSONRequestBody defines body for UpdatePortfolio for application/json ContentType.
+type UpdatePortfolioJSONRequestBody = UpdatePortfolioJSONBody

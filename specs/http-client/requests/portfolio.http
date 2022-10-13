@@ -8,10 +8,18 @@ Accept: application/xml
 #### Создать новый портфель
 POST {{host}}/portfolio
 Content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoiODE4M2I4OGUtMGM0Ny00Yjk5LThlZDMtODA1MGVlOGFlMTlhIiwicm9sZSI6InVzZXIifSwiaXNzIjoiUHJpbWVEaXZpZGVuZCIsImV4cCI6MTY2NTA3NDQ4OSwiaWF0IjoxNjY1MDczNTg5fQ.qVq5RaA5aZsWOj0s9G1XB3vudOCvlWI8UiJqeRD2_Eg
+Authorization: Bearer {{accessToken}}
 
 {
-  "title": "string",
-  "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "currencyId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  "title": "Всепогодный",
+  "currencyId": "e6dffe5f-af39-44c4-a9f2-4938cceb7f7c"
+}
+
+#### Редактировать портфель по ИД
+PATCH {{host}}/portfolio/{{portfolioId}}
+Content-type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "Рискованный"
 }

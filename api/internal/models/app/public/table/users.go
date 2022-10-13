@@ -25,7 +25,7 @@ type usersTable struct {
 	Avatar           postgres.ColumnString
 	Status           postgres.ColumnString
 	TokenJoinValue   postgres.ColumnString
-	TokenJoinExpires postgres.ColumnTimestamp
+	TokenJoinExpires postgres.ColumnTimestampz
 	CreatedAt        postgres.ColumnTimestampz
 	UpdatedAt        postgres.ColumnTimestampz
 
@@ -76,7 +76,7 @@ func newUsersTableImpl(schemaName, tableName, alias string) usersTable {
 		AvatarColumn           = postgres.StringColumn("avatar")
 		StatusColumn           = postgres.StringColumn("status")
 		TokenJoinValueColumn   = postgres.StringColumn("token_join_value")
-		TokenJoinExpiresColumn = postgres.TimestampColumn("token_join_expires")
+		TokenJoinExpiresColumn = postgres.TimestampzColumn("token_join_expires")
 		CreatedAtColumn        = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn        = postgres.TimestampzColumn("updated_at")
 		allColumns             = postgres.ColumnList{IDColumn, NameColumn, EmailColumn, PasswordColumn, RoleColumn, AvatarColumn, StatusColumn, TokenJoinValueColumn, TokenJoinExpiresColumn, CreatedAtColumn, UpdatedAtColumn}
