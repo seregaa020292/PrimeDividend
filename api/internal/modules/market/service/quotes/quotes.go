@@ -7,14 +7,16 @@ import (
 )
 
 type Quotes struct {
+	tinkoff Tinkoff
 	clients Clients
 	join    chan Client
 	leave   chan Client
 }
 
-func NewQuotes() *Quotes {
+func NewQuotes(tinkoff Tinkoff) *Quotes {
 	return &Quotes{
-		clients: make(Clients),
+		tinkoff: tinkoff,
+		clients: NewClients(),
 		join:    make(chan Client),
 		leave:   make(chan Client),
 	}
@@ -25,6 +27,7 @@ func (q Quotes) Join(user entity.JwtPayload, conn *websocket.Conn) {
 
 	q.join <- client
 
+	go q.tinkoff.Read()
 	go client.Read()
 	go client.Write()
 }
@@ -36,13 +39,9 @@ func (q Quotes) Run() {
 			q.add(client)
 		case client := <-q.leave:
 			q.disconnect(client)
+		case message := <-q.tinkoff.Message():
+			q.clients.Broadcast(message)
 		}
-	}
-}
-
-func (q Quotes) broadcast(message Message) {
-	for _, client := range q.clients {
-		client.Send(message)
 	}
 }
 
@@ -53,7 +52,8 @@ func (q Quotes) add(client Client) {
 func (q Quotes) disconnect(client Client) {
 	if q.clients.Exist(client) {
 		defer client.Close()
+		defer q.tinkoff.Close()
 
-		delete(q.clients, client.User.ID)
+		q.clients.Remove(client.User.ID)
 	}
 }

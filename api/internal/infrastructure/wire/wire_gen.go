@@ -21,7 +21,6 @@ import (
 	"primedivident/internal/modules/auth/service/strategy/repository"
 	"primedivident/internal/modules/instrument/query"
 	repository3 "primedivident/internal/modules/instrument/repository"
-	"primedivident/internal/modules/market/service/quotes"
 	command2 "primedivident/internal/modules/portfolio/command"
 	query2 "primedivident/internal/modules/portfolio/query"
 	repository4 "primedivident/internal/modules/portfolio/repository"
@@ -76,8 +75,8 @@ func Initialize(cfg config.Config) server.Server {
 	handlerUser := user.NewHandler()
 	httpHandlers := handlers.NewHttpHandlers(handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
 	upgrader := socket.NewUpgrader()
-	quotesQuotes := quotes.NewQuotes()
-	marketHandlerMarket := market2.NewHandlerMarket(responder, upgrader, quotesQuotes)
+	quotes := wire_group.ProvideQuotes(cfg)
+	marketHandlerMarket := market2.NewHandlerMarket(responder, upgrader, quotes)
 	wsHandlers := handlers.NewWsHandlers(marketHandlerMarket)
 	routesRoutes := routes.NewRoutes(strategyStrategy, httpHandlers, wsHandlers)
 	serverServer := server.NewServer(routesRoutes)

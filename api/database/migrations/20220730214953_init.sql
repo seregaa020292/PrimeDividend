@@ -151,8 +151,8 @@ VALUES ('2ca3707d-03b6-4f12-8f1a-6c8ec522ac95', 'STOCK', 'Акции'),
        ('cc376387-4f0b-4688-88e6-02c3af93a646', 'CRYPTO', 'Криптовалюта');
 
 INSERT INTO providers (id, title, description)
-VALUES ('514edc8f-0921-468e-95f4-2284cba5b7bb', 'Tinkoff', 'Тинькофф Инвестиции'),
-       ('ba93ed83-8687-41cf-8741-edf79548e7df', 'Binance', 'Криптовалютная Биржа Binance');
+VALUES ('514edc8f-0921-468e-95f4-2284cba5b7bb', 'tinkoff', 'Тинькофф Инвестиции'),
+       ('ba93ed83-8687-41cf-8741-edf79548e7df', 'binance', 'Криптовалютная Биржа Binance');
 -- +goose StatementEnd
 
 -- +goose Down

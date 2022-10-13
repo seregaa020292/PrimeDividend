@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	mathRand "math/rand"
 	"net"
 	"net/http"
 	"os"
@@ -143,7 +144,6 @@ func GenCookie(key string, value string, opts *http.Cookie) *http.Cookie {
 	}
 }
 
-// GenerateRandomBytes returns securely generated random bytes.
 func GenerateRandomBytes(n int) ([]byte, error) {
 	b := make([]byte, n)
 	if _, err := rand.Read(b); err != nil {
@@ -153,9 +153,17 @@ func GenerateRandomBytes(n int) ([]byte, error) {
 	return b, nil
 }
 
-// GenerateRandomString returns a URL-safe, base64 encoded
-// securely generated random string.
-func GenerateRandomString(s int) (string, error) {
-	b, err := GenerateRandomBytes(s)
+func GenerateRandomString(n int) (string, error) {
+	b, err := GenerateRandomBytes(n)
 	return base64.URLEncoding.EncodeToString(b), err
+}
+
+func RandomString(n int) string {
+	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+	s := make([]rune, n)
+	for i := range s {
+		s[i] = letters[mathRand.Intn(len(letters))]
+	}
+	return string(s)
 }

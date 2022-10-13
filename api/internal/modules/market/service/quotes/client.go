@@ -24,6 +24,8 @@ type Client struct {
 }
 
 func NewClient(user entity.JwtPayload, conn *websocket.Conn, quotes *Quotes) Client {
+	//utils.Println(quotes.tinkoff.Subscribe("BBG002GHV6L9"))
+
 	return Client{
 		User:    user,
 		Conn:    conn,
@@ -34,6 +36,13 @@ func NewClient(user entity.JwtPayload, conn *websocket.Conn, quotes *Quotes) Cli
 
 func (c Client) Read() {
 	defer c.leave()
+
+	c.setReadDeadline()
+
+	c.Conn.SetPongHandler(func(string) error {
+		c.setReadDeadline()
+		return nil
+	})
 
 	for {
 		var message Message
@@ -66,7 +75,7 @@ func (c Client) Write() {
 
 			utils.Println(c.Conn.WriteMessage(websocket.TextMessage, message))
 		case <-ticker.C:
-			if err := c.Conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+			if err := c.Conn.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
 				return
 			}
 		}
@@ -93,4 +102,8 @@ func (c Client) leave() {
 }
 
 func (c Client) handleMessage(message Message) {
+}
+
+func (c Client) setReadDeadline() {
+	utils.Println(c.Conn.SetReadDeadline(time.Now().Add(pongWait)))
 }
