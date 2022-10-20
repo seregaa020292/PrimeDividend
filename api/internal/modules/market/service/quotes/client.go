@@ -62,7 +62,7 @@ func (c Client) Write() {
 
 	defer func() {
 		ticker.Stop()
-		utils.Println(c.Conn.Close())
+		utils.PrintlnFn(c.Conn.Close)
 	}()
 
 	for {

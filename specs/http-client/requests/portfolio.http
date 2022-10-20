@@ -1,9 +1,11 @@
-##### Портфель #####
-
 #### Портфель по ИД
 GET {{host}}/portfolio/{{portfolioId}}
 Content-type: application/json
 Accept: application/xml
+
+#### Список портфелей
+GET {{host}}/portfolio?limit=3&cursor=eyJpZCI6IjA2ZGYyY2QxLTRlY2UtNDA5OC05MzhkLTUwYTFlMmQ1NzA3ZiIsInRpbWUiOiIyMDIyLTEwLTE2VDAyOjI5OjM5LjQyOTIyOCswMzowMCIsImRpcmVjdGlvbiI6dHJ1ZX0=
+Content-type: application/json
 
 #### Создать новый портфель
 POST {{host}}/portfolio
@@ -23,3 +25,8 @@ Authorization: Bearer {{accessToken}}
 {
   "title": "Рискованный"
 }
+
+#### Удалить портфель
+DELETE {{host}}/portfolio/{{portfolioId}}
+Content-type: application/json
+Authorization: Bearer {{accessToken}}

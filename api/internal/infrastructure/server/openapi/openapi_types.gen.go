@@ -31,8 +31,14 @@ type AuthUser struct {
 	Password string `json:"password" validate:"required,min=6"`
 }
 
-// Detail defines model for detail.
-type Detail struct {
+// Error defines model for error.
+type Error struct {
+	// Объект ошибки
+	Error ErrorMessage `json:"error"`
+}
+
+// ErrorDetail defines model for errorDetail.
+type ErrorDetail struct {
 	// Поле в котором произошла ошибка
 	Field string `json:"field"`
 
@@ -40,16 +46,10 @@ type Detail struct {
 	Message string `json:"message"`
 }
 
-// Error defines model for error.
-type Error struct {
-	// Объект ошибки
-	Error ErrorMessage `json:"error"`
-}
-
 // Объект ошибки
 type ErrorMessage struct {
 	// В каком поле произошла ошибка
-	Details []Detail `json:"details"`
+	Details []ErrorDetail `json:"details"`
 
 	// Описание ошибки
 	Message string `json:"message"`
@@ -69,6 +69,38 @@ type Instruments = []Instrument
 type LoginUser struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required,min=6"`
+}
+
+// Метаданные
+type Meta struct {
+	Pagination interface{} `json:"pagination"`
+}
+
+// Данные пагинации
+type PagingCursor struct {
+	// Кол-во элементов
+	Count int `json:"count"`
+
+	// Курсор для следующей страницы
+	CursorNext *string `json:"cursorNext"`
+
+	// Курсор для предыдущей страницы
+	CursorPrev *string `json:"cursorPrev"`
+
+	// Кол-во элементов на странице
+	Limit int `json:"limit"`
+}
+
+// Данные пагинации
+type PagingOffset struct {
+	// Кол-во элементов на странице
+	Limit int `json:"limit"`
+
+	// Текущая страница
+	Page int `json:"page"`
+
+	// Всего элементов
+	Total int `json:"total"`
 }
 
 // Portfolio defines model for portfolio.
@@ -95,8 +127,17 @@ type PortfolioUpdate struct {
 	Title      *string             `json:"title,omitempty" validate:"omitempty,required"`
 }
 
+// Portfolios defines model for portfolios.
+type Portfolios = []Portfolio
+
 // Code defines model for code.
 type Code = string
+
+// Cursor defines model for cursor.
+type Cursor = string
+
+// Limit defines model for limit.
+type Limit = int
 
 // Network defines model for network.
 type Network = string
@@ -129,6 +170,15 @@ type LoginEmailJSONBody = LoginUser
 type ConfirmNetworkParams struct {
 	Code  Code  `form:"code" json:"code"`
 	State State `form:"state" json:"state"`
+}
+
+// GetPortfoliosParams defines parameters for GetPortfolios.
+type GetPortfoliosParams struct {
+	// Размер списка
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Курсор страницы
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
 }
 
 // CreatePortfolioJSONBody defines parameters for CreatePortfolio.

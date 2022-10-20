@@ -19,7 +19,9 @@ func NewTinkoff(config config.Tinkoff) Tinkoff {
 	logger := log.New(os.Stdout, "[invest-openapi-go-sdk]", log.LstdFlags)
 	client, err := sdk.NewStreamingClient(logger, config.AuthToken)
 	if err != nil {
-		log.Fatalln(err)
+		log.Printf("Error tinkoff %s\n", err)
+	} else {
+		log.Println("Start Tinkoff stream")
 	}
 
 	return Tinkoff{

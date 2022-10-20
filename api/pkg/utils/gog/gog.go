@@ -1,5 +1,7 @@
 package gog
 
+import "golang.org/x/exp/constraints"
+
 //https://github.com/icza/gog
 
 // If returns vtrue is cond is true, vfalse otherwise.
@@ -101,4 +103,24 @@ func ByDefault[T any](first T, optional ...T) T {
 	}
 
 	return defFirst
+}
+
+func Min[T constraints.Ordered](args ...T) T {
+	min := args[0]
+	for _, x := range args {
+		if x < min {
+			min = x
+		}
+	}
+	return min
+}
+
+func Max[T constraints.Ordered](args ...T) T {
+	max := args[0]
+	for _, x := range args {
+		if x > max {
+			max = x
+		}
+	}
+	return max
 }

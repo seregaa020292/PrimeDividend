@@ -35,5 +35,5 @@ func (h HandlerPortfolio) UpdatePortfolio(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	respond.WriteHeader(http.StatusNoContent)
+	respond.WriteHeader(http.StatusOK)
 }

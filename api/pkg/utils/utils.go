@@ -35,6 +35,12 @@ func Println(err error) {
 	}
 }
 
+func PrintlnFn(fn func() error) {
+	if err := fn(); err != nil {
+		log.Println(err)
+	}
+}
+
 func DownloadFile(filepath string, url string) error {
 	out, err := os.Create(filepath)
 	if err != nil {
@@ -166,4 +172,10 @@ func RandomString(n int) string {
 		s[i] = letters[mathRand.Intn(len(letters))]
 	}
 	return string(s)
+}
+
+func Reverse[S ~[]E, E any](slice S) {
+	for i, j := 0, len(slice)-1; i < j; i, j = i+1, j-1 {
+		slice[i], slice[j] = slice[j], slice[i]
+	}
 }

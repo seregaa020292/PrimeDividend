@@ -8,14 +8,17 @@ import (
 	"primedivident/internal/models/app/public/table"
 	"primedivident/internal/modules/portfolio/dto"
 	"primedivident/pkg/db/postgres"
+	"primedivident/pkg/utils/paginate/cursor"
 )
 
 type Repository interface {
-	Add(portfolio model.Portfolios) error
 	FindById(id uuid.UUID) (model.Portfolios, error)
 	FindByUserId(userID uuid.UUID) ([]model.Portfolios, error)
+	Count() (int, error)
+	GetAll(input cursor.PaginateInput, query model.Portfolios) ([]model.Portfolios, error)
+	Add(portfolio model.Portfolios) error
 	Update(id, userID uuid.UUID, update dto.PortfolioVariadic) error
-	Remove(id uuid.UUID) error
+	Remove(id, userID uuid.UUID) error
 }
 
 type repository struct {
@@ -24,19 +27,6 @@ type repository struct {
 
 func NewRepository(db *postgres.Postgres) Repository {
 	return repository{db: db}
-}
-
-func (r repository) Add(portfolio model.Portfolios) error {
-	stmt := table.Portfolios.INSERT(
-		table.Portfolios.Title,
-		table.Portfolios.Active,
-		table.Portfolios.UserID,
-		table.Portfolios.CurrencyID,
-	).MODEL(portfolio)
-
-	_, err := stmt.Exec(r.db)
-
-	return err
 }
 
 func (r repository) FindById(id uuid.UUID) (model.Portfolios, error) {
@@ -69,6 +59,50 @@ func (r repository) FindByUserId(userID uuid.UUID) ([]model.Portfolios, error) {
 	return portfolios, err
 }
 
+func (r repository) Count() (int, error) {
+	var dest struct {
+		Count int
+	}
+
+	stmt := table.Portfolios.
+		SELECT(jet.COUNT(jet.STAR).AS("count")).
+		FROM(table.Portfolios)
+
+	err := stmt.Query(r.db, &dest)
+
+	return dest.Count, err
+}
+
+func (r repository) GetAll(input cursor.PaginateInput, query model.Portfolios) ([]model.Portfolios, error) {
+	var portfolios []model.Portfolios
+
+	cursorJet := cursor.NewJet(input, table.Portfolios.ID, table.Portfolios.CreatedAt)
+
+	stmt := table.Portfolios.
+		SELECT(table.Portfolios.AllColumns).
+		FROM(table.Portfolios)
+
+	condition := table.Portfolios.Active.EQ(jet.Bool(query.Active))
+
+	err := cursorJet.PagingSetting(stmt, condition).
+		Query(r.db, &portfolios)
+
+	return portfolios, err
+}
+
+func (r repository) Add(portfolio model.Portfolios) error {
+	stmt := table.Portfolios.INSERT(
+		table.Portfolios.Title,
+		table.Portfolios.Active,
+		table.Portfolios.UserID,
+		table.Portfolios.CurrencyID,
+	).MODEL(portfolio)
+
+	_, err := stmt.Exec(r.db)
+
+	return err
+}
+
 func (r repository) Update(id, userID uuid.UUID, update dto.PortfolioVariadic) error {
 	stmt := table.Portfolios.UPDATE().
 		SET(update.Column(), update.ColumnList()...).
@@ -82,9 +116,12 @@ func (r repository) Update(id, userID uuid.UUID, update dto.PortfolioVariadic) e
 	return err
 }
 
-func (r repository) Remove(id uuid.UUID) error {
+func (r repository) Remove(id, userID uuid.UUID) error {
 	stmt := table.Portfolios.DELETE().
-		WHERE(table.Portfolios.ID.EQ(jet.UUID(id)))
+		WHERE(jet.AND(
+			table.Portfolios.ID.EQ(jet.UUID(id)),
+			table.Portfolios.UserID.EQ(jet.UUID(userID)),
+		))
 
 	_, err := stmt.Exec(r.db)
 

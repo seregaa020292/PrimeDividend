@@ -55,12 +55,12 @@ func newStatus(err error) int {
 	}
 }
 
-func newDetails(err error) []openapi.Detail {
+func newDetails(err error) []openapi.ErrorDetail {
 	ctxErrors := errs.GetErrorContext(err)
-	details := make([]openapi.Detail, len(ctxErrors))
+	details := make([]openapi.ErrorDetail, len(ctxErrors))
 
 	for i, v := range ctxErrors {
-		details[i] = openapi.Detail(v)
+		details[i] = openapi.ErrorDetail(v)
 	}
 
 	return details

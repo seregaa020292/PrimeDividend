@@ -13,6 +13,7 @@ import (
 	currencyRepo "primedivident/internal/modules/currency/repository"
 	instrumentRepo "primedivident/internal/modules/instrument/repository"
 	marketRepo "primedivident/internal/modules/market/repository"
+	"primedivident/internal/modules/market/service/quotes"
 	providerRepo "primedivident/internal/modules/provider/repository"
 	registerRepo "primedivident/internal/modules/register/repository"
 	"primedivident/pkg/utils"
@@ -71,7 +72,7 @@ type (
 	}
 )
 
-func (p Parser) Select() error {
+func (p *Parser) Select() error {
 	instruments, err := p.instrumentRepo.GetAll()
 	if err != nil {
 		return err
@@ -82,7 +83,7 @@ func (p Parser) Select() error {
 		return err
 	}
 
-	p.provider, err = p.providerRepo.GetByTitle("Tinkoff")
+	p.provider, err = p.providerRepo.GetByTitle(quotes.TinkoffProvider)
 	if err != nil {
 		return err
 	}
@@ -98,7 +99,7 @@ func (p Parser) Select() error {
 	return nil
 }
 
-func (p Parser) Execute(instrument string) error {
+func (p *Parser) Execute(instrument string) error {
 	var responseStock responseStock
 
 	if err := p.httpRequest(&responseStock, instrument); err != nil {
@@ -138,7 +139,7 @@ func (p Parser) Execute(instrument string) error {
 	return nil
 }
 
-func (p Parser) httpRequest(body any, entity string) error {
+func (p *Parser) httpRequest(body any, entity string) error {
 	url := fmt.Sprintf("https://api-invest.tinkoff.ru/openapi/sandbox/market/%s", entity)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
@@ -153,7 +154,7 @@ func (p Parser) httpRequest(body any, entity string) error {
 		return err
 	}
 
-	defer utils.Println(response.Body.Close())
+	defer utils.PrintlnFn(response.Body.Close)
 
 	if response.StatusCode != http.StatusOK {
 		return fmt.Errorf("error response: %s", response.Status)

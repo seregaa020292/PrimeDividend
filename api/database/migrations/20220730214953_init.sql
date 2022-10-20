@@ -125,6 +125,11 @@ CREATE INDEX IF NOT EXISTS markets_title_id_idx ON markets (title);
 CREATE INDEX IF NOT EXISTS markets_ticker_id_idx ON markets (ticker);
 CREATE INDEX IF NOT EXISTS registers_identify_id_idx ON registers (identify);
 
+-- index for pagination
+CREATE INDEX IF NOT EXISTS users_created_at_id_idx ON users (created_at, id);
+CREATE INDEX IF NOT EXISTS markets_created_at_id_idx ON markets (created_at, id);
+CREATE INDEX IF NOT EXISTS portfolios_created_at_id_idx ON portfolios (created_at, id);
+
 CREATE TRIGGER users_timestamp BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
 CREATE TRIGGER sessions_timestamp BEFORE UPDATE ON sessions FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);
 CREATE TRIGGER user_networks_timestamp BEFORE UPDATE ON user_networks FOR EACH ROW EXECUTE PROCEDURE moddatetime(updated_at);

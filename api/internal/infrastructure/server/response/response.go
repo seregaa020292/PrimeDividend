@@ -14,8 +14,8 @@ type Responder interface {
 	Http(w http.ResponseWriter, r *http.Request) Responder
 	SetHeader(key string, value string) Responder
 	WriteHeader(httpStatus int)
-	Json(httpStatus int, data any)
-	Any(httpStatus int, data any)
+	Json(httpStatus int, data any, meta ...any)
+	Any(httpStatus int, data any, meta ...any)
 	Err(err error)
 	Redirect(url string, httpStatus ...int)
 	Decode(v any) error
@@ -25,6 +25,7 @@ type Responder interface {
 type (
 	Response struct {
 		Data any `json:"data"`
+		Meta any `json:"meta,omitempty"`
 	}
 	Respond struct {
 		logger    logger.Logger
@@ -71,14 +72,20 @@ func (h Respond) WriteHeader(httpStatus int) {
 	h.writer.WriteHeader(httpStatus)
 }
 
-func (h Respond) Json(httpStatus int, data any) {
+func (h Respond) Json(httpStatus int, data any, meta ...any) {
 	render.Status(h.request, httpStatus)
-	render.JSON(h.writer, h.request, Response{Data: data})
+	render.JSON(h.writer, h.request, Response{
+		Data: data,
+		Meta: gog.ByDefault(nil, meta...),
+	})
 }
 
-func (h Respond) Any(httpStatus int, data any) {
+func (h Respond) Any(httpStatus int, data any, meta ...any) {
 	render.Status(h.request, httpStatus)
-	render.Respond(h.writer, h.request, Response{Data: data})
+	render.Respond(h.writer, h.request, Response{
+		Data: data,
+		Meta: gog.ByDefault(nil, meta...),
+	})
 }
 
 func (h Respond) Redirect(url string, httpStatus ...int) {

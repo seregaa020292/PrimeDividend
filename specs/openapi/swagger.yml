@@ -12,9 +12,6 @@ servers:
   - url: http://localhost/api
     description: "Local server"
 
-#security:
-#  - BearerAuth: [ ]
-
 tags:
   - name: auth
     description: "Аутентификация и авторизация"
@@ -189,12 +186,46 @@ paths:
             schema:
               $ref: '#/components/schemas/portfolioUpdate'
       responses:
-        204:
-          $ref: '#/components/responses/204'
+        200:
+          $ref: '#/components/responses/200'
+        400:
+          $ref: '#/components/responses/400'
+    delete:
+      tags: [ portfolio ]
+      operationId: removePortfolio
+      summary: Удаление портфеля
+      parameters:
+        - $ref: '#/components/parameters/portfolioId'
+      security:
+        - BearerAuth: [ ]
+      responses:
+        200:
+          $ref: '#/components/responses/200'
         400:
           $ref: '#/components/responses/400'
 
   /portfolio:
+    get:
+      tags: [ portfolio ]
+      operationId: getPortfolios
+      summary: Получение списка портфелей
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/cursor'
+      responses:
+        200:
+          description: Список портфелей
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/portfolios'
+                  meta:
+                    $ref: '#/components/schemas/meta'
+        400:
+          $ref: '#/components/responses/400'
     post:
       tags: [ portfolio ]
       operationId: createPortfolio
@@ -263,6 +294,27 @@ components:
       schema:
         type: string
       required: true
+    limit:
+      in: query
+      name: limit
+      description: Размер списка
+      schema:
+        type: integer
+      required: false
+    page:
+      in: query
+      name: page
+      description: Номер страницы списка
+      schema:
+        type: integer
+      required: false
+    cursor:
+      in: query
+      name: cursor
+      description: Курсор страницы
+      schema:
+        type: string
+      required: false
 
   responses:
     101:
@@ -361,6 +413,10 @@ components:
           format: uuid
           x-oapi-codegen-extra-tags:
             validate: required
+    portfolios:
+      type: array
+      items:
+        $ref: '#/components/schemas/portfolio'
     portfolio:
       type: object
       required: [ id, title, active, userId, currencyId, createdAt ]
@@ -411,12 +467,10 @@ components:
           format: uuid
           x-oapi-codegen-extra-tags:
             validate: omitempty,required,uuid
-
     instruments:
       type: array
       items:
         $ref: '#/components/schemas/instrument'
-
     instrument:
       type: object
       required: [ id, title, description, createdAt, updatedAt ]
@@ -431,28 +485,51 @@ components:
 
     meta:
       type: object
+      required: [ pagination ]
       description: Метаданные
       properties:
         pagination:
-          type: object
-          description: Данные пагинации
-          properties:
-            page:
-              type: integer
-              description: Текущая страница
-              minimum: 1
-            pageSize:
-              type: integer
-              description: Кол-во элементов на странице
-              minimum: 1
-            pageCount:
-              type: integer
-              description: Общее кол-во страниц
-              minimum: 0
-            total:
-              type: integer
-              description: Всего элементов
-              minimum: 1
+          oneOf:
+            - $ref: '#/components/schemas/pagingCursor'
+            - $ref: '#/components/schemas/pagingOffset'
+    pagingCursor:
+      type: object
+      required: [ limit, count, cursorNext, cursorPrev ]
+      description: Данные пагинации
+      properties:
+        count:
+          type: integer
+          description: Кол-во элементов
+          minimum: 0
+        limit:
+          type: integer
+          description: Кол-во элементов на странице
+          minimum: 1
+        cursorNext:
+          type: string
+          nullable: true
+          description: Курсор для следующей страницы
+        cursorPrev:
+          type: string
+          nullable: true
+          description: Курсор для предыдущей страницы
+    pagingOffset:
+      type: object
+      required: [ page, limit, total ]
+      description: Данные пагинации
+      properties:
+        page:
+          type: integer
+          description: Текущая страница
+          minimum: 1
+        limit:
+          type: integer
+          description: Кол-во элементов на странице
+          minimum: 1
+        total:
+          type: integer
+          description: Всего элементов
+          minimum: 1
 
     error:
       type: object
@@ -460,7 +537,6 @@ components:
       properties:
         error:
           $ref: '#/components/schemas/errorMessage'
-
     errorMessage:
       type: object
       required: [ message, details ]
@@ -473,9 +549,8 @@ components:
           type: array
           description: В каком поле произошла ошибка
           items:
-            $ref: '#/components/schemas/detail'
-
-    detail:
+            $ref: '#/components/schemas/errorDetail'
+    errorDetail:
       type: object
       required: [ message, field ]
       properties:
