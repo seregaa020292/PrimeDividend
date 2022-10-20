@@ -50,7 +50,9 @@ func NewPaginateResult[T any](records []T, input PaginateInput) PaginateResult[T
 		return result
 	}
 
-	result.setCursorPrev()
+	if !input.Cursor.IsEmpty() {
+		result.setCursorPrev()
+	}
 
 	if input.EqLimitOver(recordLen) {
 		result.setCursorNext()

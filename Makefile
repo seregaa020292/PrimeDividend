@@ -5,7 +5,7 @@
 # ==============================================================================
 # Main
 
-init: full-clear docker-build up \
+init: full-clear env-init docker-build up \
  full-init full-done
 
 up: docker-up
@@ -38,6 +38,14 @@ docker-rebuild:
 
 docker-down-clear:
 	docker-compose down -v --remove-orphans
+
+# ==============================================================================
+# Common
+
+env-init: env-main-create
+
+env-main-create:
+	[ -f .env ] || { cp .env.example .env && echo "Created .env"; }
 
 # ==============================================================================
 # Api commands
