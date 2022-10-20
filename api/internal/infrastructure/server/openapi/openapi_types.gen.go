@@ -105,7 +105,6 @@ type PagingOffset struct {
 
 // Portfolio defines model for portfolio.
 type Portfolio struct {
-	Active     bool               `json:"active"`
 	CreatedAt  time.Time          `json:"createdAt"`
 	CurrencyId openapi_types.UUID `json:"currencyId"`
 	Id         openapi_types.UUID `json:"id"`

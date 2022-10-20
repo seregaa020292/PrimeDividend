@@ -12,8 +12,7 @@ type Presenter interface {
 	GetRecordsMeta(result query.PortfoliosResult) (openapi.Portfolios, openapi.Meta)
 }
 
-type present struct {
-}
+type present struct{}
 
 func NewPresenter() Presenter {
 	return present{}
@@ -23,7 +22,6 @@ func (p present) GetPortfolio(portfolio model.Portfolios) openapi.Portfolio {
 	return openapi.Portfolio{
 		Id:         portfolio.ID,
 		Title:      portfolio.Title,
-		Active:     portfolio.Active,
 		CurrencyId: portfolio.CurrencyID,
 		UserId:     portfolio.UserID,
 		CreatedAt:  portfolio.CreatedAt,

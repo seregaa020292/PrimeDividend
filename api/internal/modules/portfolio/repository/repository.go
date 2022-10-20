@@ -78,14 +78,14 @@ func (r repository) GetAll(input cursor.PaginateInput, query model.Portfolios) (
 
 	cursorJet := cursor.NewJet(input, table.Portfolios.ID, table.Portfolios.CreatedAt)
 
-	stmt := table.Portfolios.
-		SELECT(table.Portfolios.AllColumns).
-		FROM(table.Portfolios)
+	stmt := cursorJet.PagingSetting(
+		table.Portfolios.
+			SELECT(table.Portfolios.AllColumns).
+			FROM(table.Portfolios),
+		table.Portfolios.Active.EQ(jet.Bool(query.Active)),
+	)
 
-	condition := table.Portfolios.Active.EQ(jet.Bool(query.Active))
-
-	err := cursorJet.PagingSetting(stmt, condition).
-		Query(r.db, &portfolios)
+	err := stmt.Query(r.db, &portfolios)
 
 	return portfolios, err
 }

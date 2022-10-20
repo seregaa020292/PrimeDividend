@@ -419,15 +419,13 @@ components:
         $ref: '#/components/schemas/portfolio'
     portfolio:
       type: object
-      required: [ id, title, active, userId, currencyId, createdAt ]
+      required: [ id, title, userId, currencyId, createdAt ]
       properties:
         id:
           type: string
           format: uuid
         title:
           type: string
-        active:
-          type: boolean
         userId:
           type: string
           format: uuid

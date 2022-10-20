@@ -2,6 +2,7 @@ package cursor
 
 import (
 	"primedivident/internal/config/consts"
+	"primedivident/pkg/utils/gog"
 )
 
 type PaginateInput struct {
@@ -22,7 +23,7 @@ func NewPaginateInput(limit *int, cursor *string) (PaginateInput, error) {
 }
 
 func (p PaginateInput) GetLimitOver() int {
-	return p.Limit + 1
+	return gog.If(p.Limit > 0, p.Limit+1, 0)
 }
 
 func (p PaginateInput) EqLimitOver(length int) bool {
@@ -37,7 +38,7 @@ func limitInput(limit *int) int {
 	limitNum := *limit
 
 	if limitNum <= 0 {
-		return consts.PageLimitDefault
+		return 0
 	}
 
 	if limitNum > consts.PageLimitMax {
