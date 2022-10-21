@@ -7,22 +7,25 @@ import (
 )
 
 type HandlerMarket struct {
-	responder    response.Responder
-	presenter    market.Presenter
-	queryGetById query.GetById
-	queryGetAll  query.GetAll
+	responder        response.Responder
+	presenter        market.Presenter
+	queryGetById     query.GetById
+	queryGetByTicker query.GetByTicker
+	queryGetAll      query.GetAll
 }
 
 func NewHandler(
 	responder response.Responder,
 	presenter market.Presenter,
 	queryGetById query.GetById,
+	queryGetByTicker query.GetByTicker,
 	queryGetAll query.GetAll,
 ) HandlerMarket {
 	return HandlerMarket{
-		responder:    responder,
-		presenter:    presenter,
-		queryGetById: queryGetById,
-		queryGetAll:  queryGetAll,
+		responder:        responder,
+		presenter:        presenter,
+		queryGetById:     queryGetById,
+		queryGetByTicker: queryGetByTicker,
+		queryGetAll:      queryGetAll,
 	}
 }

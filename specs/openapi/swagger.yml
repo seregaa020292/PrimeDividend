@@ -194,6 +194,26 @@ paths:
         400:
           $ref: '#/components/responses/400'
 
+  /market/{ticker}:
+    get:
+      tags: [ market ]
+      operationId: getMarketByTicker
+      summary: Получение ценной бумаги по тикеру
+      parameters:
+        - $ref: '#/components/parameters/ticker'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/market'
+        400:
+          $ref: '#/components/responses/400'
+
   /portfolio/{portfolioId}:
     get:
       tags: [ portfolio ]
@@ -412,6 +432,12 @@ components:
       schema:
         type: string
         format: uuid
+      required: true
+    ticker:
+      in: path
+      name: ticker
+      schema:
+        type: string
       required: true
     portfolioId:
       in: path

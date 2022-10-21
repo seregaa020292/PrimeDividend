@@ -13,6 +13,7 @@ import (
 type Repository interface {
 	GetAll(input cursor.PaginateInput) ([]model.Markets, error)
 	FindById(id uuid.UUID) (model.Markets, error)
+	FindByTicker(ticker string) (model.Markets, error)
 	Add(model.Markets) (model.Markets, error)
 }
 
@@ -48,6 +49,20 @@ func (r repository) FindById(id uuid.UUID) (model.Markets, error) {
 		SELECT(table.Markets.AllColumns).
 		FROM(table.Markets).
 		WHERE(table.Markets.ID.EQ(jet.UUID(id))).
+		LIMIT(1)
+
+	err := stmt.Query(r.db, &market)
+
+	return market, err
+}
+
+func (r repository) FindByTicker(ticker string) (model.Markets, error) {
+	var market model.Markets
+
+	stmt := table.Markets.
+		SELECT(table.Markets.AllColumns).
+		FROM(table.Markets).
+		WHERE(table.Markets.Ticker.EQ(jet.String(ticker))).
 		LIMIT(1)
 
 	err := stmt.Query(r.db, &market)

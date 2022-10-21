@@ -201,6 +201,9 @@ type ProviderId = openapi_types.UUID
 // State defines model for state.
 type State = string
 
+// Ticker defines model for ticker.
+type Ticker = string
+
 // N400 defines model for 400.
 type N400 = Error
 

@@ -10,7 +10,7 @@ import (
 func (h HandlerMarket) GetMarkets(w http.ResponseWriter, r *http.Request, params openapi.GetMarketsParams) {
 	respond := h.responder.Http(w, r)
 
-	instruments, err := h.queryGetAll.Fetch(query.FilterGetAll{
+	markets, err := h.queryGetAll.Fetch(query.FilterGetAll{
 		Limit:  params.Limit,
 		Cursor: params.Cursor,
 	})
@@ -19,7 +19,7 @@ func (h HandlerMarket) GetMarkets(w http.ResponseWriter, r *http.Request, params
 		return
 	}
 
-	data, meta := h.presenter.GetAllMeta(instruments)
+	data, meta := h.presenter.GetAllMeta(markets)
 
 	respond.Json(http.StatusOK, data, meta)
 }

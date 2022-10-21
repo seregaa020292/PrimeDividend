@@ -24,6 +24,7 @@ var Market = wire.NewSet(
 	repository.NewRepository,
 	presenter.NewPresenter,
 	query.NewGetById,
+	query.NewGetByTicker,
 	query.NewGetAll,
 	http.NewHandler,
 )
