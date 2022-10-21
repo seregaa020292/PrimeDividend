@@ -30,6 +30,8 @@ import (
 	repository6 "primedivident/internal/modules/portfolio/repository"
 	query5 "primedivident/internal/modules/provider/query"
 	repository7 "primedivident/internal/modules/provider/repository"
+	query6 "primedivident/internal/modules/user/query"
+	repository8 "primedivident/internal/modules/user/repository"
 	"primedivident/internal/ports/http/asset"
 	"primedivident/internal/ports/http/auth"
 	currency2 "primedivident/internal/ports/http/currency"
@@ -38,13 +40,14 @@ import (
 	portfolio2 "primedivident/internal/ports/http/portfolio"
 	provider2 "primedivident/internal/ports/http/provider"
 	"primedivident/internal/ports/http/register"
-	"primedivident/internal/ports/http/user"
+	user2 "primedivident/internal/ports/http/user"
 	market3 "primedivident/internal/ports/ws/market"
 	"primedivident/internal/presenters/currency"
 	"primedivident/internal/presenters/instrument"
 	"primedivident/internal/presenters/market"
 	"primedivident/internal/presenters/portfolio"
 	"primedivident/internal/presenters/provider"
+	"primedivident/internal/presenters/user"
 	"primedivident/pkg/validator"
 )
 
@@ -59,46 +62,49 @@ func Initialize(cfg config.Config) server.Server {
 	logger := ProvideLogger(cfg)
 	validatorValidator := validator.GetValidator()
 	responder := response.NewRespond(logger, validatorValidator)
-	repository8 := repository2.NewRepository(postgres)
+	repository9 := repository2.NewRepository(postgres)
 	sender := ProvideMailerObserver(cfg, logger)
 	templater := ProvideTemplate(cfg)
 	joinConfirmUser := email.NewJoinConfirmUser(sender, templater)
-	joinByEmail := command.NewJoinByEmail(repository8, joinConfirmUser)
+	joinByEmail := command.NewJoinByEmail(repository9, joinConfirmUser)
 	confirmUser := email.NewConfirmUser(sender, templater)
-	confirmByToken := command.NewConfirmByToken(repository8, confirmUser)
+	confirmByToken := command.NewConfirmByToken(repository9, confirmUser)
 	handlerAuth := auth.NewHandler(responder, strategyStrategy, joinByEmail, confirmByToken)
 	handlerAsset := asset.NewHandler()
 	presenter := currency.NewPresenter()
-	repository9 := repository3.NewRepository(postgres)
-	getById := query.NewGetById(repository9)
-	getAll := query.NewGetAll(repository9)
+	repository10 := repository3.NewRepository(postgres)
+	getById := query.NewGetById(repository10)
+	getAll := query.NewGetAll(repository10)
 	handlerCurrency := currency2.NewHandler(responder, presenter, getById, getAll)
 	instrumentPresenter := instrument.NewPresenter()
-	repository10 := repository4.NewRepository(postgres)
-	queryGetById := query2.NewGetById(repository10)
-	queryGetAll := query2.NewGetAll(repository10)
+	repository11 := repository4.NewRepository(postgres)
+	queryGetById := query2.NewGetById(repository11)
+	queryGetAll := query2.NewGetAll(repository11)
 	handlerInstrument := instrument2.NewHandler(responder, instrumentPresenter, queryGetById, queryGetAll)
 	marketPresenter := market.NewPresenter()
-	repository11 := repository5.NewRepository(postgres)
-	getById2 := query3.NewGetById(repository11)
-	getByTicker := query3.NewGetByTicker(repository11)
-	getAll2 := query3.NewGetAll(repository11)
+	repository12 := repository5.NewRepository(postgres)
+	getById2 := query3.NewGetById(repository12)
+	getByTicker := query3.NewGetByTicker(repository12)
+	getAll2 := query3.NewGetAll(repository12)
 	handlerMarket := market2.NewHandler(responder, marketPresenter, getById2, getByTicker, getAll2)
 	portfolioPresenter := portfolio.NewPresenter()
-	repository12 := repository6.NewRepository(postgres)
-	getById3 := query4.NewGetById(repository12)
-	getAll3 := query4.NewGetAll(repository12)
-	create := command2.NewCreate(repository12)
-	edit := command2.NewEdit(repository12)
-	remove := command2.NewRemove(repository12)
+	repository13 := repository6.NewRepository(postgres)
+	getById3 := query4.NewGetById(repository13)
+	getAll3 := query4.NewGetAll(repository13)
+	create := command2.NewCreate(repository13)
+	edit := command2.NewEdit(repository13)
+	remove := command2.NewRemove(repository13)
 	handlerPortfolio := portfolio2.NewHandler(responder, portfolioPresenter, getById3, getAll3, create, edit, remove)
 	providerPresenter := provider.NewPresenter()
-	repository13 := repository7.NewRepository(postgres)
-	getById4 := query5.NewGetById(repository13)
-	getAll4 := query5.NewGetAll(repository13)
+	repository14 := repository7.NewRepository(postgres)
+	getById4 := query5.NewGetById(repository14)
+	getAll4 := query5.NewGetAll(repository14)
 	handlerProvider := provider2.NewHandler(responder, providerPresenter, getById4, getAll4)
 	handlerRegister := register.NewHandler()
-	handlerUser := user.NewHandler()
+	userPresenter := user.NewPresenter()
+	repository15 := repository8.NewRepository(postgres)
+	getById5 := query6.NewGetById(repository15)
+	handlerUser := user2.NewHandler(responder, userPresenter, getById5)
 	httpHandlers := handlers.NewHttpHandlers(handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
 	upgrader := socket.NewUpgrader()
 	quotes := wire_group.ProvideQuotes(cfg)

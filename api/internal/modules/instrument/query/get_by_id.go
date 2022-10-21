@@ -11,7 +11,7 @@ import (
 )
 
 type (
-	ID      uuid.UUID
+	ID      = uuid.UUID
 	GetById decorators.QueryHandler[ID, model.Instruments]
 )
 
@@ -28,7 +28,7 @@ func NewGetById(
 }
 
 func (q getById) Fetch(id ID) (model.Instruments, error) {
-	instrument, err := q.repository.FindById(uuid.UUID(id))
+	instrument, err := q.repository.FindById(id)
 	if err != nil {
 		return model.Instruments{}, errs.NotFound.Wrap(err, errmsg.CouldNotBeFound)
 	}

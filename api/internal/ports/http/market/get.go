@@ -4,13 +4,12 @@ import (
 	"net/http"
 
 	"primedivident/internal/infrastructure/server/openapi"
-	"primedivident/internal/modules/market/query"
 )
 
 func (h HandlerMarket) GetMarket(w http.ResponseWriter, r *http.Request, marketId openapi.MarketId) {
 	respond := h.responder.Http(w, r)
 
-	market, err := h.queryGetById.Fetch(query.ID(marketId))
+	market, err := h.queryGetById.Fetch(marketId)
 	if err != nil {
 		respond.Err(err)
 		return

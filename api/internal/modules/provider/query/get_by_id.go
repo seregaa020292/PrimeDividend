@@ -11,7 +11,7 @@ import (
 )
 
 type (
-	ID      uuid.UUID
+	ID      = uuid.UUID
 	GetById decorators.QueryHandler[ID, model.Providers]
 )
 
@@ -28,7 +28,7 @@ func NewGetById(
 }
 
 func (q getById) Fetch(id ID) (model.Providers, error) {
-	provider, err := q.repository.FindById(uuid.UUID(id))
+	provider, err := q.repository.FindById(id)
 	if err != nil {
 		return model.Providers{}, errs.NotFound.Wrap(err, errmsg.CouldNotBeFound)
 	}

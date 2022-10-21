@@ -151,6 +151,26 @@ paths:
         403:
           $ref: '#/components/responses/403'
 
+  /user:
+    get:
+      tags: [ user ]
+      operationId: getUser
+      summary: Получение данных пользователя
+      security:
+        - BearerAuth: [ ]
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/user'
+        400:
+          $ref: '#/components/responses/400'
+
   /market:
     get:
       tags: [ market ]
@@ -604,6 +624,30 @@ components:
           format: uuid
           x-oapi-codegen-extra-tags:
             validate: required
+    user:
+      type: object
+      required: [ id, name, email, role, status, createdAt ]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        avatar:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
     portfolios:
       type: array
       items:

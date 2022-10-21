@@ -171,6 +171,18 @@ type Provider struct {
 // Providers defines model for providers.
 type Providers = []Provider
 
+// User defines model for user.
+type User struct {
+	Avatar    *string            `json:"avatar,omitempty"`
+	CreatedAt time.Time          `json:"createdAt"`
+	Email     string             `json:"email"`
+	Id        openapi_types.UUID `json:"id"`
+	Name      string             `json:"name"`
+	Role      string             `json:"role"`
+	Status    string             `json:"status"`
+	UpdatedAt *time.Time         `json:"updatedAt,omitempty"`
+}
+
 // Code defines model for code.
 type Code = string
 

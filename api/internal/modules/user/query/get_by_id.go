@@ -5,14 +5,14 @@ import (
 
 	"primedivident/internal/decorators"
 	"primedivident/internal/models/app/public/model"
-	"primedivident/internal/modules/portfolio/repository"
+	"primedivident/internal/modules/user/repository"
 	"primedivident/pkg/errs"
 	"primedivident/pkg/errs/errmsg"
 )
 
 type (
 	ID      = uuid.UUID
-	GetById decorators.QueryHandler[ID, model.Portfolios]
+	GetById decorators.QueryHandler[ID, model.Users]
 )
 
 type getById struct {
@@ -27,11 +27,11 @@ func NewGetById(
 	}
 }
 
-func (q getById) Fetch(portfolioId ID) (model.Portfolios, error) {
-	portfolio, err := q.repository.FindById(portfolioId)
+func (q getById) Fetch(id ID) (model.Users, error) {
+	user, err := q.repository.FindById(id)
 	if err != nil {
-		return model.Portfolios{}, errs.NotFound.Wrap(err, errmsg.CouldNotBeFound)
+		return model.Users{}, errs.NotFound.Wrap(err, errmsg.CouldNotBeFound)
 	}
 
-	return portfolio, nil
+	return user, nil
 }
