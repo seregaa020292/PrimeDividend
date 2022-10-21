@@ -7,8 +7,8 @@ import (
 	"github.com/google/wire"
 
 	"primedivident/internal/config"
+	"primedivident/internal/handlers"
 	"primedivident/internal/infrastructure/server"
-	"primedivident/internal/infrastructure/server/handlers"
 	"primedivident/internal/infrastructure/server/response"
 	"primedivident/internal/infrastructure/server/routes"
 	"primedivident/internal/infrastructure/socket"

@@ -8,8 +8,8 @@ package wire
 
 import (
 	"primedivident/internal/config"
+	handlers2 "primedivident/internal/handlers"
 	"primedivident/internal/infrastructure/server"
-	"primedivident/internal/infrastructure/server/handlers"
 	"primedivident/internal/infrastructure/server/response"
 	"primedivident/internal/infrastructure/server/routes"
 	"primedivident/internal/infrastructure/socket"
@@ -59,7 +59,7 @@ func Initialize(cfg config.Config) server.Server {
 	confirmByToken := command.NewConfirmByToken(repository5, confirmUser)
 	handlerAuth := auth.NewHandler(responder, strategyStrategy, joinByEmail, confirmByToken)
 	handlerAsset := asset.NewHandler()
-	handlerCurrency := currency.NewHandler()
+	handlerCurrency := currency.NewHandler(responder)
 	presenter := instrument.NewPresenter()
 	repository6 := repository3.NewRepository(postgres)
 	instrumentAll := query.NewInstrumentAll(repository6)
@@ -73,14 +73,14 @@ func Initialize(cfg config.Config) server.Server {
 	portfolioEdit := command2.NewPortfolioEdit(repository7)
 	portfolioRemove := command2.NewPortfolioRemove(repository7)
 	handlerPortfolio := portfolio2.NewHandler(responder, portfolioPresenter, portfolioById, portfolioAll, portfolioCreate, portfolioEdit, portfolioRemove)
-	handlerProvider := provider.NewHandler()
+	handlerProvider := provider.NewHandler(responder)
 	handlerRegister := register.NewHandler()
 	handlerUser := user.NewHandler()
-	httpHandlers := handlers.NewHttpHandlers(handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
+	httpHandlers := handlers2.NewHttpHandlers(handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
 	upgrader := socket.NewUpgrader()
 	quotes := wire_group.ProvideQuotes(cfg)
 	marketHandlerMarket := market2.NewHandlerMarket(responder, upgrader, quotes)
-	wsHandlers := handlers.NewWsHandlers(marketHandlerMarket)
+	wsHandlers := handlers2.NewWsHandlers(marketHandlerMarket)
 	routesRoutes := routes.NewRoutes(strategyStrategy, httpHandlers, wsHandlers)
 	serverServer := server.NewServer(routesRoutes)
 	return serverServer

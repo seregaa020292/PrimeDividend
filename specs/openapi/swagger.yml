@@ -244,13 +244,88 @@ paths:
         400:
           $ref: '#/components/responses/400'
 
+  /currency:
+    get:
+      tags: [ currency ]
+      operationId: getCurrencies
+      summary: Все валюты
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/currencies'
+        400:
+          $ref: '#/components/responses/400'
+  /currency/{currencyId}:
+    get:
+      tags: [ currency ]
+      operationId: getCurrency
+      summary: Получение валюты по ID
+      parameters:
+        - $ref: '#/components/parameters/currencyId'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/currency'
+        400:
+          $ref: '#/components/responses/400'
+
+  /provider:
+    get:
+      tags: [ provider ]
+      operationId: getProviders
+      summary: Все поставщики котировок
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/providers'
+        400:
+          $ref: '#/components/responses/400'
+  /provider/{providerId}:
+    get:
+      tags: [ provider ]
+      operationId: getProvider
+      summary: Получение поставщика котировок по ID
+      parameters:
+        - $ref: '#/components/parameters/providerId'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/provider'
+        400:
+          $ref: '#/components/responses/400'
+
   /instrument:
     get:
       tags: [ instrument ]
       operationId: getInstruments
+      summary: Все инструменты
       responses:
         200:
-          description: Все инструменты
+          description: ''
           content:
             application/json:
               schema:
@@ -258,6 +333,25 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/instruments'
+        400:
+          $ref: '#/components/responses/400'
+  /instrument/{instrumentId}:
+    get:
+      tags: [ instrument ]
+      operationId: getInstrument
+      summary: Получение инструмента по ID
+      parameters:
+        - $ref: '#/components/parameters/instrumentId'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/instrument'
         400:
           $ref: '#/components/responses/400'
 
@@ -272,6 +366,27 @@ components:
     portfolioId:
       in: path
       name: portfolioId
+      schema:
+        type: string
+        format: uuid
+      required: true
+    currencyId:
+      in: path
+      name: currencyId
+      schema:
+        type: string
+        format: uuid
+      required: true
+    providerId:
+      in: path
+      name: providerId
+      schema:
+        type: string
+        format: uuid
+      required: true
+    instrumentId:
+      in: path
+      name: instrumentId
       schema:
         type: string
         format: uuid
@@ -465,13 +580,9 @@ components:
           format: uuid
           x-oapi-codegen-extra-tags:
             validate: omitempty,required,uuid
-    instruments:
-      type: array
-      items:
-        $ref: '#/components/schemas/instrument'
-    instrument:
+    currency:
       type: object
-      required: [ id, title, description, createdAt, updatedAt ]
+      required: [ id, title, description, currencyId, createdAt ]
       properties:
         id:
           type: string
@@ -480,6 +591,59 @@ components:
           type: string
         description:
           type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    provider:
+      type: object
+      required: [ id, title, description, currencyId, createdAt ]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    currencies:
+      type: array
+      items:
+        $ref: '#/components/schemas/currency'
+    providers:
+      type: array
+      items:
+        $ref: '#/components/schemas/provider'
+    instruments:
+      type: array
+      items:
+        $ref: '#/components/schemas/instrument'
+    instrument:
+      type: object
+      required: [ id, title, description, createdAt ]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
 
     meta:
       type: object

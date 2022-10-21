@@ -6,7 +6,7 @@ import (
 	"github.com/go-chi/httprate"
 
 	"primedivident/internal/config/consts"
-	"primedivident/internal/infrastructure/server/handlers"
+	"primedivident/internal/handlers"
 	"primedivident/internal/infrastructure/server/middlewares"
 	"primedivident/internal/infrastructure/server/openapi"
 	"primedivident/internal/modules/auth/service/strategy"

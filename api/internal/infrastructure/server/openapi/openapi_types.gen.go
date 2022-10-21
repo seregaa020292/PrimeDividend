@@ -31,6 +31,18 @@ type AuthUser struct {
 	Password string `json:"password" validate:"required,min=6"`
 }
 
+// Currencies defines model for currencies.
+type Currencies = []Currency
+
+// Currency defines model for currency.
+type Currency struct {
+	CreatedAt   time.Time          `json:"createdAt"`
+	Description string             `json:"description"`
+	Id          openapi_types.UUID `json:"id"`
+	Title       string             `json:"title"`
+	UpdatedAt   *time.Time         `json:"updatedAt,omitempty"`
+}
+
 // Error defines model for error.
 type Error struct {
 	// Объект ошибки
@@ -57,9 +69,11 @@ type ErrorMessage struct {
 
 // Instrument defines model for instrument.
 type Instrument struct {
+	CreatedAt   time.Time          `json:"createdAt"`
 	Description string             `json:"description"`
 	Id          openapi_types.UUID `json:"id"`
 	Title       string             `json:"title"`
+	UpdatedAt   *time.Time         `json:"updatedAt,omitempty"`
 }
 
 // Instruments defines model for instruments.
@@ -129,11 +143,29 @@ type PortfolioUpdate struct {
 // Portfolios defines model for portfolios.
 type Portfolios = []Portfolio
 
+// Provider defines model for provider.
+type Provider struct {
+	CreatedAt   time.Time          `json:"createdAt"`
+	Description *string            `json:"description"`
+	Id          openapi_types.UUID `json:"id"`
+	Title       string             `json:"title"`
+	UpdatedAt   *time.Time         `json:"updatedAt,omitempty"`
+}
+
+// Providers defines model for providers.
+type Providers = []Provider
+
 // Code defines model for code.
 type Code = string
 
+// CurrencyId defines model for currencyId.
+type CurrencyId = openapi_types.UUID
+
 // Cursor defines model for cursor.
 type Cursor = string
+
+// InstrumentId defines model for instrumentId.
+type InstrumentId = openapi_types.UUID
 
 // Limit defines model for limit.
 type Limit = int
@@ -143,6 +175,9 @@ type Network = string
 
 // PortfolioId defines model for portfolioId.
 type PortfolioId = openapi_types.UUID
+
+// ProviderId defines model for providerId.
+type ProviderId = openapi_types.UUID
 
 // State defines model for state.
 type State = string

@@ -9,8 +9,7 @@ type Presenter interface {
 	GetInstruments(instruments []model.Instruments) openapi.Instruments
 }
 
-type present struct {
-}
+type present struct{}
 
 func NewPresenter() Presenter {
 	return present{}

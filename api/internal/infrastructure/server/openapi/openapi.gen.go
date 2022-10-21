@@ -42,9 +42,18 @@ type ServerInterface interface {
 	// Авторизация через соц. сети
 	// (GET /auth/{network}/callback)
 	ConfirmNetwork(w http.ResponseWriter, r *http.Request, network Network, params ConfirmNetworkParams)
-
+	// Все валюты
+	// (GET /currency)
+	GetCurrencies(w http.ResponseWriter, r *http.Request)
+	// Получение валюты по ID
+	// (GET /currency/{currencyId})
+	GetCurrency(w http.ResponseWriter, r *http.Request, currencyId CurrencyId)
+	// Все инструменты
 	// (GET /instrument)
 	GetInstruments(w http.ResponseWriter, r *http.Request)
+	// Получение инструмента по ID
+	// (GET /instrument/{instrumentId})
+	GetInstrument(w http.ResponseWriter, r *http.Request, instrumentId InstrumentId)
 	// Получение списка портфелей
 	// (GET /portfolio)
 	GetPortfolios(w http.ResponseWriter, r *http.Request, params GetPortfoliosParams)
@@ -60,6 +69,12 @@ type ServerInterface interface {
 	// Редактирование портфеля
 	// (PATCH /portfolio/{portfolioId})
 	UpdatePortfolio(w http.ResponseWriter, r *http.Request, portfolioId PortfolioId)
+	// Все поставщики котировок
+	// (GET /provider)
+	GetProviders(w http.ResponseWriter, r *http.Request)
+	// Получение поставщика котировок по ID
+	// (GET /provider/{providerId})
+	GetProvider(w http.ResponseWriter, r *http.Request, providerId ProviderId)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -229,12 +244,79 @@ func (siw *ServerInterfaceWrapper) ConfirmNetwork(w http.ResponseWriter, r *http
 	handler(w, r.WithContext(ctx))
 }
 
+// GetCurrencies operation middleware
+func (siw *ServerInterfaceWrapper) GetCurrencies(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCurrencies(w, r)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// GetCurrency operation middleware
+func (siw *ServerInterfaceWrapper) GetCurrency(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "currencyId" -------------
+	var currencyId CurrencyId
+
+	err = runtime.BindStyledParameter("simple", false, "currencyId", chi.URLParam(r, "currencyId"), &currencyId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "currencyId", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCurrency(w, r, currencyId)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
 // GetInstruments operation middleware
 func (siw *ServerInterfaceWrapper) GetInstruments(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetInstruments(w, r)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// GetInstrument operation middleware
+func (siw *ServerInterfaceWrapper) GetInstrument(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "instrumentId" -------------
+	var instrumentId InstrumentId
+
+	err = runtime.BindStyledParameter("simple", false, "instrumentId", chi.URLParam(r, "instrumentId"), &instrumentId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "instrumentId", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetInstrument(w, r, instrumentId)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -385,6 +467,47 @@ func (siw *ServerInterfaceWrapper) UpdatePortfolio(w http.ResponseWriter, r *htt
 	handler(w, r.WithContext(ctx))
 }
 
+// GetProviders operation middleware
+func (siw *ServerInterfaceWrapper) GetProviders(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetProviders(w, r)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
+// GetProvider operation middleware
+func (siw *ServerInterfaceWrapper) GetProvider(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "providerId" -------------
+	var providerId ProviderId
+
+	err = runtime.BindStyledParameter("simple", false, "providerId", chi.URLParam(r, "providerId"), &providerId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "providerId", Err: err})
+		return
+	}
+
+	var handler = func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetProvider(w, r, providerId)
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler(w, r.WithContext(ctx))
+}
+
 type UnescapedCookieParamError struct {
 	ParamName string
 	Err       error
@@ -520,7 +643,16 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Get(options.BaseURL+"/auth/{network}/callback", wrapper.ConfirmNetwork)
 	})
 	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/currency", wrapper.GetCurrencies)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/currency/{currencyId}", wrapper.GetCurrency)
+	})
+	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/instrument", wrapper.GetInstruments)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/instrument/{instrumentId}", wrapper.GetInstrument)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/portfolio", wrapper.GetPortfolios)
@@ -537,6 +669,12 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	r.Group(func(r chi.Router) {
 		r.Patch(options.BaseURL+"/portfolio/{portfolioId}", wrapper.UpdatePortfolio)
 	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/provider", wrapper.GetProviders)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/provider/{providerId}", wrapper.GetProvider)
+	})
 
 	return r
 }
@@ -544,45 +682,48 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
-	"Ufq/AwAA//8fGF2lzysAAA==",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
