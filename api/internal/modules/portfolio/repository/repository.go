@@ -8,7 +8,7 @@ import (
 	"primedivident/internal/models/app/public/table"
 	"primedivident/internal/modules/portfolio/dto"
 	"primedivident/pkg/db/postgres"
-	"primedivident/pkg/utils/paginate/cursor"
+	"primedivident/pkg/paginate/cursor"
 )
 
 type Repository interface {

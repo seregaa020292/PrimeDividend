@@ -1,12 +1,12 @@
 package query
 
 import (
-	"primedivident/internal/decorator"
+	"primedivident/internal/decorators"
 	"primedivident/internal/models/app/public/model"
 	"primedivident/internal/modules/portfolio/repository"
 	"primedivident/pkg/errs"
 	"primedivident/pkg/errs/errmsg"
-	"primedivident/pkg/utils/paginate/cursor"
+	"primedivident/pkg/paginate/cursor"
 )
 
 type (
@@ -16,7 +16,7 @@ type (
 		Active bool
 	}
 	PortfoliosResult = cursor.PaginateResult[model.Portfolios]
-	PortfolioAll     decorator.QueryHandler[PortfoliosInput, PortfoliosResult]
+	PortfolioAll     decorators.QueryHandler[PortfoliosInput, PortfoliosResult]
 )
 
 type portfolioAll struct {

@@ -1,4 +1,4 @@
-package decorator
+package decorators
 
 type ColumnAssigment[T any] []T
 

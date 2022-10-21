@@ -3,7 +3,7 @@ package query
 import (
 	"github.com/google/uuid"
 
-	"primedivident/internal/decorator"
+	"primedivident/internal/decorators"
 	"primedivident/internal/models/app/public/model"
 	"primedivident/internal/modules/portfolio/repository"
 	"primedivident/pkg/errs"
@@ -12,7 +12,7 @@ import (
 
 type (
 	PortfolioId   uuid.UUID
-	PortfolioById decorator.QueryHandler[PortfolioId, model.Portfolios]
+	PortfolioById decorators.QueryHandler[PortfolioId, model.Portfolios]
 )
 
 type portfolioById struct {

@@ -1,7 +1,7 @@
 package query
 
 import (
-	"primedivident/internal/decorator"
+	"primedivident/internal/decorators"
 	"primedivident/internal/models/app/public/model"
 	"primedivident/internal/modules/instrument/repository"
 	"primedivident/pkg/errs"
@@ -10,7 +10,7 @@ import (
 
 type (
 	FilterOrderInstruments struct{}
-	InstrumentAll          decorator.QueryHandler[FilterOrderInstruments, []model.Instruments]
+	InstrumentAll          decorators.QueryHandler[FilterOrderInstruments, []model.Instruments]
 )
 
 type instrumentAll struct {

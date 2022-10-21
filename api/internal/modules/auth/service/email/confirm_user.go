@@ -2,7 +2,7 @@ package email
 
 import (
 	"primedivident/internal/config/consts"
-	"primedivident/internal/decorator"
+	"primedivident/internal/decorators"
 	"primedivident/pkg/mailer"
 	"primedivident/pkg/tpl"
 )
@@ -11,7 +11,7 @@ type (
 	ConfirmData struct {
 		Email string
 	}
-	ConfirmUser decorator.Sender[ConfirmData]
+	ConfirmUser decorators.Sender[ConfirmData]
 )
 
 type confirmUser struct {

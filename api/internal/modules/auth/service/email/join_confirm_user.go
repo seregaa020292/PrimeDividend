@@ -2,7 +2,7 @@ package email
 
 import (
 	"primedivident/internal/config/consts"
-	"primedivident/internal/decorator"
+	"primedivident/internal/decorators"
 	"primedivident/pkg/mailer"
 	"primedivident/pkg/tpl"
 )
@@ -12,7 +12,7 @@ type (
 		Email string
 		Token string
 	}
-	JoinConfirmUser decorator.Sender[JoinData]
+	JoinConfirmUser decorators.Sender[JoinData]
 )
 
 type joinConfirmUser struct {

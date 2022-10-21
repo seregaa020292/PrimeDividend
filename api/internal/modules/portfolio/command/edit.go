@@ -3,7 +3,7 @@ package command
 import (
 	"github.com/google/uuid"
 
-	"primedivident/internal/decorator"
+	"primedivident/internal/decorators"
 	"primedivident/internal/modules/portfolio/dto"
 	"primedivident/internal/modules/portfolio/repository"
 	"primedivident/pkg/errs"
@@ -19,7 +19,7 @@ type (
 		CurrencyID *uuid.UUID
 		Active     *bool
 	}
-	PortfolioEdit decorator.CommandHandler[PortfolioUpdate]
+	PortfolioEdit decorators.CommandHandler[PortfolioUpdate]
 )
 
 type portfolioEdit struct {

@@ -1,7 +1,7 @@
 package command
 
 import (
-	"primedivident/internal/decorator"
+	"primedivident/internal/decorators"
 	"primedivident/internal/modules/auth/dto"
 	"primedivident/internal/modules/auth/entity"
 	"primedivident/internal/modules/auth/repository"
@@ -16,7 +16,7 @@ type (
 		Name     string
 		Password string
 	}
-	JoinByEmail decorator.CommandHandler[Credential]
+	JoinByEmail decorators.CommandHandler[Credential]
 )
 
 type joinByEmail struct {

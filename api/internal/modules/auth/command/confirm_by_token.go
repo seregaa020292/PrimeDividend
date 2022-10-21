@@ -3,7 +3,7 @@ package command
 import (
 	"github.com/google/uuid"
 
-	"primedivident/internal/decorator"
+	"primedivident/internal/decorators"
 	"primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/email"
 	"primedivident/pkg/errs"
@@ -11,7 +11,7 @@ import (
 )
 
 type (
-	ConfirmByToken decorator.CommandHandler[uuid.UUID]
+	ConfirmByToken decorators.CommandHandler[uuid.UUID]
 )
 
 type confirmByToken struct {

@@ -3,7 +3,7 @@ package command
 import (
 	"github.com/google/uuid"
 
-	"primedivident/internal/decorator"
+	"primedivident/internal/decorators"
 	"primedivident/internal/modules/portfolio/repository"
 	"primedivident/pkg/errs"
 	"primedivident/pkg/errs/errmsg"
@@ -14,7 +14,7 @@ type (
 		UserID      uuid.UUID
 		PortfolioID uuid.UUID
 	}
-	PortfolioRemove decorator.CommandHandler[PortfolioDelete]
+	PortfolioRemove decorators.CommandHandler[PortfolioDelete]
 )
 
 type portfolioRemove struct {

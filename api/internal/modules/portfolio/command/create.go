@@ -3,7 +3,7 @@ package command
 import (
 	"github.com/google/uuid"
 
-	"primedivident/internal/decorator"
+	"primedivident/internal/decorators"
 	"primedivident/internal/models/app/public/model"
 	"primedivident/internal/modules/portfolio/repository"
 	"primedivident/pkg/errs"
@@ -16,7 +16,7 @@ type (
 		UserID     uuid.UUID
 		CurrencyID uuid.UUID
 	}
-	PortfolioCreate decorator.CommandHandler[PortfolioNew]
+	PortfolioCreate decorators.CommandHandler[PortfolioNew]
 )
 
 type portfolioCreate struct {

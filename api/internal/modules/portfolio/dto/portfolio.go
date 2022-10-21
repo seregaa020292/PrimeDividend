@@ -4,11 +4,11 @@ import (
 	jet "github.com/go-jet/jet/v2/postgres"
 	"github.com/google/uuid"
 
-	"primedivident/internal/decorator"
+	"primedivident/internal/decorators"
 	"primedivident/internal/models/app/public/table"
 )
 
-type PortfolioVariadic = decorator.ColumnAssigment[any]
+type PortfolioVariadic = decorators.ColumnAssigment[any]
 
 func NewPortfolioVariadic(
 	title *string,
