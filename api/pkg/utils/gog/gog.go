@@ -31,6 +31,21 @@ func Ptr[T any](v T) *T {
 	return &v
 }
 
+// DePtr returns a dereference variable value.
+// For example:
+//
+//	foo := struct{
+//	    Bar *string
+//	}{}
+//
+//	bar := DePtr[string](foo.Bar)
+func DePtr[T any](v *T) (res T) {
+	if v != nil {
+		res = *v
+	}
+	return
+}
+
 // Must takes 2 arguments, the second being an error.
 // If err is not nil, Must panics. Else the first argument is returned.
 //

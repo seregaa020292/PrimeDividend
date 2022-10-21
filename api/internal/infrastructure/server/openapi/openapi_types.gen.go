@@ -85,6 +85,22 @@ type LoginUser struct {
 	Password string `json:"password" validate:"required,min=6"`
 }
 
+// Market defines model for market.
+type Market struct {
+	Content      *string            `json:"content,omitempty"`
+	CreatedAt    time.Time          `json:"createdAt"`
+	CurrencyId   openapi_types.UUID `json:"currencyId"`
+	Id           openapi_types.UUID `json:"id"`
+	ImageUrl     *string            `json:"imageUrl,omitempty"`
+	InstrumentId openapi_types.UUID `json:"instrumentId"`
+	Ticker       string             `json:"ticker"`
+	Title        string             `json:"title"`
+	UpdatedAt    *time.Time         `json:"updatedAt,omitempty"`
+}
+
+// Markets defines model for markets.
+type Markets = []Market
+
 // Метаданные
 type Meta struct {
 	Pagination interface{} `json:"pagination"`
@@ -170,6 +186,9 @@ type InstrumentId = openapi_types.UUID
 // Limit defines model for limit.
 type Limit = int
 
+// MarketId defines model for marketId.
+type MarketId = openapi_types.UUID
+
 // Network defines model for network.
 type Network = string
 
@@ -204,6 +223,15 @@ type LoginEmailJSONBody = LoginUser
 type ConfirmNetworkParams struct {
 	Code  Code  `form:"code" json:"code"`
 	State State `form:"state" json:"state"`
+}
+
+// GetMarketsParams defines parameters for GetMarkets.
+type GetMarketsParams struct {
+	// Размер списка
+	Limit *Limit `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Курсор страницы
+	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
 }
 
 // GetPortfoliosParams defines parameters for GetPortfolios.

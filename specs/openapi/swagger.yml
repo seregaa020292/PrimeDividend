@@ -24,9 +24,9 @@ tags:
   - name: instrument
     description: "Ценные инструменты, по классификации"
   - name: market
-    description: "Список ценных бумаг"
-  - name: register
-    description: "Связь с поставщиком котировок и ценной бумагой"
+    description: "Ценные бумаги"
+#  - name: register
+#    description: "Связь с поставщиком котировок и ценной бумагой"
   - name: portfolio
     description: "Портфель инвестора"
   - name: asset
@@ -151,6 +151,49 @@ paths:
         403:
           $ref: '#/components/responses/403'
 
+  /market:
+    get:
+      tags: [ market ]
+      operationId: getMarkets
+      summary: Получение списка ценных бумаг
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/cursor'
+      responses:
+        200:
+          description: Список ценных бумаг
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/markets'
+                  meta:
+                    $ref: '#/components/schemas/meta'
+        400:
+          $ref: '#/components/responses/400'
+
+  /market/{marketId}:
+    get:
+      tags: [ market ]
+      operationId: getMarket
+      summary: Получение ценной бумаги по ID
+      parameters:
+        - $ref: '#/components/parameters/marketId'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/market'
+        400:
+          $ref: '#/components/responses/400'
+
   /portfolio/{portfolioId}:
     get:
       tags: [ portfolio ]
@@ -248,10 +291,10 @@ paths:
     get:
       tags: [ currency ]
       operationId: getCurrencies
-      summary: Все валюты
+      summary: Получение всех валют
       responses:
         200:
-          description: ''
+          description: Список валют
           content:
             application/json:
               schema:
@@ -285,10 +328,10 @@ paths:
     get:
       tags: [ provider ]
       operationId: getProviders
-      summary: Все поставщики котировок
+      summary: Получение поставщиков котировок
       responses:
         200:
-          description: ''
+          description: Список поставщиков котировок
           content:
             application/json:
               schema:
@@ -322,10 +365,10 @@ paths:
     get:
       tags: [ instrument ]
       operationId: getInstruments
-      summary: Все инструменты
+      summary: Получение инструментов
       responses:
         200:
-          description: ''
+          description: Список инструментов
           content:
             application/json:
               schema:
@@ -363,6 +406,13 @@ components:
       bearerFormat: JWT
 
   parameters:
+    marketId:
+      in: path
+      name: marketId
+      schema:
+        type: string
+        format: uuid
+      required: true
     portfolioId:
       in: path
       name: portfolioId
@@ -545,6 +595,37 @@ components:
           type: string
           format: uuid
         currencyId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    markets:
+      type: array
+      items:
+        $ref: '#/components/schemas/market'
+    market:
+      type: object
+      required: [ id, title, ticker, currencyId, instrumentId, createdAt ]
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        ticker:
+          type: string
+        content:
+          type: string
+        imageUrl:
+          type: string
+        currencyId:
+          type: string
+          format: uuid
+        instrumentId:
           type: string
           format: uuid
         createdAt:

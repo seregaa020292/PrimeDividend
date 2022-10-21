@@ -10,7 +10,7 @@ import (
 func (h HandlerPortfolio) GetPortfolios(w http.ResponseWriter, r *http.Request, params openapi.GetPortfoliosParams) {
 	respond := h.responder.Http(w, r)
 
-	portfolio, err := h.queryPortfolioAll.Fetch(query.PortfoliosInput{
+	portfolios, err := h.queryPortfolioAll.Fetch(query.PortfoliosInput{
 		Limit:  params.Limit,
 		Cursor: params.Cursor,
 		Active: true,
@@ -20,7 +20,7 @@ func (h HandlerPortfolio) GetPortfolios(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
-	data, meta := h.presenter.GetRecordsMeta(portfolio)
+	data, meta := h.presenter.GetRecordsMeta(portfolios)
 
 	respond.Json(http.StatusOK, data, meta)
 }
