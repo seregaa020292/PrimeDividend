@@ -14,22 +14,22 @@ type (
 		UserID      uuid.UUID
 		PortfolioID uuid.UUID
 	}
-	PortfolioRemove decorators.CommandHandler[PortfolioDelete]
+	Remove decorators.CommandHandler[PortfolioDelete]
 )
 
-type portfolioRemove struct {
+type remove struct {
 	repository repository.Repository
 }
 
-func NewPortfolioRemove(
+func NewRemove(
 	repository repository.Repository,
-) PortfolioRemove {
-	return portfolioRemove{
+) Remove {
+	return remove{
 		repository: repository,
 	}
 }
 
-func (c portfolioRemove) Exec(cmd PortfolioDelete) error {
+func (c remove) Exec(cmd PortfolioDelete) error {
 	if err := c.repository.Remove(cmd.PortfolioID, cmd.UserID); err != nil {
 		return errs.BadRequest.Wrap(err, errmsg.FailedDeleteData)
 	}

@@ -13,10 +13,10 @@ import (
 var Portfolio = wire.NewSet(
 	presenter.NewPresenter,
 	repository.NewRepository,
-	query.NewPortfolioById,
-	query.NewPortfolioAll,
-	command.NewPortfolioCreate,
-	command.NewPortfolioEdit,
-	command.NewPortfolioRemove,
+	query.NewGetById,
+	query.NewGetAll,
+	command.NewCreate,
+	command.NewEdit,
+	command.NewRemove,
 	http.NewHandler,
 )

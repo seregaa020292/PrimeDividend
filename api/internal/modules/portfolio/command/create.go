@@ -16,22 +16,22 @@ type (
 		UserID     uuid.UUID
 		CurrencyID uuid.UUID
 	}
-	PortfolioCreate decorators.CommandHandler[PortfolioNew]
+	Create decorators.CommandHandler[PortfolioNew]
 )
 
-type portfolioCreate struct {
+type create struct {
 	repository repository.Repository
 }
 
-func NewPortfolioCreate(
+func NewCreate(
 	repository repository.Repository,
-) PortfolioCreate {
-	return portfolioCreate{
+) Create {
+	return create{
 		repository: repository,
 	}
 }
 
-func (c portfolioCreate) Exec(cmd PortfolioNew) error {
+func (c create) Exec(cmd PortfolioNew) error {
 	if err := c.repository.Add(model.Portfolios{
 		Title:      cmd.Title,
 		UserID:     cmd.UserID,

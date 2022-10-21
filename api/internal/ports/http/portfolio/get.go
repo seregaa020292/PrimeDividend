@@ -10,11 +10,11 @@ import (
 func (h HandlerPortfolio) GetPortfolio(w http.ResponseWriter, r *http.Request, portfolioId openapi.PortfolioId) {
 	respond := h.responder.Http(w, r)
 
-	portfolio, err := h.queryPortfolioById.Fetch(query.PortfolioId(portfolioId))
+	portfolio, err := h.queryGetById.Fetch(query.ID(portfolioId))
 	if err != nil {
 		respond.Err(err)
 		return
 	}
 
-	respond.Json(http.StatusOK, h.presenter.GetPortfolio(portfolio))
+	respond.Json(http.StatusOK, h.presenter.GetOne(portfolio))
 }

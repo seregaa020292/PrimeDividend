@@ -7,9 +7,9 @@ import (
 )
 
 type Presenter interface {
-	GetPortfolio(portfolio model.Portfolios) openapi.Portfolio
-	GetPortfolios(portfolios []model.Portfolios) openapi.Portfolios
-	GetRecordsMeta(result query.PortfoliosResult) (openapi.Portfolios, openapi.Meta)
+	GetOne(portfolio model.Portfolios) openapi.Portfolio
+	GetAll(portfolios []model.Portfolios) openapi.Portfolios
+	GetAllMeta(result query.GetAllResult) (openapi.Portfolios, openapi.Meta)
 }
 
 type present struct{}
@@ -18,21 +18,21 @@ func NewPresenter() Presenter {
 	return present{}
 }
 
-func (p present) GetPortfolio(portfolio model.Portfolios) openapi.Portfolio {
+func (p present) GetOne(item model.Portfolios) openapi.Portfolio {
 	return openapi.Portfolio{
-		Id:         portfolio.ID,
-		Title:      portfolio.Title,
-		CurrencyId: portfolio.CurrencyID,
-		UserId:     portfolio.UserID,
-		CreatedAt:  portfolio.CreatedAt,
-		UpdatedAt:  portfolio.UpdatedAt,
+		Id:         item.ID,
+		Title:      item.Title,
+		CurrencyId: item.CurrencyID,
+		UserId:     item.UserID,
+		CreatedAt:  item.CreatedAt,
+		UpdatedAt:  item.UpdatedAt,
 	}
 }
 
-func (p present) GetPortfolios(portfolios []model.Portfolios) openapi.Portfolios {
-	result := make(openapi.Portfolios, len(portfolios))
+func (p present) GetAll(items []model.Portfolios) openapi.Portfolios {
+	result := make(openapi.Portfolios, len(items))
 
-	for i, item := range portfolios {
+	for i, item := range items {
 		result[i] = openapi.Portfolio{
 			Id:         item.ID,
 			Title:      item.Title,
@@ -46,8 +46,8 @@ func (p present) GetPortfolios(portfolios []model.Portfolios) openapi.Portfolios
 	return result
 }
 
-func (p present) GetRecordsMeta(result query.PortfoliosResult) (openapi.Portfolios, openapi.Meta) {
-	return p.GetPortfolios(result.Records), openapi.Meta{
+func (p present) GetAllMeta(result query.GetAllResult) (openapi.Portfolios, openapi.Meta) {
+	return p.GetAll(result.Records), openapi.Meta{
 		Pagination: openapi.PagingCursor{
 			Count:      result.Length,
 			Limit:      result.Limit,

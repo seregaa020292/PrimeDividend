@@ -19,22 +19,22 @@ type (
 		CurrencyID *uuid.UUID
 		Active     *bool
 	}
-	PortfolioEdit decorators.CommandHandler[PortfolioUpdate]
+	Edit decorators.CommandHandler[PortfolioUpdate]
 )
 
-type portfolioEdit struct {
+type edit struct {
 	repository repository.Repository
 }
 
-func NewPortfolioEdit(
+func NewEdit(
 	repository repository.Repository,
-) PortfolioEdit {
-	return portfolioEdit{
+) Edit {
+	return edit{
 		repository: repository,
 	}
 }
 
-func (c portfolioEdit) Exec(cmd PortfolioUpdate) error {
+func (c edit) Exec(cmd PortfolioUpdate) error {
 	if err := c.repository.Update(
 		cmd.PortfolioID,
 		cmd.UserID,

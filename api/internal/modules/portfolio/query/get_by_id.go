@@ -11,23 +11,23 @@ import (
 )
 
 type (
-	PortfolioId   uuid.UUID
-	PortfolioById decorators.QueryHandler[PortfolioId, model.Portfolios]
+	ID      uuid.UUID
+	GetById decorators.QueryHandler[ID, model.Portfolios]
 )
 
-type portfolioById struct {
+type getById struct {
 	repository repository.Repository
 }
 
-func NewPortfolioById(
+func NewGetById(
 	repository repository.Repository,
-) PortfolioById {
-	return portfolioById{
+) GetById {
+	return getById{
 		repository: repository,
 	}
 }
 
-func (q portfolioById) Fetch(portfolioId PortfolioId) (model.Portfolios, error) {
+func (q getById) Fetch(portfolioId ID) (model.Portfolios, error) {
 	portfolio, err := q.repository.FindById(uuid.UUID(portfolioId))
 	if err != nil {
 		return model.Portfolios{}, errs.NotFound.Wrap(err, errmsg.CouldNotBeFound)

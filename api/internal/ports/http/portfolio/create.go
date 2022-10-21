@@ -24,7 +24,7 @@ func (h HandlerPortfolio) CreatePortfolio(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if err := h.cmdPortfolioCreate.Exec(command.PortfolioNew{
+	if err := h.cmdCreate.Exec(command.PortfolioNew{
 		Title:      portfolio.Title,
 		UserID:     user.ID,
 		CurrencyID: portfolio.CurrencyId,

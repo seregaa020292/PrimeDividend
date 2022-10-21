@@ -24,7 +24,7 @@ func (h HandlerPortfolio) UpdatePortfolio(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if err := h.cmdPortfolioEdit.Exec(command.PortfolioUpdate{
+	if err := h.cmdEdit.Exec(command.PortfolioUpdate{
 		UserID:      user.ID,
 		PortfolioID: portfolioId,
 		Title:       portfolio.Title,

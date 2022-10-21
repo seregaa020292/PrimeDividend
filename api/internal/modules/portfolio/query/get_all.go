@@ -10,38 +10,38 @@ import (
 )
 
 type (
-	PortfoliosInput struct {
+	FilterGetAll struct {
 		Limit  *int
 		Cursor *string
 		Active bool
 	}
-	PortfoliosResult = cursor.PaginateResult[model.Portfolios]
-	PortfolioAll     decorators.QueryHandler[PortfoliosInput, PortfoliosResult]
+	GetAllResult = cursor.PaginateResult[model.Portfolios]
+	GetAll       decorators.QueryHandler[FilterGetAll, GetAllResult]
 )
 
-type portfolioAll struct {
+type getAll struct {
 	repository repository.Repository
 }
 
-func NewPortfolioAll(
+func NewGetAll(
 	repository repository.Repository,
-) PortfolioAll {
-	return portfolioAll{
+) GetAll {
+	return getAll{
 		repository: repository,
 	}
 }
 
-func (q portfolioAll) Fetch(filter PortfoliosInput) (PortfoliosResult, error) {
+func (q getAll) Fetch(filter FilterGetAll) (GetAllResult, error) {
 	paginateInput, err := cursor.NewPaginateInput(filter.Limit, filter.Cursor)
 	if err != nil {
-		return PortfoliosResult{}, errs.BadRequest.Wrap(err, errmsg.UnknownError)
+		return GetAllResult{}, errs.BadRequest.Wrap(err, errmsg.UnknownError)
 	}
 
 	portfolios, err := q.repository.GetAll(paginateInput, model.Portfolios{
 		Active: filter.Active,
 	})
 	if err != nil {
-		return PortfoliosResult{}, errs.NotFound.Wrap(err, errmsg.FailedGetData)
+		return GetAllResult{}, errs.NotFound.Wrap(err, errmsg.FailedGetData)
 	}
 
 	return cursor.NewPaginateResult(portfolios, paginateInput), nil

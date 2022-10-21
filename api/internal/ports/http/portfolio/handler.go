@@ -8,31 +8,31 @@ import (
 )
 
 type HandlerPortfolio struct {
-	responder          response.Responder
-	presenter          portfolio.Presenter
-	queryPortfolioById query.PortfolioById
-	queryPortfolioAll  query.PortfolioAll
-	cmdPortfolioCreate command.PortfolioCreate
-	cmdPortfolioEdit   command.PortfolioEdit
-	cmdPortfolioRemove command.PortfolioRemove
+	responder    response.Responder
+	presenter    portfolio.Presenter
+	queryGetById query.GetById
+	queryGetAll  query.GetAll
+	cmdCreate    command.Create
+	cmdEdit      command.Edit
+	cmdRemove    command.Remove
 }
 
 func NewHandler(
 	responder response.Responder,
 	presenter portfolio.Presenter,
-	queryPortfolioById query.PortfolioById,
-	queryPortfolioAll query.PortfolioAll,
-	cmdPortfolioCreate command.PortfolioCreate,
-	cmdPortfolioEdit command.PortfolioEdit,
-	cmdPortfolioRemove command.PortfolioRemove,
+	queryGetById query.GetById,
+	queryGetAll query.GetAll,
+	cmdCreate command.Create,
+	cmdEdit command.Edit,
+	cmdRemove command.Remove,
 ) HandlerPortfolio {
 	return HandlerPortfolio{
-		responder:          responder,
-		presenter:          presenter,
-		queryPortfolioById: queryPortfolioById,
-		queryPortfolioAll:  queryPortfolioAll,
-		cmdPortfolioCreate: cmdPortfolioCreate,
-		cmdPortfolioEdit:   cmdPortfolioEdit,
-		cmdPortfolioRemove: cmdPortfolioRemove,
+		responder:    responder,
+		presenter:    presenter,
+		queryGetById: queryGetById,
+		queryGetAll:  queryGetAll,
+		cmdCreate:    cmdCreate,
+		cmdEdit:      cmdEdit,
+		cmdRemove:    cmdRemove,
 	}
 }

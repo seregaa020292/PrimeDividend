@@ -17,7 +17,7 @@ func (h HandlerPortfolio) RemovePortfolio(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if err := h.cmdPortfolioRemove.Exec(command.PortfolioDelete{
+	if err := h.cmdRemove.Exec(command.PortfolioDelete{
 		UserID:      user.ID,
 		PortfolioID: portfolioId,
 	}); err != nil {
