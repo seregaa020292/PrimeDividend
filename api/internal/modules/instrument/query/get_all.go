@@ -9,23 +9,23 @@ import (
 )
 
 type (
-	FilterOrderInstruments struct{}
-	InstrumentAll          decorators.QueryHandler[FilterOrderInstruments, []model.Instruments]
+	FilterGetAll struct{}
+	GetAll       decorators.QueryHandler[FilterGetAll, []model.Instruments]
 )
 
-type instrumentAll struct {
+type getAll struct {
 	repository repository.Repository
 }
 
-func NewInstrumentAll(
+func NewGetAll(
 	repository repository.Repository,
-) InstrumentAll {
-	return instrumentAll{
+) GetAll {
+	return getAll{
 		repository: repository,
 	}
 }
 
-func (q instrumentAll) Fetch(_ FilterOrderInstruments) ([]model.Instruments, error) {
+func (q getAll) Fetch(_ FilterGetAll) ([]model.Instruments, error) {
 	instruments, err := q.repository.GetAll()
 	if err != nil {
 		return nil, errs.NotFound.Wrap(err, errmsg.FailedGetData)

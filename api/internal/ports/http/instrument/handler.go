@@ -7,19 +7,22 @@ import (
 )
 
 type HandlerInstrument struct {
-	responder          response.Responder
-	presenter          instrument.Presenter
-	queryInstrumentAll query.InstrumentAll
+	responder    response.Responder
+	presenter    instrument.Presenter
+	queryGetById query.GetById
+	queryGetAll  query.GetAll
 }
 
 func NewHandler(
 	responder response.Responder,
 	presenter instrument.Presenter,
-	queryInstrumentAll query.InstrumentAll,
+	queryGetById query.GetById,
+	queryGetAll query.GetAll,
 ) HandlerInstrument {
 	return HandlerInstrument{
-		responder:          responder,
-		presenter:          presenter,
-		queryInstrumentAll: queryInstrumentAll,
+		responder:    responder,
+		presenter:    presenter,
+		queryGetById: queryGetById,
+		queryGetAll:  queryGetAll,
 	}
 }

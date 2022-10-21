@@ -14,7 +14,7 @@ import (
 type Repository interface {
 	FindById(id uuid.UUID) (model.Portfolios, error)
 	FindByUserId(userID uuid.UUID) ([]model.Portfolios, error)
-	Count() (int, error)
+	Count(query model.Portfolios) (int, error)
 	GetAll(input cursor.PaginateInput, query model.Portfolios) ([]model.Portfolios, error)
 	Add(portfolio model.Portfolios) error
 	Update(id, userID uuid.UUID, update dto.PortfolioVariadic) error
@@ -59,7 +59,7 @@ func (r repository) FindByUserId(userID uuid.UUID) ([]model.Portfolios, error) {
 	return portfolios, err
 }
 
-func (r repository) Count() (int, error) {
+func (r repository) Count(query model.Portfolios) (int, error) {
 	var dest struct {
 		Count int
 	}

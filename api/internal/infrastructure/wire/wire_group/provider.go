@@ -3,9 +3,16 @@ package wire_group
 import (
 	"github.com/google/wire"
 
-	"primedivident/internal/ports/http/provider"
+	"primedivident/internal/modules/provider/query"
+	"primedivident/internal/modules/provider/repository"
+	http "primedivident/internal/ports/http/provider"
+	presenter "primedivident/internal/presenters/provider"
 )
 
 var Provider = wire.NewSet(
-	provider.NewHandler,
+	presenter.NewPresenter,
+	repository.NewRepository,
+	query.NewGetById,
+	query.NewGetAll,
+	http.NewHandler,
 )

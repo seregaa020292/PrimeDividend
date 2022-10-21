@@ -1,4 +1,4 @@
-package instrument
+package currency
 
 import (
 	"primedivident/internal/infrastructure/server/openapi"
@@ -6,8 +6,8 @@ import (
 )
 
 type Presenter interface {
-	GetOne(item model.Instruments) openapi.Instrument
-	GetAll(items []model.Instruments) openapi.Instruments
+	GetOne(item model.Currencies) openapi.Currency
+	GetAll(items []model.Currencies) openapi.Currencies
 }
 
 type present struct{}
@@ -16,8 +16,8 @@ func NewPresenter() Presenter {
 	return present{}
 }
 
-func (p present) GetOne(item model.Instruments) openapi.Instrument {
-	return openapi.Instrument{
+func (p present) GetOne(item model.Currencies) openapi.Currency {
+	return openapi.Currency{
 		Id:          item.ID,
 		Title:       item.Title,
 		Description: item.Description,
@@ -26,8 +26,8 @@ func (p present) GetOne(item model.Instruments) openapi.Instrument {
 	}
 }
 
-func (p present) GetAll(items []model.Instruments) openapi.Instruments {
-	result := make(openapi.Instruments, len(items))
+func (p present) GetAll(items []model.Currencies) openapi.Currencies {
+	result := make(openapi.Currencies, len(items))
 
 	for i, item := range items {
 		result[i] = p.GetOne(item)

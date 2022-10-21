@@ -12,6 +12,7 @@ import (
 var Instrument = wire.NewSet(
 	presenter.NewPresenter,
 	repository.NewRepository,
-	query.NewInstrumentAll,
+	query.NewGetById,
+	query.NewGetAll,
 	http.NewHandler,
 )

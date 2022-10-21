@@ -8,7 +8,7 @@ package wire
 
 import (
 	"primedivident/internal/config"
-	handlers2 "primedivident/internal/handlers"
+	"primedivident/internal/handlers"
 	"primedivident/internal/infrastructure/server"
 	"primedivident/internal/infrastructure/server/response"
 	"primedivident/internal/infrastructure/server/routes"
@@ -19,23 +19,29 @@ import (
 	"primedivident/internal/modules/auth/service/email"
 	"primedivident/internal/modules/auth/service/strategy"
 	"primedivident/internal/modules/auth/service/strategy/repository"
-	"primedivident/internal/modules/instrument/query"
-	repository3 "primedivident/internal/modules/instrument/repository"
+	"primedivident/internal/modules/currency/query"
+	repository3 "primedivident/internal/modules/currency/repository"
+	query2 "primedivident/internal/modules/instrument/query"
+	repository4 "primedivident/internal/modules/instrument/repository"
 	command2 "primedivident/internal/modules/portfolio/command"
-	query2 "primedivident/internal/modules/portfolio/query"
-	repository4 "primedivident/internal/modules/portfolio/repository"
+	query3 "primedivident/internal/modules/portfolio/query"
+	repository5 "primedivident/internal/modules/portfolio/repository"
+	query4 "primedivident/internal/modules/provider/query"
+	repository6 "primedivident/internal/modules/provider/repository"
 	"primedivident/internal/ports/http/asset"
 	"primedivident/internal/ports/http/auth"
-	"primedivident/internal/ports/http/currency"
+	currency2 "primedivident/internal/ports/http/currency"
 	instrument2 "primedivident/internal/ports/http/instrument"
 	"primedivident/internal/ports/http/market"
 	portfolio2 "primedivident/internal/ports/http/portfolio"
-	"primedivident/internal/ports/http/provider"
+	provider2 "primedivident/internal/ports/http/provider"
 	"primedivident/internal/ports/http/register"
 	"primedivident/internal/ports/http/user"
 	market2 "primedivident/internal/ports/ws/market"
+	"primedivident/internal/presenters/currency"
 	"primedivident/internal/presenters/instrument"
 	"primedivident/internal/presenters/portfolio"
+	"primedivident/internal/presenters/provider"
 	"primedivident/pkg/validator"
 )
 
@@ -50,37 +56,46 @@ func Initialize(cfg config.Config) server.Server {
 	logger := ProvideLogger(cfg)
 	validatorValidator := validator.GetValidator()
 	responder := response.NewRespond(logger, validatorValidator)
-	repository5 := repository2.NewRepository(postgres)
+	repository7 := repository2.NewRepository(postgres)
 	sender := ProvideMailerObserver(cfg, logger)
 	templater := ProvideTemplate(cfg)
 	joinConfirmUser := email.NewJoinConfirmUser(sender, templater)
-	joinByEmail := command.NewJoinByEmail(repository5, joinConfirmUser)
+	joinByEmail := command.NewJoinByEmail(repository7, joinConfirmUser)
 	confirmUser := email.NewConfirmUser(sender, templater)
-	confirmByToken := command.NewConfirmByToken(repository5, confirmUser)
+	confirmByToken := command.NewConfirmByToken(repository7, confirmUser)
 	handlerAuth := auth.NewHandler(responder, strategyStrategy, joinByEmail, confirmByToken)
 	handlerAsset := asset.NewHandler()
-	handlerCurrency := currency.NewHandler(responder)
-	presenter := instrument.NewPresenter()
-	repository6 := repository3.NewRepository(postgres)
-	instrumentAll := query.NewInstrumentAll(repository6)
-	handlerInstrument := instrument2.NewHandler(responder, presenter, instrumentAll)
+	presenter := currency.NewPresenter()
+	repository8 := repository3.NewRepository(postgres)
+	getById := query.NewGetById(repository8)
+	getAll := query.NewGetAll(repository8)
+	handlerCurrency := currency2.NewHandler(responder, presenter, getById, getAll)
+	instrumentPresenter := instrument.NewPresenter()
+	repository9 := repository4.NewRepository(postgres)
+	queryGetById := query2.NewGetById(repository9)
+	queryGetAll := query2.NewGetAll(repository9)
+	handlerInstrument := instrument2.NewHandler(responder, instrumentPresenter, queryGetById, queryGetAll)
 	handlerMarket := market.NewHandler()
 	portfolioPresenter := portfolio.NewPresenter()
-	repository7 := repository4.NewRepository(postgres)
-	portfolioById := query2.NewPortfolioById(repository7)
-	portfolioAll := query2.NewPortfolioAll(repository7)
-	portfolioCreate := command2.NewPortfolioCreate(repository7)
-	portfolioEdit := command2.NewPortfolioEdit(repository7)
-	portfolioRemove := command2.NewPortfolioRemove(repository7)
+	repository10 := repository5.NewRepository(postgres)
+	portfolioById := query3.NewPortfolioById(repository10)
+	portfolioAll := query3.NewPortfolioAll(repository10)
+	portfolioCreate := command2.NewPortfolioCreate(repository10)
+	portfolioEdit := command2.NewPortfolioEdit(repository10)
+	portfolioRemove := command2.NewPortfolioRemove(repository10)
 	handlerPortfolio := portfolio2.NewHandler(responder, portfolioPresenter, portfolioById, portfolioAll, portfolioCreate, portfolioEdit, portfolioRemove)
-	handlerProvider := provider.NewHandler(responder)
+	providerPresenter := provider.NewPresenter()
+	repository11 := repository6.NewRepository(postgres)
+	getById2 := query4.NewGetById(repository11)
+	getAll2 := query4.NewGetAll(repository11)
+	handlerProvider := provider2.NewHandler(responder, providerPresenter, getById2, getAll2)
 	handlerRegister := register.NewHandler()
 	handlerUser := user.NewHandler()
-	httpHandlers := handlers2.NewHttpHandlers(handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
+	httpHandlers := handlers.NewHttpHandlers(handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
 	upgrader := socket.NewUpgrader()
 	quotes := wire_group.ProvideQuotes(cfg)
 	marketHandlerMarket := market2.NewHandlerMarket(responder, upgrader, quotes)
-	wsHandlers := handlers2.NewWsHandlers(marketHandlerMarket)
+	wsHandlers := handlers.NewWsHandlers(marketHandlerMarket)
 	routesRoutes := routes.NewRoutes(strategyStrategy, httpHandlers, wsHandlers)
 	serverServer := server.NewServer(routesRoutes)
 	return serverServer
