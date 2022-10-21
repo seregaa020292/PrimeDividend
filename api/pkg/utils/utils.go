@@ -17,28 +17,61 @@ import (
 	"time"
 )
 
-func Panic(err error) {
-	if err != nil {
-		panic(err)
+func OpenOrCreateFile(fileName string) (*os.File, error) {
+	if err := os.MkdirAll(path.Dir(fileName), os.ModePerm); err != nil {
+		return nil, err
+	}
+
+	return os.OpenFile(fileName, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0644)
+}
+
+func GenCookie(key string, value string, opts *http.Cookie) *http.Cookie {
+	if opts == nil {
+		opts = &http.Cookie{}
+	}
+
+	if opts.Path == "" {
+		opts.Path = "/"
+	}
+	if opts.SameSite == http.SameSiteDefaultMode || opts.SameSite == 0 {
+		opts.SameSite = http.SameSiteNoneMode
+	}
+
+	return &http.Cookie{
+		Name:     key,
+		Value:    value,
+		Domain:   opts.Domain,
+		HttpOnly: opts.HttpOnly,
+		Expires:  opts.Expires,
+		MaxAge:   opts.MaxAge,
+		Path:     opts.Path,
+		SameSite: opts.SameSite,
+		Secure:   opts.Secure,
 	}
 }
 
-func Fatalln(err error) {
-	if err != nil {
-		log.Fatalln(err)
+func GenerateRandomBytes(n int) ([]byte, error) {
+	b := make([]byte, n)
+	if _, err := rand.Read(b); err != nil {
+		return nil, err
 	}
+
+	return b, nil
 }
 
-func Println(err error) {
-	if err != nil {
-		log.Println(err)
-	}
+func GenerateRandomString(n int) (string, error) {
+	b, err := GenerateRandomBytes(n)
+	return base64.URLEncoding.EncodeToString(b), err
 }
 
-func PrintlnFn(fn func() error) {
-	if err := fn(); err != nil {
-		log.Println(err)
+func RandomString(n int) string {
+	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+	s := make([]rune, n)
+	for i := range s {
+		s[i] = letters[mathRand.Intn(len(letters))]
 	}
+	return string(s)
 }
 
 func DownloadFile(filepath string, url string) error {
@@ -114,68 +147,5 @@ func WaitForService(host string) {
 		}
 
 		time.Sleep(time.Millisecond * 500)
-	}
-}
-
-func OpenOrCreateFile(fileName string) (*os.File, error) {
-	if err := os.MkdirAll(path.Dir(fileName), os.ModePerm); err != nil {
-		return nil, err
-	}
-
-	return os.OpenFile(fileName, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0644)
-}
-
-func GenCookie(key string, value string, opts *http.Cookie) *http.Cookie {
-	if opts == nil {
-		opts = &http.Cookie{}
-	}
-
-	if opts.Path == "" {
-		opts.Path = "/"
-	}
-	if opts.SameSite == http.SameSiteDefaultMode || opts.SameSite == 0 {
-		opts.SameSite = http.SameSiteNoneMode
-	}
-
-	return &http.Cookie{
-		Name:     key,
-		Value:    value,
-		Domain:   opts.Domain,
-		HttpOnly: opts.HttpOnly,
-		Expires:  opts.Expires,
-		MaxAge:   opts.MaxAge,
-		Path:     opts.Path,
-		SameSite: opts.SameSite,
-		Secure:   opts.Secure,
-	}
-}
-
-func GenerateRandomBytes(n int) ([]byte, error) {
-	b := make([]byte, n)
-	if _, err := rand.Read(b); err != nil {
-		return nil, err
-	}
-
-	return b, nil
-}
-
-func GenerateRandomString(n int) (string, error) {
-	b, err := GenerateRandomBytes(n)
-	return base64.URLEncoding.EncodeToString(b), err
-}
-
-func RandomString(n int) string {
-	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-
-	s := make([]rune, n)
-	for i := range s {
-		s[i] = letters[mathRand.Intn(len(letters))]
-	}
-	return string(s)
-}
-
-func Reverse[S ~[]E, E any](slice S) {
-	for i, j := 0, len(slice)-1; i < j; i, j = i+1, j-1 {
-		slice[i], slice[j] = slice[j], slice[i]
 	}
 }

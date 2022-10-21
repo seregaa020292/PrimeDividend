@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/websocket"
 
 	"primedivident/internal/modules/auth/entity"
-	"primedivident/pkg/utils"
+	"primedivident/pkg/utils/errlog"
 )
 
 const (
@@ -62,18 +62,18 @@ func (c Client) Write() {
 
 	defer func() {
 		ticker.Stop()
-		utils.PrintlnFn(c.Conn.Close)
+		errlog.FnPrintln(c.Conn.Close)
 	}()
 
 	for {
 		select {
 		case message, ok := <-c.Message:
 			if !ok {
-				utils.Println(c.Conn.WriteMessage(websocket.CloseMessage, []byte{}))
+				errlog.Println(c.Conn.WriteMessage(websocket.CloseMessage, []byte{}))
 				return
 			}
 
-			utils.Println(c.Conn.WriteMessage(websocket.TextMessage, message))
+			errlog.Println(c.Conn.WriteMessage(websocket.TextMessage, message))
 		case <-ticker.C:
 			if err := c.Conn.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
 				return
@@ -94,7 +94,7 @@ func (c Client) Send(message Message) {
 
 func (c Client) Close() {
 	close(c.Message)
-	utils.Println(c.Conn.Close())
+	errlog.Println(c.Conn.Close())
 }
 
 func (c Client) leave() {
@@ -105,5 +105,5 @@ func (c Client) handleMessage(message Message) {
 }
 
 func (c Client) setReadDeadline() {
-	utils.Println(c.Conn.SetReadDeadline(time.Now().Add(pongWait)))
+	errlog.Println(c.Conn.SetReadDeadline(time.Now().Add(pongWait)))
 }

@@ -8,6 +8,7 @@ import (
 
 	"primedivident/internal/config"
 	"primedivident/pkg/utils"
+	"primedivident/pkg/utils/errlog"
 )
 
 type Tinkoff struct {
@@ -51,7 +52,7 @@ func (t Tinkoff) Unsubscribe(identity string) error {
 }
 
 func (t Tinkoff) Close() {
-	utils.Println(t.client.Close())
+	errlog.Println(t.client.Close())
 }
 
 func (t Tinkoff) readLoop(event any) error {

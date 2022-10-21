@@ -6,7 +6,6 @@ import (
 
 	"github.com/google/uuid"
 
-	"primedivident/pkg/utils"
 	"primedivident/pkg/utils/gog"
 )
 
@@ -39,7 +38,7 @@ func NewPaginateResult[T any](records []T, input PaginateInput) PaginateResult[T
 	result.cutRecords()
 
 	if input.Cursor.HasAndPrev() {
-		utils.Reverse(result.Records)
+		gog.Reverse(result.Records)
 
 		result.setCursorNext()
 

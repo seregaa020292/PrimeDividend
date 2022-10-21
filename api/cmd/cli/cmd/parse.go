@@ -14,7 +14,7 @@ import (
 	registerRepo "primedivident/internal/modules/register/repository"
 	"primedivident/internal/services/parser"
 	"primedivident/pkg/db/postgres"
-	"primedivident/pkg/utils"
+	"primedivident/pkg/utils/errlog"
 )
 
 var parseCmd = &cobra.Command{
@@ -36,7 +36,7 @@ func init() {
 		instruments[0],
 		fmt.Sprintf("%s, all", strings.Join(instruments, ", ")),
 	)
-	utils.Fatalln(parseCmd.MarkFlagRequired("instrument"))
+	errlog.Fatalln(parseCmd.MarkFlagRequired("instrument"))
 }
 
 func parseCommand(cmd *cobra.Command, args []string) {
@@ -51,7 +51,7 @@ func parseCommand(cmd *cobra.Command, args []string) {
 		registerRepo.NewRepository(db),
 	)
 
-	utils.Fatalln(parserService.Select())
+	errlog.Fatalln(parserService.Select())
 
 	if instrument == "all" {
 		var wg sync.WaitGroup
@@ -61,7 +61,7 @@ func parseCommand(cmd *cobra.Command, args []string) {
 		for _, i := range instruments {
 			go func(instrument string) {
 				defer wg.Done()
-				utils.Fatalln(parserService.Execute(instrument))
+				errlog.Fatalln(parserService.Execute(instrument))
 			}(i)
 		}
 
@@ -70,5 +70,5 @@ func parseCommand(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	utils.Fatalln(parserService.Execute(instrument))
+	errlog.Fatalln(parserService.Execute(instrument))
 }

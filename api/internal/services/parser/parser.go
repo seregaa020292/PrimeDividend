@@ -3,6 +3,7 @@ package parser
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -16,7 +17,7 @@ import (
 	"primedivident/internal/modules/market/service/quotes"
 	providerRepo "primedivident/internal/modules/provider/repository"
 	registerRepo "primedivident/internal/modules/register/repository"
-	"primedivident/pkg/utils"
+	"primedivident/pkg/utils/errlog"
 )
 
 type Parser struct {
@@ -102,6 +103,9 @@ func (p *Parser) Select() error {
 func (p *Parser) Execute(instrument string) error {
 	var responseStock responseStock
 
+	log.Printf("start parse %s...", instrument)
+	defer log.Printf("end parse %s", instrument)
+
 	if err := p.httpRequest(&responseStock, instrument); err != nil {
 		return err
 	}
@@ -154,7 +158,7 @@ func (p *Parser) httpRequest(body any, entity string) error {
 		return err
 	}
 
-	defer utils.PrintlnFn(response.Body.Close)
+	defer errlog.FnPrintln(response.Body.Close)
 
 	if response.StatusCode != http.StatusOK {
 		return fmt.Errorf("error response: %s", response.Status)
