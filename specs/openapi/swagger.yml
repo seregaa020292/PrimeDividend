@@ -490,6 +490,7 @@ components:
     network:
       in: path
       name: network
+      example: vk, ok, yandex
       schema:
         type: string
       required: true
