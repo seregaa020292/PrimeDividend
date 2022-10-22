@@ -18,6 +18,10 @@ tags:
     description: "Аутентификация и авторизация"
   - name: user
     description: "Инвестор"
+  - name: portfolio
+    description: "Портфель инвестора"
+  - name: asset
+    description: "Активы инвестора"
   - name: currency
     description: "Валюта"
   - name: provider
@@ -28,10 +32,6 @@ tags:
     description: "Ценные бумаги"
 #  - name: register
 #    description: "Связь с поставщиком котировок и ценной бумагой"
-  - name: portfolio
-    description: "Портфель инвестора"
-  - name: asset
-    description: "Активы инвестора"
 
 paths:
   /auth/email:
@@ -219,69 +219,6 @@ paths:
         400:
           $ref: '#/components/responses/400'
 
-  /market:
-    get:
-      tags: [ market ]
-      operationId: getMarkets
-      summary: Получение списка ценных бумаг
-      parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/cursor'
-      responses:
-        200:
-          description: Список ценных бумаг
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/markets'
-                  meta:
-                    $ref: '#/components/schemas/meta'
-        400:
-          $ref: '#/components/responses/400'
-
-  /market/{marketId}:
-    get:
-      tags: [ market ]
-      operationId: getMarket
-      summary: Получение ценной бумаги по ID
-      parameters:
-        - $ref: '#/components/parameters/marketId'
-      responses:
-        200:
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/market'
-        400:
-          $ref: '#/components/responses/400'
-
-  /market/{ticker}:
-    get:
-      tags: [ market ]
-      operationId: getMarketByTicker
-      summary: Получение ценной бумаги по тикеру
-      parameters:
-        - $ref: '#/components/parameters/ticker'
-      responses:
-        200:
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    $ref: '#/components/schemas/market'
-        400:
-          $ref: '#/components/responses/400'
-
   /portfolio/{portfolioId}:
     get:
       tags: [ portfolio ]
@@ -371,6 +308,69 @@ paths:
       responses:
         204:
           $ref: '#/components/responses/204'
+        400:
+          $ref: '#/components/responses/400'
+
+  /market:
+    get:
+      tags: [ market ]
+      operationId: getMarkets
+      summary: Получение списка ценных бумаг
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/cursor'
+      responses:
+        200:
+          description: Список ценных бумаг
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/markets'
+                  meta:
+                    $ref: '#/components/schemas/meta'
+        400:
+          $ref: '#/components/responses/400'
+
+  /market/{marketId}:
+    get:
+      tags: [ market ]
+      operationId: getMarket
+      summary: Получение ценной бумаги по ID
+      parameters:
+        - $ref: '#/components/parameters/marketId'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/market'
+        400:
+          $ref: '#/components/responses/400'
+
+  /market/{ticker}:
+    get:
+      tags: [ market ]
+      operationId: getMarketByTicker
+      summary: Получение ценной бумаги по тикеру
+      parameters:
+        - $ref: '#/components/parameters/ticker'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/market'
         400:
           $ref: '#/components/responses/400'
 
@@ -500,6 +500,13 @@ components:
         type: string
         format: uuid
       required: true
+    portfolioId:
+      in: path
+      name: portfolioId
+      schema:
+        type: string
+        format: uuid
+      required: true
     marketId:
       in: path
       name: marketId
@@ -512,13 +519,6 @@ components:
       name: ticker
       schema:
         type: string
-      required: true
-    portfolioId:
-      in: path
-      name: portfolioId
-      schema:
-        type: string
-        format: uuid
       required: true
     currencyId:
       in: path
@@ -679,6 +679,7 @@ components:
           format: uuid
           x-oapi-codegen-extra-tags:
             validate: required
+
     userUpdate:
       type: object
       properties:
@@ -740,6 +741,34 @@ components:
         updatedAt:
           type: string
           format: date-time
+    portfolioAdd:
+      type: object
+      required: [ title, currencyId ]
+      properties:
+        title:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: required
+        currencyId:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: required,uuid
+    portfolioUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: omitempty,required
+        active:
+          type: boolean
+        currencyId:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: omitempty,required,uuid
+
     markets:
       type: array
       items:
@@ -771,33 +800,11 @@ components:
         updatedAt:
           type: string
           format: date-time
-    portfolioAdd:
-      type: object
-      required: [ title, currencyId ]
-      properties:
-        title:
-          type: string
-          x-oapi-codegen-extra-tags:
-            validate: required
-        currencyId:
-          type: string
-          format: uuid
-          x-oapi-codegen-extra-tags:
-            validate: required,uuid
-    portfolioUpdate:
-      type: object
-      properties:
-        title:
-          type: string
-          x-oapi-codegen-extra-tags:
-            validate: omitempty,required
-        active:
-          type: boolean
-        currencyId:
-          type: string
-          format: uuid
-          x-oapi-codegen-extra-tags:
-            validate: omitempty,required,uuid
+
+    currencies:
+      type: array
+      items:
+        $ref: '#/components/schemas/currency'
     currency:
       type: object
       required: [ id, title, description, currencyId, createdAt ]
@@ -815,6 +822,11 @@ components:
         updatedAt:
           type: string
           format: date-time
+
+    providers:
+      type: array
+      items:
+        $ref: '#/components/schemas/provider'
     provider:
       type: object
       required: [ id, title, description, currencyId, createdAt ]
@@ -833,14 +845,7 @@ components:
         updatedAt:
           type: string
           format: date-time
-    currencies:
-      type: array
-      items:
-        $ref: '#/components/schemas/currency'
-    providers:
-      type: array
-      items:
-        $ref: '#/components/schemas/provider'
+
     instruments:
       type: array
       items:
