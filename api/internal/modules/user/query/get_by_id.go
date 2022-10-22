@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 
 	"primedivident/internal/decorators"
+	"primedivident/internal/models"
 	"primedivident/internal/models/app/public/model"
 	"primedivident/internal/modules/user/repository"
 	"primedivident/pkg/errs"
@@ -28,7 +29,7 @@ func NewGetById(
 }
 
 func (q getById) Fetch(id ID) (model.Users, error) {
-	user, err := q.repository.FindById(id)
+	user, err := q.repository.FindById(id, models.ActiveStatus)
 	if err != nil {
 		return model.Users{}, errs.NotFound.Wrap(err, errmsg.CouldNotBeFound)
 	}

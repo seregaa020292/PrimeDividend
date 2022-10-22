@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
+	"primedivident/internal/models"
 	"primedivident/pkg/utils/hash"
 )
 
@@ -14,7 +15,7 @@ type User struct {
 	Email    string
 	PassHash *string
 	Role     Role
-	Status   Status
+	Status   models.Status
 	Token    Token
 }
 
@@ -35,7 +36,7 @@ func NewUser(email, name, password string) (User, error) {
 		Name:     name,
 		PassHash: &pass,
 		Role:     UserRole,
-		Status:   WaitStatus,
+		Status:   models.WaitStatus,
 		Token:    NewTokenTTL(),
 	}, nil
 }
@@ -46,7 +47,7 @@ func NewUserNetwork(email, name string) User {
 		Email:  email,
 		Name:   name,
 		Role:   UserRole,
-		Status: ActiveStatus,
+		Status: models.ActiveStatus,
 	}
 }
 

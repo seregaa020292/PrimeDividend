@@ -8,14 +8,14 @@ import (
 	"primedivident/internal/models/app/public/table"
 )
 
-type PortfolioVariadic = decorators.ColumnAssigment[any]
+type UpdateVariadic = decorators.ColumnAssigment[any]
 
-func NewPortfolioVariadic(
+func NewUpdateVariadic(
 	title *string,
 	currencyID *uuid.UUID,
 	active *bool,
-) PortfolioVariadic {
-	columns := make(PortfolioVariadic, 0)
+) UpdateVariadic {
+	columns := make(UpdateVariadic, 0)
 
 	if title != nil {
 		columns = append(columns, table.Portfolios.Title.SET(jet.String(*title)))

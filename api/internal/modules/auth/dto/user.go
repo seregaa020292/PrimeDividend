@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"primedivident/internal/models"
 	"primedivident/internal/models/app/public/model"
 	"primedivident/internal/modules/auth/entity"
 )
@@ -12,7 +13,7 @@ func EntityUserByModel(user model.Users) entity.User {
 		Email:    user.Email,
 		PassHash: user.Password,
 		Role:     entity.Role(user.Role),
-		Status:   entity.Status(user.Status),
+		Status:   models.Status(user.Status),
 		Token: entity.Token{
 			Value:   user.TokenJoinValue,
 			Expires: user.TokenJoinExpires,

@@ -183,6 +183,12 @@ type User struct {
 	UpdatedAt *time.Time         `json:"updatedAt,omitempty"`
 }
 
+// UserUpdate defines model for userUpdate.
+type UserUpdate struct {
+	Email *string `json:"email,omitempty" validate:"omitempty,required,email"`
+	Name  *string `json:"name,omitempty" validate:"omitempty,required"`
+}
+
 // Code defines model for code.
 type Code = string
 
@@ -215,6 +221,9 @@ type State = string
 
 // Ticker defines model for ticker.
 type Ticker = string
+
+// UserId defines model for userId.
+type UserId = openapi_types.UUID
 
 // N400 defines model for 400.
 type N400 = Error
@@ -264,6 +273,9 @@ type CreatePortfolioJSONBody = PortfolioAdd
 // UpdatePortfolioJSONBody defines parameters for UpdatePortfolio.
 type UpdatePortfolioJSONBody = PortfolioUpdate
 
+// UpdateUserJSONBody defines parameters for UpdateUser.
+type UpdateUserJSONBody = UserUpdate
+
 // JoinEmailJSONRequestBody defines body for JoinEmail for application/json ContentType.
 type JoinEmailJSONRequestBody = JoinEmailJSONBody
 
@@ -278,3 +290,6 @@ type CreatePortfolioJSONRequestBody = CreatePortfolioJSONBody
 
 // UpdatePortfolioJSONRequestBody defines body for UpdatePortfolio for application/json ContentType.
 type UpdatePortfolioJSONRequestBody = UpdatePortfolioJSONBody
+
+// UpdateUserJSONRequestBody defines body for UpdateUser for application/json ContentType.
+type UpdateUserJSONRequestBody = UpdateUserJSONBody

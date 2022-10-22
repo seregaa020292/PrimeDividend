@@ -38,7 +38,7 @@ func (c edit) Exec(cmd PortfolioUpdate) error {
 	if err := c.repository.Update(
 		cmd.PortfolioID,
 		cmd.UserID,
-		dto.NewPortfolioVariadic(
+		dto.NewUpdateVariadic(
 			cmd.Title,
 			cmd.CurrencyID,
 			cmd.Active,

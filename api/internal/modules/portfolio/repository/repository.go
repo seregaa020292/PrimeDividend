@@ -17,7 +17,7 @@ type Repository interface {
 	Count(query model.Portfolios) (int, error)
 	GetAll(input cursor.PaginateInput, query model.Portfolios) ([]model.Portfolios, error)
 	Add(portfolio model.Portfolios) error
-	Update(id, userID uuid.UUID, update dto.PortfolioVariadic) error
+	Update(id, userID uuid.UUID, update dto.UpdateVariadic) error
 	Remove(id, userID uuid.UUID) error
 }
 
@@ -103,7 +103,7 @@ func (r repository) Add(portfolio model.Portfolios) error {
 	return err
 }
 
-func (r repository) Update(id, userID uuid.UUID, update dto.PortfolioVariadic) error {
+func (r repository) Update(id, userID uuid.UUID, update dto.UpdateVariadic) error {
 	stmt := table.Portfolios.UPDATE().
 		SET(update.Column(), update.ColumnList()...).
 		WHERE(jet.AND(

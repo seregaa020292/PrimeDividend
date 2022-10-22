@@ -30,6 +30,7 @@ import (
 	repository6 "primedivident/internal/modules/portfolio/repository"
 	query5 "primedivident/internal/modules/provider/query"
 	repository7 "primedivident/internal/modules/provider/repository"
+	command3 "primedivident/internal/modules/user/command"
 	query6 "primedivident/internal/modules/user/query"
 	repository8 "primedivident/internal/modules/user/repository"
 	"primedivident/internal/ports/http/asset"
@@ -104,7 +105,9 @@ func Initialize(cfg config.Config) server.Server {
 	userPresenter := user.NewPresenter()
 	repository15 := repository8.NewRepository(postgres)
 	getById5 := query6.NewGetById(repository15)
-	handlerUser := user2.NewHandler(responder, userPresenter, getById5)
+	commandRemove := command3.NewRemove(repository15)
+	commandEdit := command3.NewEdit(repository15)
+	handlerUser := user2.NewHandler(responder, userPresenter, getById5, commandRemove, commandEdit)
 	httpHandlers := handlers.NewHttpHandlers(handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
 	upgrader := socket.NewUpgrader()
 	quotes := wire_group.ProvideQuotes(cfg)

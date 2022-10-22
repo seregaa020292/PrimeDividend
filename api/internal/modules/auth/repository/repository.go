@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 
+	"primedivident/internal/models"
 	"primedivident/internal/models/app/public/model"
 	"primedivident/internal/models/app/public/table"
 	"primedivident/internal/modules/auth/dto"
@@ -67,7 +68,7 @@ func (r repository) FindByTokenJoin(tokenValue uuid.UUID) (entity.User, error) {
 func (r repository) Confirm(tokenValue uuid.UUID) error {
 	stmt := table.Users.
 		UPDATE(table.Users.Status, table.Users.TokenJoinValue, table.Users.TokenJoinExpires).
-		SET(entity.ActiveStatus, nil, nil).
+		SET(models.ActiveStatus, nil, nil).
 		WHERE(table.Users.TokenJoinValue.EQ(jet.UUID(tokenValue)))
 
 	_, err := stmt.Exec(r.db)

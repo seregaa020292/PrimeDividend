@@ -4,6 +4,7 @@ info:
   version: 1.0.1
   title: "PrimeDividend"
   description: "API для приложения PrimeDividend"
+
 externalDocs:
   description: "Спецификация Swagger"
   url: https://swagger.io/specification
@@ -170,6 +171,53 @@ paths:
                     $ref: '#/components/schemas/user'
         400:
           $ref: '#/components/responses/400'
+    patch:
+      tags: [ user ]
+      operationId: updateUser
+      summary: Редактирование своей учетки
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userUpdate'
+      responses:
+        200:
+          $ref: '#/components/responses/200'
+        400:
+          $ref: '#/components/responses/400'
+    delete:
+      tags: [ user ]
+      operationId: removeUser
+      summary: Удаление своей учетки
+      security:
+        - BearerAuth: [ ]
+      responses:
+        200:
+          $ref: '#/components/responses/200'
+        400:
+          $ref: '#/components/responses/400'
+  /user/{userId}:
+    get:
+      tags: [ user ]
+      operationId: getUserById
+      summary: Получение пользователя по ID
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/user'
+        400:
+          $ref: '#/components/responses/400'
 
   /market:
     get:
@@ -253,7 +301,6 @@ paths:
                     $ref: '#/components/schemas/portfolio'
         400:
           $ref: '#/components/responses/400'
-
     patch:
       tags: [ portfolio ]
       operationId: updatePortfolio
@@ -446,6 +493,13 @@ components:
       bearerFormat: JWT
 
   parameters:
+    userId:
+      in: path
+      name: userId
+      schema:
+        type: string
+        format: uuid
+      required: true
     marketId:
       in: path
       name: marketId
@@ -625,6 +679,18 @@ components:
           format: uuid
           x-oapi-codegen-extra-tags:
             validate: required
+    userUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          x-oapi-codegen-extra-tags:
+            validate: omitempty,required
+        email:
+          type: string
+          format: example@example.ru
+          x-oapi-codegen-extra-tags:
+            validate: omitempty,required,email
     user:
       type: object
       required: [ id, name, email, role, status, createdAt ]
