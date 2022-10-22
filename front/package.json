@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "dayjs": "^1.11.4",
+    "element-plus": "^2.2.19",
     "pinia": "^2.0.17",
     "qs": "^6.11.0",
     "vue": "^3.2.37",
