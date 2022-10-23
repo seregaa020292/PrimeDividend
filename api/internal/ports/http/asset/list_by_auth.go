@@ -23,7 +23,7 @@ func (h HandlerAsset) GetUserAssets(w http.ResponseWriter, r *http.Request, para
 		return
 	}
 
-	assets, err := h.queryGetUserAll.Fetch(query.FilterGetUserAll{
+	assets, err := h.queryGetUserAll.Fetch(query.PayloadUserAll{
 		UserID:      user.ID,
 		PortfolioID: portfolioID,
 	})

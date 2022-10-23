@@ -11,11 +11,11 @@ import (
 )
 
 type (
-	FilterGetUserAll struct {
+	PayloadUserAll struct {
 		UserID uuid.UUID
 		Active *bool
 	}
-	GetUserAll decorators.QueryHandler[FilterGetUserAll, []model.Portfolios]
+	GetUserAll decorators.QueryHandler[PayloadUserAll, []model.Portfolios]
 )
 
 type getUserAll struct {
@@ -30,9 +30,9 @@ func NewGetUserAll(
 	}
 }
 
-func (q getUserAll) Fetch(filter FilterGetUserAll) ([]model.Portfolios, error) {
-	portfolios, err := q.repository.GetUserAll(filter.UserID, repository.FilterGetAll{
-		Active: filter.Active,
+func (q getUserAll) Fetch(payload PayloadUserAll) ([]model.Portfolios, error) {
+	portfolios, err := q.repository.GetUserAll(payload.UserID, repository.FilterGetAll{
+		Active: payload.Active,
 	})
 	if err != nil {
 		return nil, errs.NotFound.Wrap(err, errmsg.FailedGetData)

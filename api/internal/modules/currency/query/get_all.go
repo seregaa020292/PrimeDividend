@@ -9,8 +9,8 @@ import (
 )
 
 type (
-	FilterGetAll struct{}
-	GetAll       decorators.QueryHandler[FilterGetAll, []model.Currencies]
+	PayloadAll struct{}
+	GetAll     decorators.QueryHandler[PayloadAll, []model.Currencies]
 )
 
 type getAll struct {
@@ -25,7 +25,7 @@ func NewGetAll(
 	}
 }
 
-func (q getAll) Fetch(filter FilterGetAll) ([]model.Currencies, error) {
+func (q getAll) Fetch(payload PayloadAll) ([]model.Currencies, error) {
 	currencies, err := q.repository.GetAll()
 	if err != nil {
 		return nil, errs.NotFound.Wrap(err, errmsg.FailedGetData)

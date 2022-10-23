@@ -11,7 +11,7 @@ import (
 func (h HandlerPortfolio) GetPortfolios(w http.ResponseWriter, r *http.Request, params openapi.GetPortfoliosParams) {
 	respond := h.responder.Http(w, r)
 
-	portfolios, err := h.queryGetAll.Fetch(query.FilterGetAll{
+	portfolios, err := h.queryGetAll.Fetch(query.PayloadAll{
 		Limit:  params.Limit,
 		Cursor: params.Cursor,
 		Active: gog.Ptr(true),

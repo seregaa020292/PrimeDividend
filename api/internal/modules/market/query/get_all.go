@@ -10,12 +10,12 @@ import (
 )
 
 type (
-	FilterGetAll struct {
+	PayloadAll struct {
 		Limit  *int
 		Cursor *string
 	}
 	GetAllResult = cursor.PaginateResult[model.Markets]
-	GetAll       decorators.QueryHandler[FilterGetAll, GetAllResult]
+	GetAll       decorators.QueryHandler[PayloadAll, GetAllResult]
 )
 
 type getAll struct {
@@ -30,8 +30,8 @@ func NewGetAll(
 	}
 }
 
-func (q getAll) Fetch(filter FilterGetAll) (GetAllResult, error) {
-	paginateInput, err := cursor.NewPaginateInput(filter.Limit, filter.Cursor)
+func (q getAll) Fetch(payload PayloadAll) (GetAllResult, error) {
+	paginateInput, err := cursor.NewPaginateInput(payload.Limit, payload.Cursor)
 	if err != nil {
 		return GetAllResult{}, errs.BadRequest.Wrap(err, errmsg.UnknownError)
 	}

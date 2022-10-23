@@ -17,7 +17,7 @@ func (h HandlerPortfolio) GetUserPortfolios(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	portfolios, err := h.queryGetUserAll.Fetch(query.FilterGetUserAll{
+	portfolios, err := h.queryGetUserAll.Fetch(query.PayloadUserAll{
 		UserID: user.ID,
 		Active: gog.Ptr(true),
 	})
