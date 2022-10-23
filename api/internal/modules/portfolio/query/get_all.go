@@ -13,7 +13,7 @@ type (
 	FilterGetAll struct {
 		Limit  *int
 		Cursor *string
-		Active bool
+		Active *bool
 	}
 	GetAllResult = cursor.PaginateResult[model.Portfolios]
 	GetAll       decorators.QueryHandler[FilterGetAll, GetAllResult]
@@ -37,7 +37,7 @@ func (q getAll) Fetch(filter FilterGetAll) (GetAllResult, error) {
 		return GetAllResult{}, errs.BadRequest.Wrap(err, errmsg.UnknownError)
 	}
 
-	portfolios, err := q.repository.GetAll(paginateInput, model.Portfolios{
+	portfolios, err := q.repository.GetAll(paginateInput, repository.FilterGetAll{
 		Active: filter.Active,
 	})
 	if err != nil {

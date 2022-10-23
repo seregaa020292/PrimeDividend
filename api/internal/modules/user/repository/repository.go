@@ -7,13 +7,12 @@ import (
 	"primedivident/internal/models"
 	"primedivident/internal/models/app/public/model"
 	"primedivident/internal/models/app/public/table"
-	"primedivident/internal/modules/user/dto"
 	"primedivident/pkg/db/postgres"
 )
 
 type Repository interface {
 	FindById(id uuid.UUID, status models.Status) (model.Users, error)
-	Update(id uuid.UUID, variadic dto.UpdateVariadic) error
+	Update(id uuid.UUID, update UpdatePatch) error
 	Remove(id uuid.UUID) error
 }
 
@@ -52,7 +51,7 @@ func (r repository) Remove(id uuid.UUID) error {
 	return err
 }
 
-func (r repository) Update(id uuid.UUID, update dto.UpdateVariadic) error {
+func (r repository) Update(id uuid.UUID, update UpdatePatch) error {
 	stmt := table.Users.UPDATE().
 		SET(update.Column(), update.ColumnList()...).
 		WHERE(table.Users.ID.EQ(jet.UUID(id)))

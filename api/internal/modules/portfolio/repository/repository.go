@@ -6,7 +6,6 @@ import (
 
 	"primedivident/internal/models/app/public/model"
 	"primedivident/internal/models/app/public/table"
-	"primedivident/internal/modules/portfolio/dto"
 	"primedivident/pkg/db/postgres"
 	"primedivident/pkg/paginate/cursor"
 )
@@ -14,10 +13,11 @@ import (
 type Repository interface {
 	FindById(id uuid.UUID) (model.Portfolios, error)
 	FindByUserId(userID uuid.UUID) ([]model.Portfolios, error)
-	Count(query model.Portfolios) (int, error)
-	GetAll(input cursor.PaginateInput, query model.Portfolios) ([]model.Portfolios, error)
+	Count(filter FilterGetAll) (int, error)
+	GetAll(input cursor.PaginateInput, filter FilterGetAll) ([]model.Portfolios, error)
+	GetUserAll(userID uuid.UUID, filter FilterGetAll) ([]model.Portfolios, error)
 	Add(portfolio model.Portfolios) error
-	Update(id, userID uuid.UUID, update dto.UpdateVariadic) error
+	Update(id, userID uuid.UUID, update UpdatePatch) error
 	Remove(id, userID uuid.UUID) error
 }
 
@@ -59,21 +59,22 @@ func (r repository) FindByUserId(userID uuid.UUID) ([]model.Portfolios, error) {
 	return portfolios, err
 }
 
-func (r repository) Count(query model.Portfolios) (int, error) {
+func (r repository) Count(filter FilterGetAll) (int, error) {
 	var dest struct {
 		Count int
 	}
 
 	stmt := table.Portfolios.
 		SELECT(jet.COUNT(jet.STAR).AS("count")).
-		FROM(table.Portfolios)
+		FROM(table.Portfolios).
+		WHERE(filter.Condition())
 
 	err := stmt.Query(r.db, &dest)
 
 	return dest.Count, err
 }
 
-func (r repository) GetAll(input cursor.PaginateInput, query model.Portfolios) ([]model.Portfolios, error) {
+func (r repository) GetAll(input cursor.PaginateInput, filter FilterGetAll) ([]model.Portfolios, error) {
 	var portfolios []model.Portfolios
 
 	cursorJet := cursor.NewJet(input, table.Portfolios.ID, table.Portfolios.CreatedAt)
@@ -82,8 +83,24 @@ func (r repository) GetAll(input cursor.PaginateInput, query model.Portfolios) (
 		table.Portfolios.
 			SELECT(table.Portfolios.AllColumns).
 			FROM(table.Portfolios),
-		table.Portfolios.Active.EQ(jet.Bool(query.Active)),
+		filter.Condition(),
 	)
+
+	err := stmt.Query(r.db, &portfolios)
+
+	return portfolios, err
+}
+
+func (r repository) GetUserAll(userID uuid.UUID, filter FilterGetAll) ([]model.Portfolios, error) {
+	var portfolios []model.Portfolios
+
+	stmt := table.Portfolios.
+		SELECT(table.Portfolios.AllColumns).
+		WHERE(filter.Condition().
+			AND(table.Portfolios.UserID.EQ(jet.UUID(userID))),
+		).
+		FROM(table.Portfolios).
+		ORDER_BY(table.Portfolios.CreatedAt.DESC())
 
 	err := stmt.Query(r.db, &portfolios)
 
@@ -103,7 +120,7 @@ func (r repository) Add(portfolio model.Portfolios) error {
 	return err
 }
 
-func (r repository) Update(id, userID uuid.UUID, update dto.UpdateVariadic) error {
+func (r repository) Update(id, userID uuid.UUID, update UpdatePatch) error {
 	stmt := table.Portfolios.UPDATE().
 		SET(update.Column(), update.ColumnList()...).
 		WHERE(jet.AND(

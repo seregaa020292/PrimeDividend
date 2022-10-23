@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/google/uuid"
 
 	"primedivident/internal/config/consts"
 	"primedivident/internal/modules/auth/entity"
@@ -51,4 +52,13 @@ func UserFromCtx(ctx context.Context) (entity.JwtPayload, error) {
 	}
 
 	return entity.JwtPayload{}, errs.Unauthorized.New(errmsg.AuthorizationRequired)
+}
+
+func UUID(s string) (uuid.UUID, error) {
+	id, err := uuid.Parse(s)
+	if err != nil {
+		return uuid.UUID{}, errs.BadRequest.Wrap(err, errmsg.CheckingWhileOccurred)
+	}
+
+	return id, nil
 }

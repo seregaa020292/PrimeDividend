@@ -43,7 +43,7 @@ services:
       MAILER_FROM_EMAIL: mail@app.test
       MAILER_FROM_NAME: PrimeDividend
       JWT_ACCESS_SECRET_KEY: secret
-      JWT_ACCESS_EXPIRES_IN: 60m
+      JWT_ACCESS_EXPIRES_IN: 15m
       JWT_REFRESH_SECRET_KEY: secret
       JWT_REFRESH_EXPIRES_IN: 1440h
       VK_OAUTH_CLIENT_ID: ${VK_OAUTH_CLIENT_ID}

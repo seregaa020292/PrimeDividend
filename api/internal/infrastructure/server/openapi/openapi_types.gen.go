@@ -13,6 +13,21 @@ const (
 	BearerAuthScopes = "BearerAuth.Scopes"
 )
 
+// Asset defines model for asset.
+type Asset struct {
+	Amount      int32              `json:"amount"`
+	CreatedAt   time.Time          `json:"createdAt"`
+	Id          openapi_types.UUID `json:"id"`
+	MarketId    openapi_types.UUID `json:"marketId"`
+	NotationAt  time.Time          `json:"notationAt"`
+	PortfolioId openapi_types.UUID `json:"portfolioId"`
+	Quantity    int32              `json:"quantity"`
+	UpdatedAt   *time.Time         `json:"updatedAt,omitempty"`
+}
+
+// Assets defines model for assets.
+type Assets = []Asset
+
 // AuthConfirm defines model for authConfirm.
 type AuthConfirm struct {
 	Token openapi_types.UUID `json:"token" validate:"required"`
@@ -216,6 +231,9 @@ type PortfolioId = openapi_types.UUID
 // ProviderId defines model for providerId.
 type ProviderId = openapi_types.UUID
 
+// QueryPortfolioId defines model for queryPortfolioId.
+type QueryPortfolioId = string
+
 // State defines model for state.
 type State = string
 
@@ -233,6 +251,11 @@ type N403 = Error
 
 // N500 defines model for 500.
 type N500 = Error
+
+// GetUserAssetsParams defines parameters for GetUserAssets.
+type GetUserAssetsParams struct {
+	PortfolioId QueryPortfolioId `form:"portfolioId" json:"portfolioId"`
+}
 
 // JoinEmailJSONBody defines parameters for JoinEmail.
 type JoinEmailJSONBody = AuthUser

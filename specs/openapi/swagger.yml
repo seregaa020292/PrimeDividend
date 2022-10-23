@@ -270,7 +270,25 @@ paths:
           $ref: '#/components/responses/200'
         400:
           $ref: '#/components/responses/400'
-
+  /portfolio/user:
+    get:
+      tags: [ portfolio ]
+      operationId: getUserPortfolios
+      summary: Получение списка портфелей пользователя
+      security:
+        - BearerAuth: [ ]
+      responses:
+        200:
+          description: Список портфелей пользователя
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/portfolios'
+        400:
+          $ref: '#/components/responses/400'
   /portfolio:
     get:
       tags: [ portfolio ]
@@ -308,6 +326,28 @@ paths:
       responses:
         204:
           $ref: '#/components/responses/204'
+        400:
+          $ref: '#/components/responses/400'
+
+  /asset/user:
+    get:
+      tags: [ asset ]
+      operationId: getUserAssets
+      summary: Получение списка активов пользователя
+      parameters:
+        - $ref: '#/components/parameters/queryPortfolioId'
+      security:
+        - BearerAuth: [ ]
+      responses:
+        200:
+          description: Список активов пользователя
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/assets'
         400:
           $ref: '#/components/responses/400'
 
@@ -548,6 +588,13 @@ components:
       schema:
         type: string
       required: true
+
+    queryPortfolioId:
+      in: query
+      name: portfolioId
+      schema:
+        type: string
+      required: true
     code:
       in: query
       name: code
@@ -768,6 +815,39 @@ components:
           format: uuid
           x-oapi-codegen-extra-tags:
             validate: omitempty,required,uuid
+
+    assets:
+      type: array
+      items:
+        $ref: '#/components/schemas/asset'
+    asset:
+      type: object
+      required: [ id, amount, quantity, portfolioId, marketId, notationAt, createdAt ]
+      properties:
+        id:
+          type: string
+          format: uuid
+        amount:
+          type: integer
+          format: int32
+        quantity:
+          type: integer
+          format: int32
+        portfolioId:
+          type: string
+          format: uuid
+        marketId:
+          type: string
+          format: uuid
+        notationAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
 
     markets:
       type: array

@@ -4,7 +4,6 @@ import (
 	"github.com/google/uuid"
 
 	"primedivident/internal/decorators"
-	"primedivident/internal/modules/user/dto"
 	"primedivident/internal/modules/user/repository"
 	"primedivident/pkg/errs"
 	"primedivident/pkg/errs/errmsg"
@@ -33,7 +32,7 @@ func NewEdit(
 }
 
 func (c edit) Exec(cmd PayloadEdit) error {
-	if err := c.repository.Update(cmd.UserID, dto.NewUpdateVariadic(
+	if err := c.repository.Update(cmd.UserID, repository.NewUpdatePatch(
 		cmd.Name,
 		cmd.Email,
 	)); err != nil {

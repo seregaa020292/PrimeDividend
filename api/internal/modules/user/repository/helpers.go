@@ -1,4 +1,4 @@
-package dto
+package repository
 
 import (
 	jet "github.com/go-jet/jet/v2/postgres"
@@ -7,10 +7,10 @@ import (
 	"primedivident/internal/models/app/public/table"
 )
 
-type UpdateVariadic = decorators.ColumnAssigment[any]
+type UpdatePatch = decorators.ColumnAssigment[any]
 
-func NewUpdateVariadic(name *string, email *string) UpdateVariadic {
-	columns := make(UpdateVariadic, 0)
+func NewUpdatePatch(name *string, email *string) UpdatePatch {
+	columns := make(UpdatePatch, 0)
 
 	if name != nil {
 		columns = append(columns, table.Users.Name.SET(jet.String(*name)))

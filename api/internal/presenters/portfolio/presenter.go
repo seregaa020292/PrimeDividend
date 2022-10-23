@@ -33,14 +33,7 @@ func (p present) GetAll(items []model.Portfolios) openapi.Portfolios {
 	result := make(openapi.Portfolios, len(items))
 
 	for i, item := range items {
-		result[i] = openapi.Portfolio{
-			Id:         item.ID,
-			Title:      item.Title,
-			CurrencyId: item.CurrencyID,
-			UserId:     item.UserID,
-			CreatedAt:  item.CreatedAt,
-			UpdatedAt:  item.UpdatedAt,
-		}
+		result[i] = p.GetOne(item)
 	}
 
 	return result

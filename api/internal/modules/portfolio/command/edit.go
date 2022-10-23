@@ -4,7 +4,6 @@ import (
 	"github.com/google/uuid"
 
 	"primedivident/internal/decorators"
-	"primedivident/internal/modules/portfolio/dto"
 	"primedivident/internal/modules/portfolio/repository"
 	"primedivident/pkg/errs"
 	"primedivident/pkg/errs/errmsg"
@@ -38,7 +37,7 @@ func (c edit) Exec(cmd PortfolioUpdate) error {
 	if err := c.repository.Update(
 		cmd.PortfolioID,
 		cmd.UserID,
-		dto.NewUpdateVariadic(
+		repository.NewUpdatePatch(
 			cmd.Title,
 			cmd.CurrencyID,
 			cmd.Active,
