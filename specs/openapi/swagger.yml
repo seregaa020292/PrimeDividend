@@ -329,13 +329,13 @@ paths:
         400:
           $ref: '#/components/responses/400'
 
-  /asset/user:
+  /asset/portfolio/{portfolioId}/user:
     get:
       tags: [ asset ]
       operationId: getUserAssets
       summary: Получение списка активов пользователя
       parameters:
-        - $ref: '#/components/parameters/queryPortfolioId'
+        - $ref: '#/components/parameters/portfolioId'
       security:
         - BearerAuth: [ ]
       responses:
@@ -348,6 +348,58 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/assets'
+        400:
+          $ref: '#/components/responses/400'
+    post:
+      tags: [ asset ]
+      operationId: createUserAsset
+      summary: Создание актива пользователя
+      parameters:
+        - $ref: '#/components/parameters/portfolioId'
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/assetAdd'
+      responses:
+        204:
+          $ref: '#/components/responses/204'
+        400:
+          $ref: '#/components/responses/400'
+  /asset/{assetId}/user:
+    patch:
+      tags: [ asset ]
+      operationId: updateUserAsset
+      summary: Редактирование актива пользователя
+      parameters:
+        - $ref: '#/components/parameters/assetId'
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/assetUpdate'
+      responses:
+        200:
+          $ref: '#/components/responses/200'
+        400:
+          $ref: '#/components/responses/400'
+    delete:
+      tags: [ asset ]
+      operationId: removeUserAsset
+      summary: Удаление актива пользователя
+      parameters:
+        - $ref: '#/components/parameters/assetId'
+      security:
+        - BearerAuth: [ ]
+      responses:
+        200:
+          $ref: '#/components/responses/200'
         400:
           $ref: '#/components/responses/400'
 
@@ -536,6 +588,13 @@ components:
     userId:
       in: path
       name: userId
+      schema:
+        type: string
+        format: uuid
+      required: true
+    assetId:
+      in: path
+      name: assetId
       schema:
         type: string
         format: uuid
@@ -848,6 +907,48 @@ components:
         updatedAt:
           type: string
           format: date-time
+    assetAdd:
+      type: object
+      required: [ amount, quantity, marketId, notationAt ]
+      properties:
+        amount:
+          type: integer
+          format: int32
+          x-oapi-codegen-extra-tags:
+            validate: min=1,required
+        quantity:
+          type: integer
+          format: int32
+          x-oapi-codegen-extra-tags:
+            validate: min=1,required
+        marketId:
+          type: string
+          format: uuid
+          x-oapi-codegen-extra-tags:
+            validate: required,uuid
+        notationAt:
+          type: string
+          format: date-time
+          x-oapi-codegen-extra-tags:
+            validate: required
+    assetUpdate:
+      type: object
+      properties:
+        amount:
+          type: integer
+          format: int32
+          x-oapi-codegen-extra-tags:
+            validate: omitempty,required,min=1
+        quantity:
+          type: integer
+          format: int32
+          x-oapi-codegen-extra-tags:
+            validate: omitempty,required,min=1
+        notationAt:
+          type: string
+          format: date-time
+          x-oapi-codegen-extra-tags:
+            validate: omitempty,required
 
     markets:
       type: array

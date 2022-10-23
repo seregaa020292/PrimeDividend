@@ -8,14 +8,8 @@ import (
 	"primedivident/internal/modules/asset/query"
 )
 
-func (h HandlerAsset) GetUserAssets(w http.ResponseWriter, r *http.Request, params openapi.GetUserAssetsParams) {
+func (h HandlerAsset) GetUserAssets(w http.ResponseWriter, r *http.Request, portfolioId openapi.PortfolioId) {
 	respond := h.responder.Http(w, r)
-
-	portfolioID, err := helper.UUID(params.PortfolioId)
-	if err != nil {
-		respond.Err(err)
-		return
-	}
 
 	user, err := helper.UserFromCtx(r.Context())
 	if err != nil {
@@ -25,7 +19,7 @@ func (h HandlerAsset) GetUserAssets(w http.ResponseWriter, r *http.Request, para
 
 	assets, err := h.queryGetUserAll.Fetch(query.PayloadUserAll{
 		UserID:      user.ID,
-		PortfolioID: portfolioID,
+		PortfolioID: portfolioId,
 	})
 	if err != nil {
 		respond.Err(err)

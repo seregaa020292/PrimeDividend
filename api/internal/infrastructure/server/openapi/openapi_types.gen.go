@@ -25,6 +25,21 @@ type Asset struct {
 	UpdatedAt   *time.Time         `json:"updatedAt,omitempty"`
 }
 
+// AssetAdd defines model for assetAdd.
+type AssetAdd struct {
+	Amount     int32              `json:"amount" validate:"min=1,required"`
+	MarketId   openapi_types.UUID `json:"marketId" validate:"required,uuid"`
+	NotationAt time.Time          `json:"notationAt" validate:"required"`
+	Quantity   int32              `json:"quantity" validate:"min=1,required"`
+}
+
+// AssetUpdate defines model for assetUpdate.
+type AssetUpdate struct {
+	Amount     *int32     `json:"amount,omitempty" validate:"omitempty,required,min=1"`
+	NotationAt *time.Time `json:"notationAt,omitempty" validate:"omitempty,required"`
+	Quantity   *int32     `json:"quantity,omitempty" validate:"omitempty,required,min=1"`
+}
+
 // Assets defines model for assets.
 type Assets = []Asset
 
@@ -204,6 +219,9 @@ type UserUpdate struct {
 	Name  *string `json:"name,omitempty" validate:"omitempty,required"`
 }
 
+// AssetId defines model for assetId.
+type AssetId = openapi_types.UUID
+
 // Code defines model for code.
 type Code = string
 
@@ -231,9 +249,6 @@ type PortfolioId = openapi_types.UUID
 // ProviderId defines model for providerId.
 type ProviderId = openapi_types.UUID
 
-// QueryPortfolioId defines model for queryPortfolioId.
-type QueryPortfolioId = string
-
 // State defines model for state.
 type State = string
 
@@ -252,10 +267,11 @@ type N403 = Error
 // N500 defines model for 500.
 type N500 = Error
 
-// GetUserAssetsParams defines parameters for GetUserAssets.
-type GetUserAssetsParams struct {
-	PortfolioId QueryPortfolioId `form:"portfolioId" json:"portfolioId"`
-}
+// CreateUserAssetJSONBody defines parameters for CreateUserAsset.
+type CreateUserAssetJSONBody = AssetAdd
+
+// UpdateUserAssetJSONBody defines parameters for UpdateUserAsset.
+type UpdateUserAssetJSONBody = AssetUpdate
 
 // JoinEmailJSONBody defines parameters for JoinEmail.
 type JoinEmailJSONBody = AuthUser
@@ -298,6 +314,12 @@ type UpdatePortfolioJSONBody = PortfolioUpdate
 
 // UpdateUserJSONBody defines parameters for UpdateUser.
 type UpdateUserJSONBody = UserUpdate
+
+// CreateUserAssetJSONRequestBody defines body for CreateUserAsset for application/json ContentType.
+type CreateUserAssetJSONRequestBody = CreateUserAssetJSONBody
+
+// UpdateUserAssetJSONRequestBody defines body for UpdateUserAsset for application/json ContentType.
+type UpdateUserAssetJSONRequestBody = UpdateUserAssetJSONBody
 
 // JoinEmailJSONRequestBody defines body for JoinEmail for application/json ContentType.
 type JoinEmailJSONRequestBody = JoinEmailJSONBody

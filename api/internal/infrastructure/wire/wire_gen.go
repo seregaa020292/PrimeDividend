@@ -14,6 +14,7 @@ import (
 	"primedivident/internal/infrastructure/server/routes"
 	"primedivident/internal/infrastructure/socket"
 	"primedivident/internal/infrastructure/wire/wire_group"
+	command2 "primedivident/internal/modules/asset/command"
 	"primedivident/internal/modules/asset/query"
 	repository3 "primedivident/internal/modules/asset/repository"
 	"primedivident/internal/modules/auth/command"
@@ -27,12 +28,12 @@ import (
 	repository5 "primedivident/internal/modules/instrument/repository"
 	query4 "primedivident/internal/modules/market/query"
 	repository6 "primedivident/internal/modules/market/repository"
-	command2 "primedivident/internal/modules/portfolio/command"
+	command3 "primedivident/internal/modules/portfolio/command"
 	query5 "primedivident/internal/modules/portfolio/query"
 	repository7 "primedivident/internal/modules/portfolio/repository"
 	query6 "primedivident/internal/modules/provider/query"
 	repository8 "primedivident/internal/modules/provider/repository"
-	command3 "primedivident/internal/modules/user/command"
+	command4 "primedivident/internal/modules/user/command"
 	query7 "primedivident/internal/modules/user/query"
 	repository9 "primedivident/internal/modules/user/repository"
 	asset2 "primedivident/internal/ports/http/asset"
@@ -77,7 +78,10 @@ func Initialize(cfg config.Config) server.Server {
 	presenter := asset.NewPresenter()
 	repository11 := repository3.NewRepository(postgres)
 	getUserAll := query.NewGetUserAll(repository11)
-	handlerAsset := asset2.NewHandler(responder, presenter, getUserAll)
+	create := command2.NewCreate(repository11)
+	edit := command2.NewEdit(repository11)
+	remove := command2.NewRemove(repository11)
+	handlerAsset := asset2.NewHandler(responder, presenter, getUserAll, create, edit, remove)
 	currencyPresenter := currency.NewPresenter()
 	repository12 := repository4.NewRepository(postgres)
 	getById := query2.NewGetById(repository12)
@@ -99,10 +103,10 @@ func Initialize(cfg config.Config) server.Server {
 	getById3 := query5.NewGetById(repository15)
 	getAll3 := query5.NewGetAll(repository15)
 	queryGetUserAll := query5.NewGetUserAll(repository15)
-	create := command2.NewCreate(repository15)
-	edit := command2.NewEdit(repository15)
-	remove := command2.NewRemove(repository15)
-	handlerPortfolio := portfolio2.NewHandler(responder, portfolioPresenter, getById3, getAll3, queryGetUserAll, create, edit, remove)
+	commandCreate := command3.NewCreate(repository15)
+	commandEdit := command3.NewEdit(repository15)
+	commandRemove := command3.NewRemove(repository15)
+	handlerPortfolio := portfolio2.NewHandler(responder, portfolioPresenter, getById3, getAll3, queryGetUserAll, commandCreate, commandEdit, commandRemove)
 	providerPresenter := provider.NewPresenter()
 	repository16 := repository8.NewRepository(postgres)
 	getById4 := query6.NewGetById(repository16)
@@ -112,9 +116,9 @@ func Initialize(cfg config.Config) server.Server {
 	userPresenter := user.NewPresenter()
 	repository17 := repository9.NewRepository(postgres)
 	getById5 := query7.NewGetById(repository17)
-	commandRemove := command3.NewRemove(repository17)
-	commandEdit := command3.NewEdit(repository17)
-	handlerUser := user2.NewHandler(responder, userPresenter, getById5, commandRemove, commandEdit)
+	remove2 := command4.NewRemove(repository17)
+	edit2 := command4.NewEdit(repository17)
+	handlerUser := user2.NewHandler(responder, userPresenter, getById5, remove2, edit2)
 	httpHandlers := handlers.NewHttpHandlers(handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
 	upgrader := socket.NewUpgrader()
 	quotes := wire_group.ProvideQuotes(cfg)
