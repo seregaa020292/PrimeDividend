@@ -49,3 +49,15 @@ env-init: env-main-create
 
 env-main-create:
 	[ -f .env ] || { cp .env.example .env && echo "Created .env"; }
+
+api-clear:
+	docker run --rm -v ${PWD}/api:/app -w /app alpine sh -c 'rm -rf .done bin'
+
+api-done:
+	docker run --rm -v ${PWD}/api:/app -w /app alpine touch .done
+
+front-clear:
+	docker run --rm -v ${PWD}/front:/app -w /app alpine sh -c 'rm -rf .done dist tmp'
+
+front-done:
+	docker run --rm -v ${PWD}/front:/app -w /app alpine touch .done

@@ -8,12 +8,6 @@
 front-init: front-yarn-install
 front-check: front-lint front-test
 
-front-clear:
-	docker run --rm -v ${PWD}/front:/app -w /app alpine sh -c 'rm -rf .done dist tmp'
-
-front-done:
-	docker run --rm -v ${PWD}/front:/app -w /app alpine touch .done
-
 front-yarn-install:
 	docker-compose exec front-node yarn install
 
