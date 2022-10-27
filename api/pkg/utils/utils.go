@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"context"
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
@@ -11,9 +10,7 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"os/signal"
 	"path"
-	"syscall"
 	"time"
 )
 
@@ -113,24 +110,6 @@ func DoWithAttempts(fn func() error, maxAttempts int, delay time.Duration) error
 	}
 
 	return err
-}
-
-func Context() context.Context {
-	ctx, cancel := context.WithCancel(context.Background())
-
-	go func() {
-		sigs := make(chan os.Signal, 1)
-		signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-
-		select {
-		case <-sigs:
-			cancel()
-		case <-ctx.Done():
-			return
-		}
-	}()
-
-	return ctx
 }
 
 func WaitForService(host string) {

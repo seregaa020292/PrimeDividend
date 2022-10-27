@@ -17,20 +17,20 @@ const (
 )
 
 type Client struct {
-	User    entity.JwtPayload
-	Conn    *websocket.Conn
-	Quotes  *Quotes
-	Message chan []byte
+	User      entity.JwtPayload
+	Conn      *websocket.Conn
+	HubQuotes *HubQuotes
+	Message   chan []byte
 }
 
-func NewClient(user entity.JwtPayload, conn *websocket.Conn, quotes *Quotes) Client {
+func NewClient(user entity.JwtPayload, conn *websocket.Conn, hubQuotes *HubQuotes) Client {
 	//utils.Println(quotes.tinkoff.Subscribe("BBG002GHV6L9"))
 
 	return Client{
-		User:    user,
-		Conn:    conn,
-		Quotes:  quotes,
-		Message: make(chan []byte),
+		User:      user,
+		Conn:      conn,
+		HubQuotes: hubQuotes,
+		Message:   make(chan []byte),
 	}
 }
 
@@ -98,7 +98,7 @@ func (c Client) Close() {
 }
 
 func (c Client) leave() {
-	c.Quotes.leave <- c
+	c.HubQuotes.leave <- c
 }
 
 func (c Client) handleMessage(message Message) {

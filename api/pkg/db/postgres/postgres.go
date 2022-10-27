@@ -8,6 +8,7 @@ import (
 	"github.com/jmoiron/sqlx"
 
 	"primedivident/internal/config"
+	"primedivident/pkg/utils/errlog"
 )
 
 const (
@@ -39,4 +40,10 @@ func NewPostgres(config config.Postgres) *Postgres {
 	}
 
 	return &Postgres{connect}
+}
+
+func (p Postgres) Close() {
+	log.Println("Stop Postgres")
+
+	errlog.Println(p.DB.Close())
 }

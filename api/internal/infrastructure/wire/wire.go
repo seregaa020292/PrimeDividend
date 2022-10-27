@@ -4,6 +4,8 @@
 package wire
 
 import (
+	"context"
+
 	"github.com/google/wire"
 
 	"primedivident/internal/config"
@@ -12,17 +14,20 @@ import (
 	"primedivident/internal/infrastructure/server/response"
 	"primedivident/internal/infrastructure/server/routes"
 	"primedivident/internal/infrastructure/socket"
+	"primedivident/internal/infrastructure/wire/providers"
 	wireGroup "primedivident/internal/infrastructure/wire/wire_group"
 	"primedivident/pkg/validator"
 )
 
-func Initialize(cfg config.Config) server.Server {
+func Initialize(ctx context.Context, cfg config.Config) server.Server {
 	wire.Build(
-		ProvideLogger,
-		ProvidePostgres,
-		ProvideMailerObserver,
-		ProvideTemplate,
-		ProvideJwtTokens,
+		providers.ProvideLogger,
+		providers.ProvidePostgres,
+		providers.ProvideRedis,
+		providers.ProvideMailerObserver,
+		providers.ProvideTemplate,
+		providers.ProvideJwtTokens,
+		providers.ProvideShutdown,
 
 		socket.NewUpgrader,
 		validator.GetValidator,

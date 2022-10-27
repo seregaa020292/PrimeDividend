@@ -108,13 +108,6 @@ services:
     volumes:
       - ./specs/openapi:/specs
 
-  api-swagger-editor:
-    image: swaggerapi/swagger-editor
-    environment:
-      SWAGGER_FILE: /specs/swagger.yml
-    volumes:
-      - ./specs/openapi:/specs
-
   mailer:
     image: mailhog/mailhog
 

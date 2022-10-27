@@ -7,14 +7,20 @@ import (
 
 	"primedivident/internal/config/consts"
 	"primedivident/internal/infrastructure/server/routes"
+	"primedivident/pkg/graceful"
+	"primedivident/pkg/utils/errlog"
 )
 
 type Server struct {
-	server *http.Server
+	ctx     context.Context
+	downApp graceful.ShutdownApp
+	server  *http.Server
 }
 
-func NewServer(routes routes.Routes) Server {
+func NewServer(ctx context.Context, downApp graceful.ShutdownApp, routes routes.Routes) Server {
 	return Server{
+		ctx:     ctx,
+		downApp: downApp,
 		server: &http.Server{
 			ReadHeaderTimeout: consts.ServerReadHeaderTimeout,
 			Addr:              consts.ServerAddr,
@@ -24,6 +30,8 @@ func NewServer(routes routes.Routes) Server {
 }
 
 func (s *Server) Run() {
+	go s.Stop()
+
 	log.Println("Starting HTTP server")
 
 	if err := s.server.ListenAndServe(); err != nil {
@@ -31,8 +39,12 @@ func (s *Server) Run() {
 	}
 }
 
-func (s *Server) Stop(ctx context.Context) error {
+func (s *Server) Stop() {
+	<-s.ctx.Done()
+
+	s.downApp.Run()
+
 	log.Println("Stop HTTP server")
 
-	return s.server.Shutdown(ctx)
+	errlog.Println(s.server.Shutdown(s.ctx))
 }

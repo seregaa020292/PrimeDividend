@@ -1,20 +1,22 @@
 package quotes
 
 import (
+	"log"
+
 	"github.com/gorilla/websocket"
 
 	"primedivident/internal/modules/auth/entity"
 )
 
-type Quotes struct {
+type HubQuotes struct {
 	tinkoff Tinkoff
 	clients Clients
 	join    chan Client
 	leave   chan Client
 }
 
-func NewQuotes(tinkoff Tinkoff) *Quotes {
-	return &Quotes{
+func NewHubQuotes(tinkoff Tinkoff) *HubQuotes {
+	return &HubQuotes{
 		tinkoff: tinkoff,
 		clients: NewClients(),
 		join:    make(chan Client),
@@ -22,7 +24,7 @@ func NewQuotes(tinkoff Tinkoff) *Quotes {
 	}
 }
 
-func (q Quotes) Join(user entity.JwtPayload, conn *websocket.Conn) {
+func (q HubQuotes) Join(user entity.JwtPayload, conn *websocket.Conn) {
 	client := NewClient(user, conn, &q)
 
 	q.join <- client
@@ -32,7 +34,7 @@ func (q Quotes) Join(user entity.JwtPayload, conn *websocket.Conn) {
 	go client.Write()
 }
 
-func (q Quotes) Run() {
+func (q HubQuotes) Run() {
 	for {
 		select {
 		case client := <-q.join:
@@ -45,15 +47,26 @@ func (q Quotes) Run() {
 	}
 }
 
-func (q Quotes) add(client Client) {
+func (q HubQuotes) Close() {
+	log.Println("Stop HubQuotes")
+
+	q.tinkoff.Close()
+	q.disconnects()
+}
+
+func (q HubQuotes) add(client Client) {
 	q.clients.Add(client)
 }
 
-func (q Quotes) disconnect(client Client) {
-	if q.clients.Exist(client) {
-		defer client.Close()
-		defer q.tinkoff.Close()
+func (q HubQuotes) disconnects() {
+	for _, client := range q.clients.connects {
+		q.disconnect(client)
+	}
+}
 
+func (q HubQuotes) disconnect(client Client) {
+	if q.clients.Exist(client) {
+		client.Close()
 		q.clients.Remove(client.User.ID)
 	}
 }

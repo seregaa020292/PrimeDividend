@@ -12,6 +12,7 @@ import (
 
 type Sender interface {
 	Send(msg Message) error
+	Close()
 }
 
 type Config struct {
@@ -83,4 +84,10 @@ func NewMailer(config Config) Sender {
 
 func (m Mailer) Send(msg Message) error {
 	return m.pool.Send(msg.fillEmail(m.config.From), m.config.PoolTimeout)
+}
+
+func (m Mailer) Close() {
+	log.Println("Stop Mailer")
+
+	m.pool.Close()
 }

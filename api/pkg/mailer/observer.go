@@ -2,6 +2,7 @@ package mailer
 
 import (
 	"fmt"
+
 	"primedivident/pkg/logger"
 )
 
@@ -30,6 +31,7 @@ func (o *Observer) Send(msg Message) error {
 
 func (o *Observer) Close() {
 	close(o.chanMsg)
+	o.sender.Close()
 }
 
 func (o *Observer) listens(poolConn int) {

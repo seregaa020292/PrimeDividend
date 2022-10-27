@@ -7,13 +7,14 @@
 package wire
 
 import (
+	"context"
 	"primedivident/internal/config"
 	"primedivident/internal/handlers"
 	"primedivident/internal/infrastructure/server"
 	"primedivident/internal/infrastructure/server/response"
 	"primedivident/internal/infrastructure/server/routes"
 	"primedivident/internal/infrastructure/socket"
-	"primedivident/internal/infrastructure/wire/wire_group"
+	"primedivident/internal/infrastructure/wire/providers"
 	command2 "primedivident/internal/modules/asset/command"
 	"primedivident/internal/modules/asset/query"
 	repository3 "primedivident/internal/modules/asset/repository"
@@ -58,18 +59,21 @@ import (
 
 // Injectors from wire.go:
 
-func Initialize(cfg config.Config) server.Server {
-	jwtTokens := ProvideJwtTokens(cfg)
-	postgres := ProvidePostgres(cfg)
+func Initialize(ctx context.Context, cfg config.Config) server.Server {
+	postgres := providers.ProvidePostgres(cfg)
+	redis := providers.ProvideRedis(cfg)
+	logger := providers.ProvideLogger(cfg)
+	sender := providers.ProvideMailerObserver(cfg, logger)
+	hubQuotes := providers.ProvideQuotes(cfg)
+	shutdownApp := providers.ProvideShutdown(postgres, redis, sender, hubQuotes)
+	jwtTokens := providers.ProvideJwtTokens(cfg)
 	repositoryRepository := repository.NewRepository(postgres)
 	service := strategy.NewService(jwtTokens, repositoryRepository)
-	strategyStrategy := wire_group.ProvideStrategy(cfg, service)
-	logger := ProvideLogger(cfg)
+	strategyStrategy := providers.ProvideStrategy(cfg, service)
 	validatorValidator := validator.GetValidator()
 	responder := response.NewRespond(logger, validatorValidator)
 	repository10 := repository2.NewRepository(postgres)
-	sender := ProvideMailerObserver(cfg, logger)
-	templater := ProvideTemplate(cfg)
+	templater := providers.ProvideTemplate(cfg)
 	joinConfirmUser := email.NewJoinConfirmUser(sender, templater)
 	joinByEmail := command.NewJoinByEmail(repository10, joinConfirmUser)
 	confirmUser := email.NewConfirmUser(sender, templater)
@@ -121,10 +125,9 @@ func Initialize(cfg config.Config) server.Server {
 	handlerUser := user2.NewHandler(responder, userPresenter, getById5, remove2, edit2)
 	httpHandlers := handlers.NewHttpHandlers(handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
 	upgrader := socket.NewUpgrader()
-	quotes := wire_group.ProvideQuotes(cfg)
-	marketHandlerMarket := market3.NewHandlerMarket(responder, upgrader, quotes)
+	marketHandlerMarket := market3.NewHandlerMarket(responder, upgrader, redis, hubQuotes)
 	wsHandlers := handlers.NewWsHandlers(marketHandlerMarket)
 	routesRoutes := routes.NewRoutes(strategyStrategy, httpHandlers, wsHandlers)
-	serverServer := server.NewServer(routesRoutes)
+	serverServer := server.NewServer(ctx, shutdownApp, routesRoutes)
 	return serverServer
 }

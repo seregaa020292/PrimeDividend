@@ -23,7 +23,7 @@ const (
 
 	TmpLog = "./tmp/logs/server.log"
 
-	TimeoutShutdown = 10 * time.Second
+	TimeoutShutdown = 3 * time.Second
 
 	TokenType       = "Bearer"
 	TokenJoinTTL    = 1 * time.Hour

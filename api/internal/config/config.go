@@ -11,6 +11,7 @@ type Config struct {
 	App      App
 	Mailer   Mailer
 	Postgres Postgres
+	Redis    Redis
 	Networks Networks
 	Jwt      Jwt
 	Tinkoff  Tinkoff
