@@ -6,21 +6,25 @@ import (
 	"github.com/gorilla/websocket"
 
 	"primedivident/internal/modules/auth/entity"
+	"primedivident/internal/modules/market/repository"
+	"primedivident/internal/modules/market/service/quotes/providers"
 )
 
 type HubQuotes struct {
-	tinkoff Tinkoff
-	clients Clients
-	join    chan Client
-	leave   chan Client
+	assetRepo repository.AssetRepository
+	tinkoff   providers.Tinkoff
+	clients   Clients
+	join      chan Client
+	leave     chan Client
 }
 
-func NewHubQuotes(tinkoff Tinkoff) *HubQuotes {
+func NewHubQuotes(assetRepo repository.AssetRepository, tinkoff providers.Tinkoff) *HubQuotes {
 	return &HubQuotes{
-		tinkoff: tinkoff,
-		clients: NewClients(),
-		join:    make(chan Client),
-		leave:   make(chan Client),
+		assetRepo: assetRepo,
+		tinkoff:   tinkoff,
+		clients:   NewClients(),
+		join:      make(chan Client),
+		leave:     make(chan Client),
 	}
 }
 

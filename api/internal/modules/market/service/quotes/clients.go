@@ -1,6 +1,10 @@
 package quotes
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+
+	"primedivident/internal/modules/market/service/quotes/message"
+)
 
 type Clients struct {
 	connects map[uuid.UUID]Client
@@ -27,7 +31,7 @@ func (c Clients) Exist(client Client) bool {
 	return ok
 }
 
-func (c Clients) Broadcast(message Message) {
+func (c Clients) Broadcast(message message.Message) {
 	for _, client := range c.connects {
 		client.Send(message)
 	}

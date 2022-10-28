@@ -1,4 +1,4 @@
-package quotes
+package providers
 
 const (
 	TinkoffProvider = "tinkoff"

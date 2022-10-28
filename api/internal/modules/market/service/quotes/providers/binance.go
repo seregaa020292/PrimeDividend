@@ -1,4 +1,4 @@
-package quotes
+package providers
 
 import "github.com/adshao/go-binance/v2"
 

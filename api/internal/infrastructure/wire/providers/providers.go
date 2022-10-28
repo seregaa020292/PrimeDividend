@@ -7,6 +7,7 @@ import (
 	"primedivident/internal/modules/auth/service/strategy/auth"
 	"primedivident/internal/modules/auth/service/strategy/strategies"
 	"primedivident/internal/modules/market/service/quotes"
+	"primedivident/internal/modules/market/service/quotes/providers"
 	"primedivident/pkg/db/postgres"
 	"primedivident/pkg/db/redis"
 	"primedivident/pkg/graceful"
@@ -66,19 +67,19 @@ func ProvideStrategy(cfg config.Config, service strategy.Service) strategy.Strat
 	return strategics
 }
 
-func ProvideQuotes(config config.Config) *quotes.HubQuotes {
-	return quotes.NewHubQuotes(quotes.NewTinkoff(config.Tinkoff))
+func ProvideTinkoff(config config.Config) providers.Tinkoff {
+	return providers.NewTinkoff(config.Tinkoff)
 }
 
 func ProvideShutdown(
 	postgres *postgres.Postgres,
 	redis *redis.Redis,
 	mailer mailer.Sender,
-	quotes *quotes.HubQuotes,
+	hubQuotes *quotes.HubQuotes,
 ) graceful.ShutdownApp {
 	return graceful.ShutdownApp{
 		mailer.Close,
-		quotes.Close,
+		hubQuotes.Close,
 		redis.Close,
 		postgres.Close,
 	}

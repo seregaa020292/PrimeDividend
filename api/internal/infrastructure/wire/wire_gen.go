@@ -17,18 +17,19 @@ import (
 	"primedivident/internal/infrastructure/wire/providers"
 	command2 "primedivident/internal/modules/asset/command"
 	"primedivident/internal/modules/asset/query"
-	repository3 "primedivident/internal/modules/asset/repository"
+	repository4 "primedivident/internal/modules/asset/repository"
 	"primedivident/internal/modules/auth/command"
-	repository2 "primedivident/internal/modules/auth/repository"
+	repository3 "primedivident/internal/modules/auth/repository"
 	"primedivident/internal/modules/auth/service/email"
 	"primedivident/internal/modules/auth/service/strategy"
-	"primedivident/internal/modules/auth/service/strategy/repository"
+	repository2 "primedivident/internal/modules/auth/service/strategy/repository"
 	query2 "primedivident/internal/modules/currency/query"
-	repository4 "primedivident/internal/modules/currency/repository"
+	repository5 "primedivident/internal/modules/currency/repository"
 	query3 "primedivident/internal/modules/instrument/query"
-	repository5 "primedivident/internal/modules/instrument/repository"
+	repository6 "primedivident/internal/modules/instrument/repository"
 	query4 "primedivident/internal/modules/market/query"
-	repository6 "primedivident/internal/modules/market/repository"
+	"primedivident/internal/modules/market/repository"
+	"primedivident/internal/modules/market/service/quotes"
 	command3 "primedivident/internal/modules/portfolio/command"
 	query5 "primedivident/internal/modules/portfolio/query"
 	repository7 "primedivident/internal/modules/portfolio/repository"
@@ -64,15 +65,17 @@ func Initialize(ctx context.Context, cfg config.Config) server.Server {
 	redis := providers.ProvideRedis(cfg)
 	logger := providers.ProvideLogger(cfg)
 	sender := providers.ProvideMailerObserver(cfg, logger)
-	hubQuotes := providers.ProvideQuotes(cfg)
+	cacheRepository := repository.NewCacheRepository(redis)
+	tinkoff := providers.ProvideTinkoff(cfg)
+	hubQuotes := quotes.NewHubQuotes(cacheRepository, tinkoff)
 	shutdownApp := providers.ProvideShutdown(postgres, redis, sender, hubQuotes)
 	jwtTokens := providers.ProvideJwtTokens(cfg)
-	repositoryRepository := repository.NewRepository(postgres)
+	repositoryRepository := repository2.NewRepository(postgres)
 	service := strategy.NewService(jwtTokens, repositoryRepository)
 	strategyStrategy := providers.ProvideStrategy(cfg, service)
 	validatorValidator := validator.GetValidator()
 	responder := response.NewRespond(logger, validatorValidator)
-	repository10 := repository2.NewRepository(postgres)
+	repository10 := repository3.NewRepository(postgres)
 	templater := providers.ProvideTemplate(cfg)
 	joinConfirmUser := email.NewJoinConfirmUser(sender, templater)
 	joinByEmail := command.NewJoinByEmail(repository10, joinConfirmUser)
@@ -80,24 +83,24 @@ func Initialize(ctx context.Context, cfg config.Config) server.Server {
 	confirmByToken := command.NewConfirmByToken(repository10, confirmUser)
 	handlerAuth := auth.NewHandler(responder, strategyStrategy, joinByEmail, confirmByToken)
 	presenter := asset.NewPresenter()
-	repository11 := repository3.NewRepository(postgres)
+	repository11 := repository4.NewRepository(postgres)
 	getUserAll := query.NewGetUserAll(repository11)
 	create := command2.NewCreate(repository11)
 	edit := command2.NewEdit(repository11)
 	remove := command2.NewRemove(repository11)
 	handlerAsset := asset2.NewHandler(responder, presenter, getUserAll, create, edit, remove)
 	currencyPresenter := currency.NewPresenter()
-	repository12 := repository4.NewRepository(postgres)
+	repository12 := repository5.NewRepository(postgres)
 	getById := query2.NewGetById(repository12)
 	getAll := query2.NewGetAll(repository12)
 	handlerCurrency := currency2.NewHandler(responder, currencyPresenter, getById, getAll)
 	instrumentPresenter := instrument.NewPresenter()
-	repository13 := repository5.NewRepository(postgres)
+	repository13 := repository6.NewRepository(postgres)
 	queryGetById := query3.NewGetById(repository13)
 	queryGetAll := query3.NewGetAll(repository13)
 	handlerInstrument := instrument2.NewHandler(responder, instrumentPresenter, queryGetById, queryGetAll)
 	marketPresenter := market.NewPresenter()
-	repository14 := repository6.NewRepository(postgres)
+	repository14 := repository.NewRepository(postgres)
 	getById2 := query4.NewGetById(repository14)
 	getByTicker := query4.NewGetByTicker(repository14)
 	getAll2 := query4.NewGetAll(repository14)
@@ -125,7 +128,7 @@ func Initialize(ctx context.Context, cfg config.Config) server.Server {
 	handlerUser := user2.NewHandler(responder, userPresenter, getById5, remove2, edit2)
 	httpHandlers := handlers.NewHttpHandlers(handlerAuth, handlerAsset, handlerCurrency, handlerInstrument, handlerMarket, handlerPortfolio, handlerProvider, handlerRegister, handlerUser)
 	upgrader := socket.NewUpgrader()
-	marketHandlerMarket := market3.NewHandlerMarket(responder, upgrader, redis, hubQuotes)
+	marketHandlerMarket := market3.NewHandlerMarket(responder, upgrader, hubQuotes)
 	wsHandlers := handlers.NewWsHandlers(marketHandlerMarket)
 	routesRoutes := routes.NewRoutes(strategyStrategy, httpHandlers, wsHandlers)
 	serverServer := server.NewServer(ctx, shutdownApp, routesRoutes)

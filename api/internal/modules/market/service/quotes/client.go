@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/websocket"
 
 	"primedivident/internal/modules/auth/entity"
+	"primedivident/internal/modules/market/service/quotes/message"
 	"primedivident/pkg/utils/errlog"
 )
 
@@ -45,15 +46,15 @@ func (c Client) Read() {
 	})
 
 	for {
-		var message Message
-		if err := c.Conn.ReadJSON(&message); err != nil {
+		var msg message.Message
+		if err := c.Conn.ReadJSON(&msg); err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("unexpected close error: %v\n", err)
 			}
 			break
 		}
 
-		c.handleMessage(message)
+		c.handleMessage(msg)
 	}
 }
 
@@ -67,13 +68,13 @@ func (c Client) Write() {
 
 	for {
 		select {
-		case message, ok := <-c.Message:
+		case msg, ok := <-c.Message:
 			if !ok {
 				errlog.Println(c.Conn.WriteMessage(websocket.CloseMessage, []byte{}))
 				return
 			}
 
-			errlog.Println(c.Conn.WriteMessage(websocket.TextMessage, message))
+			errlog.Println(c.Conn.WriteMessage(websocket.TextMessage, msg))
 		case <-ticker.C:
 			if err := c.Conn.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
 				return
@@ -82,7 +83,7 @@ func (c Client) Write() {
 	}
 }
 
-func (c Client) Send(message Message) {
+func (c Client) Send(message message.Message) {
 	msg, err := json.Marshal(message)
 	if err != nil {
 		log.Println(err)
@@ -101,7 +102,7 @@ func (c Client) leave() {
 	c.HubQuotes.leave <- c
 }
 
-func (c Client) handleMessage(message Message) {
+func (c Client) handleMessage(msg message.Message) {
 }
 
 func (c Client) setReadDeadline() {

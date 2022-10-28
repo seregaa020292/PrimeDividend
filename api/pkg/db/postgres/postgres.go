@@ -39,7 +39,7 @@ func NewPostgres(config config.Postgres) *Postgres {
 		log.Fatalln(err)
 	}
 
-	return &Postgres{connect}
+	return &Postgres{DB: connect}
 }
 
 func (p Postgres) Close() {

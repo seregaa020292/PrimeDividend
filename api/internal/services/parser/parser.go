@@ -14,7 +14,7 @@ import (
 	currencyRepo "primedivident/internal/modules/currency/repository"
 	instrumentRepo "primedivident/internal/modules/instrument/repository"
 	marketRepo "primedivident/internal/modules/market/repository"
-	"primedivident/internal/modules/market/service/quotes"
+	"primedivident/internal/modules/market/service/quotes/providers"
 	providerRepo "primedivident/internal/modules/provider/repository"
 	registerRepo "primedivident/internal/modules/register/repository"
 	"primedivident/pkg/utils/errlog"
@@ -84,7 +84,7 @@ func (p *Parser) Select() error {
 		return err
 	}
 
-	p.provider, err = p.providerRepo.GetByTitle(quotes.TinkoffProvider)
+	p.provider, err = p.providerRepo.GetByTitle(providers.TinkoffProvider)
 	if err != nil {
 		return err
 	}

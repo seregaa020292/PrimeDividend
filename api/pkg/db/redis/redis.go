@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"context"
 	"log"
 	"time"
 
@@ -30,7 +31,11 @@ func NewRedis(config config.Redis) *Redis {
 		PoolTimeout:  PoolTimeout,
 	})
 
-	return &Redis{connect}
+	if err := connect.Ping(context.Background()).Err(); err != nil {
+		log.Fatalln(err)
+	}
+
+	return &Redis{Client: connect}
 }
 
 func (r Redis) Close() {

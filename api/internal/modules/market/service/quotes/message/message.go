@@ -1,4 +1,4 @@
-package quotes
+package message
 
 type Message struct {
 	Provider string  `json:"provider"`

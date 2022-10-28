@@ -1,4 +1,4 @@
-package quotes
+package providers
 
 import (
 	"log"
@@ -7,12 +7,13 @@ import (
 	sdk "github.com/TinkoffCreditSystems/invest-openapi-go-sdk"
 
 	"primedivident/internal/config"
+	"primedivident/internal/modules/market/service/quotes/message"
 	"primedivident/pkg/utils"
 	"primedivident/pkg/utils/errlog"
 )
 
 type Tinkoff struct {
-	message chan Message
+	message chan message.Message
 	client  *sdk.StreamingClient
 }
 
@@ -26,7 +27,7 @@ func NewTinkoff(config config.Tinkoff) Tinkoff {
 	}
 
 	return Tinkoff{
-		message: make(chan Message),
+		message: make(chan message.Message),
 		client:  client,
 	}
 }
@@ -39,7 +40,7 @@ func (t Tinkoff) Read() {
 	}
 }
 
-func (t Tinkoff) Message() <-chan Message {
+func (t Tinkoff) Message() <-chan message.Message {
 	return t.message
 }
 
@@ -63,7 +64,7 @@ func (t Tinkoff) readLoop(event any) error {
 }
 
 func (t Tinkoff) handleMessage(event sdk.CandleEvent) {
-	t.message <- Message{
+	t.message <- message.Message{
 		Provider: TinkoffProvider,
 		Identity: event.Candle.FIGI,
 		Price:    event.Candle.ClosePrice,
