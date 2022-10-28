@@ -1,9 +1,9 @@
 package instrument
 
 import (
-	"primedivident/internal/infrastructure/server/response"
-	"primedivident/internal/modules/instrument/query"
-	"primedivident/internal/presenters/instrument"
+	"primedividend/api/internal/infrastructure/server/response"
+	"primedividend/api/internal/modules/instrument/query"
+	"primedividend/api/internal/presenters/instrument"
 )
 
 type HandlerInstrument struct {

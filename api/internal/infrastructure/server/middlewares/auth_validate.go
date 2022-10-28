@@ -7,12 +7,12 @@ import (
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/getkin/kin-openapi/routers"
 
-	"primedivident/internal/infrastructure/server/middlewares/helper"
-	"primedivident/internal/infrastructure/server/response"
-	"primedivident/internal/modules/auth/entity"
-	"primedivident/internal/modules/auth/service/strategy"
-	"primedivident/pkg/errs"
-	"primedivident/pkg/errs/errmsg"
+	"primedividend/api/internal/infrastructure/server/middlewares/helper"
+	"primedividend/api/internal/infrastructure/server/response"
+	"primedividend/api/internal/modules/auth/entity"
+	"primedividend/api/internal/modules/auth/service/strategy"
+	"primedividend/api/pkg/errs"
+	"primedividend/api/pkg/errs/errmsg"
 )
 
 type authValidate struct {

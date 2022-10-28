@@ -3,7 +3,7 @@ package currency
 import (
 	"net/http"
 
-	"primedivident/internal/modules/currency/query"
+	"primedividend/api/internal/modules/currency/query"
 )
 
 func (h HandlerCurrency) GetCurrencies(w http.ResponseWriter, r *http.Request) {

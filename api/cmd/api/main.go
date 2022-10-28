@@ -1,9 +1,9 @@
 package main
 
 import (
-	"primedivident/internal/config"
-	"primedivident/internal/infrastructure/wire"
-	"primedivident/pkg/graceful"
+	"primedividend/api/internal/config"
+	"primedividend/api/internal/infrastructure/wire"
+	"primedividend/api/pkg/graceful"
 )
 
 func main() {

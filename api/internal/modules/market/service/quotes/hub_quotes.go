@@ -5,9 +5,9 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	"primedivident/internal/modules/auth/entity"
-	"primedivident/internal/modules/market/repository"
-	"primedivident/internal/modules/market/service/quotes/providers"
+	"primedividend/api/internal/modules/auth/entity"
+	"primedividend/api/internal/modules/market/repository"
+	"primedividend/api/internal/modules/market/service/quotes/providers"
 )
 
 type HubQuotes struct {

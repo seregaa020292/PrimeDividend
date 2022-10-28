@@ -3,9 +3,9 @@ package response
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/openapi"
-	"primedivident/pkg/errs"
-	"primedivident/pkg/errs/errmsg"
+	"primedividend/api/internal/infrastructure/server/openapi"
+	"primedividend/api/pkg/errs"
+	"primedividend/api/pkg/errs/errmsg"
 )
 
 type ErrorResponse struct {

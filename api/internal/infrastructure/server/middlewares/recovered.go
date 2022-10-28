@@ -3,7 +3,7 @@ package middlewares
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/response"
+	"primedividend/api/internal/infrastructure/server/response"
 )
 
 func Recovered(next http.Handler) http.Handler {

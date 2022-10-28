@@ -3,10 +3,10 @@ package strategy
 import (
 	"net/http"
 
-	"primedivident/pkg/errs"
-	"primedivident/pkg/errs/errmsg"
-	"primedivident/pkg/token"
-	"primedivident/pkg/utils"
+	"primedividend/api/pkg/errs"
+	"primedividend/api/pkg/errs/errmsg"
+	"primedividend/api/pkg/token"
+	"primedividend/api/pkg/utils"
 )
 
 const RefreshToken = "refresh-token"

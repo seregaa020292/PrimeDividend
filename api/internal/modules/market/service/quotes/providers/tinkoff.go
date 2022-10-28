@@ -6,10 +6,10 @@ import (
 
 	sdk "github.com/TinkoffCreditSystems/invest-openapi-go-sdk"
 
-	"primedivident/internal/config"
-	"primedivident/internal/modules/market/service/quotes/message"
-	"primedivident/pkg/utils"
-	"primedivident/pkg/utils/errlog"
+	"primedividend/api/internal/config"
+	"primedividend/api/internal/modules/market/service/quotes/message"
+	"primedividend/api/pkg/utils"
+	"primedividend/api/pkg/utils/errlog"
 )
 
 type Tinkoff struct {

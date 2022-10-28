@@ -7,9 +7,9 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	"primedivident/internal/modules/auth/entity"
-	"primedivident/internal/modules/market/service/quotes/message"
-	"primedivident/pkg/utils/errlog"
+	"primedividend/api/internal/modules/auth/entity"
+	"primedividend/api/internal/modules/market/service/quotes/message"
+	"primedividend/api/pkg/utils/errlog"
 )
 
 const (

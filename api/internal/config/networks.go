@@ -3,7 +3,7 @@ package config
 import (
 	"net/url"
 
-	"primedivident/internal/config/consts"
+	"primedividend/api/internal/config/consts"
 )
 
 type Networks struct {

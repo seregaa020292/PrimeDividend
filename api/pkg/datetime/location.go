@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"primedivident/internal/config/consts"
+	"primedividend/api/internal/config/consts"
 )
 
 func InitLocation() {

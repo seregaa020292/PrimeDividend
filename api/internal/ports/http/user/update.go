@@ -3,9 +3,9 @@ package user
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/middlewares/helper"
-	"primedivident/internal/infrastructure/server/openapi"
-	"primedivident/internal/modules/user/command"
+	"primedividend/api/internal/infrastructure/server/middlewares/helper"
+	"primedividend/api/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/modules/user/command"
 )
 
 func (h HandlerUser) UpdateUser(w http.ResponseWriter, r *http.Request) {

@@ -1,10 +1,10 @@
 package email
 
 import (
-	"primedivident/internal/config/consts"
-	"primedivident/internal/decorators"
-	"primedivident/pkg/mailer"
-	"primedivident/pkg/tpl"
+	"primedividend/api/internal/config/consts"
+	"primedividend/api/internal/decorators"
+	"primedividend/api/pkg/mailer"
+	"primedividend/api/pkg/tpl"
 )
 
 type (

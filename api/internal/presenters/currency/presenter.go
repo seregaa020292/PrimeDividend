@@ -1,8 +1,8 @@
 package currency
 
 import (
-	"primedivident/internal/infrastructure/server/openapi"
-	"primedivident/internal/models/app/public/model"
+	"primedividend/api/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/models/app/public/model"
 )
 
 type Presenter interface {

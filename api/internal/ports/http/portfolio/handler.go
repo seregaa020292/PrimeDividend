@@ -1,10 +1,10 @@
 package portfolio
 
 import (
-	"primedivident/internal/infrastructure/server/response"
-	"primedivident/internal/modules/portfolio/command"
-	"primedivident/internal/modules/portfolio/query"
-	"primedivident/internal/presenters/portfolio"
+	"primedividend/api/internal/infrastructure/server/response"
+	"primedividend/api/internal/modules/portfolio/command"
+	"primedividend/api/internal/modules/portfolio/query"
+	"primedividend/api/internal/presenters/portfolio"
 )
 
 type HandlerPortfolio struct {

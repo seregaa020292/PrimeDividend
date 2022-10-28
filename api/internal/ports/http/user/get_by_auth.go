@@ -3,7 +3,7 @@ package user
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/middlewares/helper"
+	"primedividend/api/internal/infrastructure/server/middlewares/helper"
 )
 
 func (h HandlerUser) GetUser(w http.ResponseWriter, r *http.Request) {

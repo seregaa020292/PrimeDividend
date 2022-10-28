@@ -5,8 +5,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"primedivident/internal/models"
-	"primedivident/pkg/utils/hash"
+	"primedividend/api/internal/models"
+	"primedividend/api/pkg/utils/hash"
 )
 
 type User struct {

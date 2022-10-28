@@ -8,15 +8,15 @@ import (
 
 	"github.com/google/wire"
 
-	"primedivident/internal/config"
-	"primedivident/internal/handlers"
-	"primedivident/internal/infrastructure/server"
-	"primedivident/internal/infrastructure/server/response"
-	"primedivident/internal/infrastructure/server/routes"
-	"primedivident/internal/infrastructure/socket"
-	"primedivident/internal/infrastructure/wire/providers"
-	wireGroup "primedivident/internal/infrastructure/wire/wire_group"
-	"primedivident/pkg/validator"
+	"primedividend/api/internal/config"
+	"primedividend/api/internal/handlers"
+	"primedividend/api/internal/infrastructure/server"
+	"primedividend/api/internal/infrastructure/server/response"
+	"primedividend/api/internal/infrastructure/server/routes"
+	"primedividend/api/internal/infrastructure/socket"
+	"primedividend/api/internal/infrastructure/wire/providers"
+	wireGroup "primedividend/api/internal/infrastructure/wire/wire_group"
+	"primedividend/api/pkg/validator"
 )
 
 func Initialize(ctx context.Context, cfg config.Config) server.Server {

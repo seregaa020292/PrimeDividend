@@ -1,6 +1,6 @@
 package handlers
 
-import "primedivident/internal/ports/ws/market"
+import "primedividend/api/internal/ports/ws/market"
 
 type WsHandlers struct {
 	Market market.HandlerMarket

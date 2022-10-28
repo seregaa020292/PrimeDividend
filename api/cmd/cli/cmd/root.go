@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"primedivident/internal/config"
+	"primedividend/api/internal/config"
 )
 
 var (

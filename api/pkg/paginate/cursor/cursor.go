@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"primedivident/pkg/utils/gog"
+	"primedividend/api/pkg/utils/gog"
 )
 
 type Cursor struct {

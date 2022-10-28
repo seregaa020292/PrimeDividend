@@ -1,9 +1,9 @@
 package provider
 
 import (
-	"primedivident/internal/infrastructure/server/response"
-	"primedivident/internal/modules/provider/query"
-	"primedivident/internal/presenters/provider"
+	"primedividend/api/internal/infrastructure/server/response"
+	"primedividend/api/internal/modules/provider/query"
+	"primedividend/api/internal/presenters/provider"
 )
 
 type HandlerProvider struct {

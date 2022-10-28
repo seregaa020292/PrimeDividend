@@ -3,10 +3,10 @@ package wire_group
 import (
 	"github.com/google/wire"
 
-	"primedivident/internal/modules/instrument/query"
-	"primedivident/internal/modules/instrument/repository"
-	http "primedivident/internal/ports/http/instrument"
-	presenter "primedivident/internal/presenters/instrument"
+	"primedividend/api/internal/modules/instrument/query"
+	"primedividend/api/internal/modules/instrument/repository"
+	http "primedividend/api/internal/ports/http/instrument"
+	presenter "primedividend/api/internal/presenters/instrument"
 )
 
 var Instrument = wire.NewSet(

@@ -5,8 +5,8 @@ import (
 
 	jet "github.com/go-jet/jet/v2/postgres"
 
-	"primedivident/internal/decorators"
-	"primedivident/internal/models/app/public/table"
+	"primedividend/api/internal/decorators"
+	"primedividend/api/internal/models/app/public/table"
 )
 
 type UpdatePatch = decorators.ColumnAssigment[any]

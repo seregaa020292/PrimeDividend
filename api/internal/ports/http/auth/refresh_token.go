@@ -3,9 +3,9 @@ package auth
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/openapi"
-	"primedivident/internal/modules/auth/dto"
-	"primedivident/internal/modules/auth/service/strategy"
+	"primedividend/api/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/modules/auth/dto"
+	"primedividend/api/internal/modules/auth/service/strategy"
 )
 
 func (h HandlerAuth) RefreshToken(w http.ResponseWriter, r *http.Request) {

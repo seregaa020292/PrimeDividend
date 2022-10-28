@@ -6,9 +6,9 @@ import (
 
 	"github.com/google/uuid"
 
-	"primedivident/internal/config/consts"
-	"primedivident/pkg/datetime"
-	"primedivident/pkg/utils/gog"
+	"primedividend/api/internal/config/consts"
+	"primedividend/api/pkg/datetime"
+	"primedividend/api/pkg/utils/gog"
 )
 
 type Token struct {

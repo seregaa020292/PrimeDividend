@@ -3,7 +3,7 @@ package provider
 import (
 	"net/http"
 
-	"primedivident/internal/modules/provider/query"
+	"primedividend/api/internal/modules/provider/query"
 )
 
 func (h HandlerProvider) GetProviders(w http.ResponseWriter, r *http.Request) {

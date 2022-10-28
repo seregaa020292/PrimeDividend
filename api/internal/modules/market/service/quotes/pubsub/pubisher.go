@@ -3,7 +3,7 @@ package pubsub
 import (
 	"context"
 
-	"primedivident/pkg/db/redis"
+	"primedividend/api/pkg/db/redis"
 )
 
 type Publisher interface {

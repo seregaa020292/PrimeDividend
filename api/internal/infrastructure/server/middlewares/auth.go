@@ -3,9 +3,9 @@ package middlewares
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/middlewares/helper"
-	"primedivident/internal/infrastructure/server/response"
-	"primedivident/internal/modules/auth/service/strategy"
+	"primedividend/api/internal/infrastructure/server/middlewares/helper"
+	"primedividend/api/internal/infrastructure/server/response"
+	"primedividend/api/internal/modules/auth/service/strategy"
 )
 
 type auth struct {

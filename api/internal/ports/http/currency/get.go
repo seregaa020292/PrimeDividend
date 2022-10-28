@@ -3,7 +3,7 @@ package currency
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/infrastructure/server/openapi"
 )
 
 func (h HandlerCurrency) GetCurrency(w http.ResponseWriter, r *http.Request, currencyId openapi.CurrencyId) {

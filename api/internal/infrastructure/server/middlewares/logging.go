@@ -7,9 +7,9 @@ import (
 
 	"github.com/go-chi/chi/v5/middleware"
 
-	"primedivident/internal/config/consts"
-	"primedivident/pkg/logger"
-	"primedivident/pkg/utils/gog"
+	"primedividend/api/internal/config/consts"
+	"primedividend/api/pkg/logger"
+	"primedividend/api/pkg/utils/gog"
 )
 
 type (

@@ -3,7 +3,7 @@ package offset
 import (
 	"math"
 
-	"primedivident/internal/config/consts"
+	"primedividend/api/internal/config/consts"
 )
 
 type Pager struct {

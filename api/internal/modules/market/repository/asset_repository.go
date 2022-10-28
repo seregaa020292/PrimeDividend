@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"primedivident/pkg/db/redis"
+	"primedividend/api/pkg/db/redis"
 )
 
 type AssetRepository interface {

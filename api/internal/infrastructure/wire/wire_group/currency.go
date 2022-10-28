@@ -3,10 +3,10 @@ package wire_group
 import (
 	"github.com/google/wire"
 
-	"primedivident/internal/modules/currency/query"
-	"primedivident/internal/modules/currency/repository"
-	http "primedivident/internal/ports/http/currency"
-	presenter "primedivident/internal/presenters/currency"
+	"primedividend/api/internal/modules/currency/query"
+	"primedividend/api/internal/modules/currency/repository"
+	http "primedividend/api/internal/ports/http/currency"
+	presenter "primedividend/api/internal/presenters/currency"
 )
 
 var Currency = wire.NewSet(

@@ -11,9 +11,9 @@ import (
 	ruTranslations "github.com/go-playground/validator/v10/translations/ru"
 	"github.com/google/uuid"
 
-	"primedivident/pkg/errs"
-	"primedivident/pkg/errs/errmsg"
-	"primedivident/pkg/utils/gog"
+	"primedividend/api/pkg/errs"
+	"primedividend/api/pkg/errs/errmsg"
+	"primedividend/api/pkg/utils/gog"
 )
 
 type playgroundValidator struct {

@@ -1,9 +1,9 @@
 package currency
 
 import (
-	"primedivident/internal/infrastructure/server/response"
-	"primedivident/internal/modules/currency/query"
-	"primedivident/internal/presenters/currency"
+	"primedividend/api/internal/infrastructure/server/response"
+	"primedividend/api/internal/modules/currency/query"
+	"primedividend/api/internal/presenters/currency"
 )
 
 type HandlerCurrency struct {

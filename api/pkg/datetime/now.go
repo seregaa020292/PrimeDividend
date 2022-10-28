@@ -7,7 +7,7 @@ import (
 
 	"github.com/jinzhu/now"
 
-	"primedivident/internal/config/consts"
+	"primedividend/api/internal/config/consts"
 )
 
 var (

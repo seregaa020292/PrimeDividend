@@ -3,10 +3,10 @@ package dto
 import (
 	"github.com/google/uuid"
 
-	"primedivident/internal/models/app/public/model"
-	"primedivident/internal/modules/auth/entity"
-	"primedivident/internal/modules/auth/service/strategy/auth"
-	"primedivident/pkg/token"
+	"primedividend/api/internal/models/app/public/model"
+	"primedividend/api/internal/modules/auth/entity"
+	"primedividend/api/internal/modules/auth/service/strategy/auth"
+	"primedividend/api/pkg/token"
 )
 
 func ModelSessionCreating(

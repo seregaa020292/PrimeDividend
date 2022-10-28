@@ -1,7 +1,7 @@
 package categorize
 
 import (
-	"primedivident/internal/modules/auth/service/strategy/auth"
+	"primedividend/api/internal/modules/auth/service/strategy/auth"
 )
 
 type (

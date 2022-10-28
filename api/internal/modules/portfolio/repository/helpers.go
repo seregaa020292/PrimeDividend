@@ -4,8 +4,8 @@ import (
 	jet "github.com/go-jet/jet/v2/postgres"
 	"github.com/google/uuid"
 
-	"primedivident/internal/decorators"
-	"primedivident/internal/models/app/public/table"
+	"primedividend/api/internal/decorators"
+	"primedividend/api/internal/models/app/public/table"
 )
 
 type FilterGetAll struct {

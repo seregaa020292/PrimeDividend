@@ -3,13 +3,13 @@ package wire_group
 import (
 	"github.com/google/wire"
 
-	"primedivident/internal/infrastructure/wire/providers"
-	"primedivident/internal/modules/auth/command"
-	"primedivident/internal/modules/auth/repository"
-	"primedivident/internal/modules/auth/service/email"
-	"primedivident/internal/modules/auth/service/strategy"
-	strategyRepository "primedivident/internal/modules/auth/service/strategy/repository"
-	http "primedivident/internal/ports/http/auth"
+	"primedividend/api/internal/infrastructure/wire/providers"
+	"primedividend/api/internal/modules/auth/command"
+	"primedividend/api/internal/modules/auth/repository"
+	"primedividend/api/internal/modules/auth/service/email"
+	"primedividend/api/internal/modules/auth/service/strategy"
+	strategyRepository "primedividend/api/internal/modules/auth/service/strategy/repository"
+	http "primedividend/api/internal/ports/http/auth"
 )
 
 var Auth = wire.NewSet(

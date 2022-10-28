@@ -3,11 +3,11 @@ package wire_group
 import (
 	"github.com/google/wire"
 
-	"primedivident/internal/modules/user/command"
-	"primedivident/internal/modules/user/query"
-	"primedivident/internal/modules/user/repository"
-	"primedivident/internal/ports/http/user"
-	presenter "primedivident/internal/presenters/user"
+	"primedividend/api/internal/modules/user/command"
+	"primedividend/api/internal/modules/user/query"
+	"primedividend/api/internal/modules/user/repository"
+	"primedividend/api/internal/ports/http/user"
+	presenter "primedividend/api/internal/presenters/user"
 )
 
 var User = wire.NewSet(

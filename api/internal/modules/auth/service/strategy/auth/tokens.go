@@ -5,9 +5,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 
-	"primedivident/internal/config"
-	"primedivident/internal/modules/auth/entity"
-	"primedivident/pkg/token"
+	"primedividend/api/internal/config"
+	"primedividend/api/internal/modules/auth/entity"
+	"primedividend/api/pkg/token"
 )
 
 type JwtTokens interface {

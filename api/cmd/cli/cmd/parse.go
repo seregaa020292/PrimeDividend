@@ -7,14 +7,14 @@ import (
 
 	"github.com/spf13/cobra"
 
-	currencyRepo "primedivident/internal/modules/currency/repository"
-	instrumentRepo "primedivident/internal/modules/instrument/repository"
-	marketRepo "primedivident/internal/modules/market/repository"
-	providerRepo "primedivident/internal/modules/provider/repository"
-	registerRepo "primedivident/internal/modules/register/repository"
-	"primedivident/internal/services/parser"
-	"primedivident/pkg/db/postgres"
-	"primedivident/pkg/utils/errlog"
+	currencyRepo "primedividend/api/internal/modules/currency/repository"
+	instrumentRepo "primedividend/api/internal/modules/instrument/repository"
+	marketRepo "primedividend/api/internal/modules/market/repository"
+	providerRepo "primedividend/api/internal/modules/provider/repository"
+	registerRepo "primedividend/api/internal/modules/register/repository"
+	"primedividend/api/internal/services/parser"
+	"primedividend/api/pkg/db/postgres"
+	"primedividend/api/pkg/utils/errlog"
 )
 
 var parseCmd = &cobra.Command{

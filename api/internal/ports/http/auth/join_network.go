@@ -3,11 +3,11 @@ package auth
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/openapi"
-	"primedivident/internal/modules/auth/service/strategy"
-	"primedivident/internal/modules/auth/service/strategy/auth"
-	"primedivident/pkg/errs"
-	"primedivident/pkg/errs/errmsg"
+	"primedividend/api/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/modules/auth/service/strategy"
+	"primedividend/api/internal/modules/auth/service/strategy/auth"
+	"primedividend/api/pkg/errs"
+	"primedividend/api/pkg/errs/errmsg"
 )
 
 func (h HandlerAuth) JoinNetwork(w http.ResponseWriter, r *http.Request, network openapi.Network) {

@@ -3,7 +3,7 @@ package dto
 import (
 	"net/http"
 
-	"primedivident/internal/modules/auth/service/strategy/auth"
+	"primedividend/api/internal/modules/auth/service/strategy/auth"
 )
 
 func AccountabilityByRequest(r *http.Request) auth.Accountability {

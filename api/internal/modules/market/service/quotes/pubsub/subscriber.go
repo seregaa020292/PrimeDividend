@@ -5,7 +5,7 @@ import (
 
 	client "github.com/go-redis/redis/v8"
 
-	"primedivident/pkg/db/redis"
+	"primedividend/api/pkg/db/redis"
 )
 
 type Subscriber interface {

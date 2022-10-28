@@ -1,4 +1,4 @@
-module primedivident
+module primedividend/api
 
 go 1.19
 

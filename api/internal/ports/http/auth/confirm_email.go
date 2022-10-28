@@ -3,7 +3,7 @@ package auth
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/infrastructure/server/openapi"
 )
 
 func (h HandlerAuth) ConfirmEmail(w http.ResponseWriter, r *http.Request) {

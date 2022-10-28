@@ -3,11 +3,11 @@ package query
 import (
 	"github.com/google/uuid"
 
-	"primedivident/internal/decorators"
-	"primedivident/internal/models/app/public/model"
-	"primedivident/internal/modules/portfolio/repository"
-	"primedivident/pkg/errs"
-	"primedivident/pkg/errs/errmsg"
+	"primedividend/api/internal/decorators"
+	"primedividend/api/internal/models/app/public/model"
+	"primedividend/api/internal/modules/portfolio/repository"
+	"primedividend/api/pkg/errs"
+	"primedividend/api/pkg/errs/errmsg"
 )
 
 type (

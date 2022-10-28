@@ -3,7 +3,7 @@ package market
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/infrastructure/server/openapi"
 )
 
 func (h HandlerMarket) GetMarketByTicker(w http.ResponseWriter, r *http.Request, ticker openapi.Ticker) {

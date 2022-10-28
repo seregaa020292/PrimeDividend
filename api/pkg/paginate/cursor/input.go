@@ -1,8 +1,8 @@
 package cursor
 
 import (
-	"primedivident/internal/config/consts"
-	"primedivident/pkg/utils/gog"
+	"primedividend/api/internal/config/consts"
+	"primedividend/api/pkg/utils/gog"
 )
 
 type PaginateInput struct {

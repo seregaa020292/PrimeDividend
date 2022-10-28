@@ -3,7 +3,7 @@ package quotes
 import (
 	"github.com/google/uuid"
 
-	"primedivident/internal/modules/market/service/quotes/message"
+	"primedividend/api/internal/modules/market/service/quotes/message"
 )
 
 type Clients struct {

@@ -5,17 +5,17 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"primedivident/internal/infrastructure/server/openapi"
-	"primedivident/internal/infrastructure/server/response"
-	"primedivident/internal/ports/http/asset"
-	"primedivident/internal/ports/http/auth"
-	"primedivident/internal/ports/http/currency"
-	"primedivident/internal/ports/http/instrument"
-	"primedivident/internal/ports/http/market"
-	"primedivident/internal/ports/http/portfolio"
-	"primedivident/internal/ports/http/provider"
-	"primedivident/internal/ports/http/register"
-	"primedivident/internal/ports/http/user"
+	"primedividend/api/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/infrastructure/server/response"
+	"primedividend/api/internal/ports/http/asset"
+	"primedividend/api/internal/ports/http/auth"
+	"primedividend/api/internal/ports/http/currency"
+	"primedividend/api/internal/ports/http/instrument"
+	"primedividend/api/internal/ports/http/market"
+	"primedividend/api/internal/ports/http/portfolio"
+	"primedividend/api/internal/ports/http/provider"
+	"primedividend/api/internal/ports/http/register"
+	"primedividend/api/internal/ports/http/user"
 )
 
 // HttpHandlers implements openapi.ServerInterface

@@ -1,10 +1,10 @@
 package asset
 
 import (
-	"primedivident/internal/infrastructure/server/response"
-	"primedivident/internal/modules/asset/command"
-	"primedivident/internal/modules/asset/query"
-	"primedivident/internal/presenters/asset"
+	"primedividend/api/internal/infrastructure/server/response"
+	"primedividend/api/internal/modules/asset/command"
+	"primedividend/api/internal/modules/asset/query"
+	"primedividend/api/internal/presenters/asset"
 )
 
 type HandlerAsset struct {

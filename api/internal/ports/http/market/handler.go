@@ -1,9 +1,9 @@
 package market
 
 import (
-	"primedivident/internal/infrastructure/server/response"
-	"primedivident/internal/modules/market/query"
-	"primedivident/internal/presenters/market"
+	"primedividend/api/internal/infrastructure/server/response"
+	"primedividend/api/internal/modules/market/query"
+	"primedividend/api/internal/presenters/market"
 )
 
 type HandlerMarket struct {

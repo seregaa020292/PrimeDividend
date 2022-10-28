@@ -1,10 +1,10 @@
 package user
 
 import (
-	"primedivident/internal/infrastructure/server/response"
-	"primedivident/internal/modules/user/command"
-	"primedivident/internal/modules/user/query"
-	"primedivident/internal/presenters/user"
+	"primedividend/api/internal/infrastructure/server/response"
+	"primedividend/api/internal/modules/user/command"
+	"primedividend/api/internal/modules/user/query"
+	"primedividend/api/internal/presenters/user"
 )
 
 type HandlerUser struct {

@@ -3,9 +3,9 @@ package asset
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/middlewares/helper"
-	"primedivident/internal/infrastructure/server/openapi"
-	"primedivident/internal/modules/asset/command"
+	"primedividend/api/internal/infrastructure/server/middlewares/helper"
+	"primedividend/api/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/modules/asset/command"
 )
 
 func (h HandlerAsset) CreateUserAsset(w http.ResponseWriter, r *http.Request, portfolioId openapi.PortfolioId) {

@@ -6,10 +6,10 @@ import (
 
 	"golang.org/x/oauth2"
 
-	"primedivident/internal/modules/auth/dto"
-	"primedivident/internal/modules/auth/entity"
-	"primedivident/internal/modules/auth/service/strategy/auth"
-	"primedivident/internal/modules/auth/service/strategy/repository"
+	"primedividend/api/internal/modules/auth/dto"
+	"primedividend/api/internal/modules/auth/entity"
+	"primedividend/api/internal/modules/auth/service/strategy/auth"
+	"primedividend/api/internal/modules/auth/service/strategy/repository"
 )
 
 type Service struct {

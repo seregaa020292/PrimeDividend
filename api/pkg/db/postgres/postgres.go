@@ -7,8 +7,8 @@ import (
 	_ "github.com/jackc/pgx/stdlib"
 	"github.com/jmoiron/sqlx"
 
-	"primedivident/internal/config"
-	"primedivident/pkg/utils/errlog"
+	"primedividend/api/internal/config"
+	"primedividend/api/pkg/utils/errlog"
 )
 
 const (

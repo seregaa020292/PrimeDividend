@@ -7,8 +7,8 @@ import (
 
 	"github.com/go-redis/redis/v8"
 
-	"primedivident/internal/config"
-	"primedivident/pkg/utils/errlog"
+	"primedividend/api/internal/config"
+	"primedividend/api/pkg/utils/errlog"
 )
 
 const (

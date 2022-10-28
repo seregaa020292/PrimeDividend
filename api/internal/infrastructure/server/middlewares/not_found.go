@@ -3,8 +3,8 @@ package middlewares
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/response"
-	"primedivident/pkg/errs"
+	"primedividend/api/internal/infrastructure/server/response"
+	"primedividend/api/pkg/errs"
 )
 
 func NotFound(w http.ResponseWriter, r *http.Request) {

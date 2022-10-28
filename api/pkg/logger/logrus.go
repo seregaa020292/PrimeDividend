@@ -9,7 +9,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"primedivident/pkg/utils"
+	"primedividend/api/pkg/utils"
 )
 
 type Logrus struct {

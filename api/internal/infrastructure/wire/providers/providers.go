@@ -1,19 +1,19 @@
 package providers
 
 import (
-	"primedivident/internal/config"
-	"primedivident/internal/config/consts"
-	"primedivident/internal/modules/auth/service/strategy"
-	"primedivident/internal/modules/auth/service/strategy/auth"
-	"primedivident/internal/modules/auth/service/strategy/strategies"
-	"primedivident/internal/modules/market/service/quotes"
-	"primedivident/internal/modules/market/service/quotes/providers"
-	"primedivident/pkg/db/postgres"
-	"primedivident/pkg/db/redis"
-	"primedivident/pkg/graceful"
-	"primedivident/pkg/logger"
-	"primedivident/pkg/mailer"
-	"primedivident/pkg/tpl"
+	"primedividend/api/internal/config"
+	"primedividend/api/internal/config/consts"
+	"primedividend/api/internal/modules/auth/service/strategy"
+	"primedividend/api/internal/modules/auth/service/strategy/auth"
+	"primedividend/api/internal/modules/auth/service/strategy/strategies"
+	"primedividend/api/internal/modules/market/service/quotes"
+	"primedividend/api/internal/modules/market/service/quotes/providers"
+	"primedividend/api/pkg/db/postgres"
+	"primedividend/api/pkg/db/redis"
+	"primedividend/api/pkg/graceful"
+	"primedividend/api/pkg/logger"
+	"primedividend/api/pkg/mailer"
+	"primedividend/api/pkg/tpl"
 )
 
 func ProvideLogger(cfg config.Config) logger.Logger {

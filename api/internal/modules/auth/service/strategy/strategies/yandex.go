@@ -6,13 +6,13 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/yandex"
 
-	"primedivident/internal/config"
-	"primedivident/internal/modules/auth/entity"
-	"primedivident/internal/modules/auth/service/strategy"
-	"primedivident/internal/modules/auth/service/strategy/auth"
-	"primedivident/internal/modules/auth/service/strategy/categorize"
-	"primedivident/pkg/errs"
-	"primedivident/pkg/errs/errmsg"
+	"primedividend/api/internal/config"
+	"primedividend/api/internal/modules/auth/entity"
+	"primedividend/api/internal/modules/auth/service/strategy"
+	"primedividend/api/internal/modules/auth/service/strategy/auth"
+	"primedividend/api/internal/modules/auth/service/strategy/categorize"
+	"primedividend/api/pkg/errs"
+	"primedividend/api/pkg/errs/errmsg"
 )
 
 const oauthUrlYandex = "https://login.yandex.ru/info"

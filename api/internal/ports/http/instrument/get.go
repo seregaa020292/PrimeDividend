@@ -3,7 +3,7 @@ package instrument
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/infrastructure/server/openapi"
 )
 
 func (h HandlerInstrument) GetInstrument(w http.ResponseWriter, r *http.Request, instrumentId openapi.InstrumentId) {

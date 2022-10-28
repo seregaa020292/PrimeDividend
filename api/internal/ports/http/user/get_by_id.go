@@ -3,7 +3,7 @@ package user
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/infrastructure/server/openapi"
 )
 
 func (h HandlerUser) GetUserById(w http.ResponseWriter, r *http.Request, userId openapi.UserId) {

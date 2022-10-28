@@ -4,10 +4,10 @@ import (
 	jet "github.com/go-jet/jet/v2/postgres"
 	"github.com/google/uuid"
 
-	"primedivident/internal/models"
-	"primedivident/internal/models/app/public/model"
-	"primedivident/internal/models/app/public/table"
-	"primedivident/pkg/db/postgres"
+	"primedividend/api/internal/models"
+	"primedividend/api/internal/models/app/public/model"
+	"primedividend/api/internal/models/app/public/table"
+	"primedividend/api/pkg/db/postgres"
 )
 
 type Repository interface {

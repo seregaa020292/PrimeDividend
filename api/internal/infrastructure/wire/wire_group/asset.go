@@ -3,11 +3,11 @@ package wire_group
 import (
 	"github.com/google/wire"
 
-	"primedivident/internal/modules/asset/command"
-	"primedivident/internal/modules/asset/query"
-	"primedivident/internal/modules/asset/repository"
-	"primedivident/internal/ports/http/asset"
-	presenter "primedivident/internal/presenters/asset"
+	"primedividend/api/internal/modules/asset/command"
+	"primedividend/api/internal/modules/asset/query"
+	"primedividend/api/internal/modules/asset/repository"
+	"primedividend/api/internal/ports/http/asset"
+	presenter "primedividend/api/internal/presenters/asset"
 )
 
 var Asset = wire.NewSet(

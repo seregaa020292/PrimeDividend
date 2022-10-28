@@ -6,12 +6,12 @@ import (
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 
-	"primedivident/internal/models"
-	"primedivident/internal/models/app/public/model"
-	"primedivident/internal/models/app/public/table"
-	"primedivident/internal/modules/auth/dto"
-	"primedivident/internal/modules/auth/entity"
-	"primedivident/pkg/db/postgres"
+	"primedividend/api/internal/models"
+	"primedividend/api/internal/models/app/public/model"
+	"primedividend/api/internal/models/app/public/table"
+	"primedividend/api/internal/modules/auth/dto"
+	"primedividend/api/internal/modules/auth/entity"
+	"primedividend/api/pkg/db/postgres"
 )
 
 type Repository interface {

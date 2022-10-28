@@ -8,14 +8,14 @@ import (
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 
-	"primedivident/internal/config/consts"
-	"primedivident/internal/models/app/public/model"
-	"primedivident/internal/models/app/public/table"
-	"primedivident/internal/modules/auth/dto"
-	"primedivident/internal/modules/auth/entity"
-	"primedivident/internal/modules/auth/service/strategy/auth"
-	"primedivident/pkg/db/postgres"
-	"primedivident/pkg/token"
+	"primedividend/api/internal/config/consts"
+	"primedividend/api/internal/models/app/public/model"
+	"primedividend/api/internal/models/app/public/table"
+	"primedividend/api/internal/modules/auth/dto"
+	"primedividend/api/internal/modules/auth/entity"
+	"primedividend/api/internal/modules/auth/service/strategy/auth"
+	"primedividend/api/pkg/db/postgres"
+	"primedividend/api/pkg/token"
 )
 
 type Repository interface {

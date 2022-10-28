@@ -3,11 +3,11 @@ package wire_group
 import (
 	"github.com/google/wire"
 
-	"primedivident/internal/modules/portfolio/command"
-	"primedivident/internal/modules/portfolio/query"
-	"primedivident/internal/modules/portfolio/repository"
-	http "primedivident/internal/ports/http/portfolio"
-	presenter "primedivident/internal/presenters/portfolio"
+	"primedividend/api/internal/modules/portfolio/command"
+	"primedividend/api/internal/modules/portfolio/query"
+	"primedividend/api/internal/modules/portfolio/repository"
+	http "primedividend/api/internal/ports/http/portfolio"
+	presenter "primedividend/api/internal/presenters/portfolio"
 )
 
 var Portfolio = wire.NewSet(

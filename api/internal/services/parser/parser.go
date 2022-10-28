@@ -9,15 +9,15 @@ import (
 
 	"github.com/google/uuid"
 
-	"primedivident/internal/config"
-	"primedivident/internal/models/app/public/model"
-	currencyRepo "primedivident/internal/modules/currency/repository"
-	instrumentRepo "primedivident/internal/modules/instrument/repository"
-	marketRepo "primedivident/internal/modules/market/repository"
-	"primedivident/internal/modules/market/service/quotes/providers"
-	providerRepo "primedivident/internal/modules/provider/repository"
-	registerRepo "primedivident/internal/modules/register/repository"
-	"primedivident/pkg/utils/errlog"
+	"primedividend/api/internal/config"
+	"primedividend/api/internal/models/app/public/model"
+	currencyRepo "primedividend/api/internal/modules/currency/repository"
+	instrumentRepo "primedividend/api/internal/modules/instrument/repository"
+	marketRepo "primedividend/api/internal/modules/market/repository"
+	"primedividend/api/internal/modules/market/service/quotes/providers"
+	providerRepo "primedividend/api/internal/modules/provider/repository"
+	registerRepo "primedividend/api/internal/modules/register/repository"
+	"primedividend/api/pkg/utils/errlog"
 )
 
 type Parser struct {

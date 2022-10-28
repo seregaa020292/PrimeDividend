@@ -3,7 +3,7 @@ package portfolio
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/infrastructure/server/openapi"
 )
 
 func (h HandlerPortfolio) GetPortfolio(w http.ResponseWriter, r *http.Request, portfolioId openapi.PortfolioId) {

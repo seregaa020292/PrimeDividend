@@ -1,11 +1,11 @@
 package strategy
 
 import (
-	"primedivident/internal/modules/auth/entity"
-	"primedivident/internal/modules/auth/service/strategy/auth"
-	"primedivident/internal/modules/auth/service/strategy/categorize"
-	"primedivident/pkg/errs"
-	"primedivident/pkg/errs/errmsg"
+	"primedividend/api/internal/modules/auth/entity"
+	"primedividend/api/internal/modules/auth/service/strategy/auth"
+	"primedividend/api/internal/modules/auth/service/strategy/categorize"
+	"primedividend/api/pkg/errs"
+	"primedividend/api/pkg/errs/errmsg"
 )
 
 type Strategy interface {

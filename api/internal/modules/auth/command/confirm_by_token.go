@@ -3,11 +3,11 @@ package command
 import (
 	"github.com/google/uuid"
 
-	"primedivident/internal/decorators"
-	"primedivident/internal/modules/auth/repository"
-	"primedivident/internal/modules/auth/service/email"
-	"primedivident/pkg/errs"
-	"primedivident/pkg/errs/errmsg"
+	"primedividend/api/internal/decorators"
+	"primedividend/api/internal/modules/auth/repository"
+	"primedividend/api/internal/modules/auth/service/email"
+	"primedividend/api/pkg/errs"
+	"primedividend/api/pkg/errs/errmsg"
 )
 
 type (

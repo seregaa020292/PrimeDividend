@@ -6,10 +6,10 @@ import (
 
 	"github.com/google/uuid"
 
-	"primedivident/pkg/datetime"
-	"primedivident/pkg/errs"
-	"primedivident/pkg/errs/errmsg"
-	"primedivident/pkg/utils"
+	"primedividend/api/pkg/datetime"
+	"primedividend/api/pkg/errs"
+	"primedividend/api/pkg/errs/errmsg"
+	"primedividend/api/pkg/utils"
 )
 
 const OauthState = "oauth-state"

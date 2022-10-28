@@ -3,7 +3,7 @@ package mailer
 import (
 	"fmt"
 
-	"primedivident/pkg/logger"
+	"primedividend/api/pkg/logger"
 )
 
 type Observer struct {

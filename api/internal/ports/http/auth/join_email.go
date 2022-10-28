@@ -3,8 +3,8 @@ package auth
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/openapi"
-	"primedivident/internal/modules/auth/command"
+	"primedividend/api/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/modules/auth/command"
 )
 
 func (h HandlerAuth) JoinEmail(w http.ResponseWriter, r *http.Request) {

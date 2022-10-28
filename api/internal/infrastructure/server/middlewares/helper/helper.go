@@ -8,11 +8,11 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/google/uuid"
 
-	"primedivident/internal/config/consts"
-	"primedivident/internal/modules/auth/entity"
-	"primedivident/pkg/errs"
-	"primedivident/pkg/errs/errmsg"
-	"primedivident/pkg/logger"
+	"primedividend/api/internal/config/consts"
+	"primedividend/api/internal/modules/auth/entity"
+	"primedividend/api/pkg/errs"
+	"primedividend/api/pkg/errs/errmsg"
+	"primedividend/api/pkg/logger"
 )
 
 func GetLogEntry(r *http.Request) logger.Logger {

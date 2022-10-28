@@ -1,9 +1,9 @@
 package market
 
 import (
-	"primedivident/internal/infrastructure/server/openapi"
-	"primedivident/internal/models/app/public/model"
-	"primedivident/internal/modules/market/query"
+	"primedividend/api/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/models/app/public/model"
+	"primedividend/api/internal/modules/market/query"
 )
 
 type Presenter interface {

@@ -3,7 +3,7 @@ package auth
 import (
 	"net/http"
 
-	"primedivident/internal/modules/auth/service/strategy"
+	"primedividend/api/internal/modules/auth/service/strategy"
 )
 
 func (h HandlerAuth) Logout(w http.ResponseWriter, r *http.Request) {

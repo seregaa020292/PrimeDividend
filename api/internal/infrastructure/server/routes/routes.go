@@ -5,11 +5,11 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httprate"
 
-	"primedivident/internal/config/consts"
-	"primedivident/internal/handlers"
-	"primedivident/internal/infrastructure/server/middlewares"
-	"primedivident/internal/infrastructure/server/openapi"
-	"primedivident/internal/modules/auth/service/strategy"
+	"primedividend/api/internal/config/consts"
+	"primedividend/api/internal/handlers"
+	"primedividend/api/internal/infrastructure/server/middlewares"
+	"primedividend/api/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/modules/auth/service/strategy"
 )
 
 type Routes struct {

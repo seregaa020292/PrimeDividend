@@ -1,9 +1,9 @@
 package dto
 
 import (
-	"primedivident/internal/models"
-	"primedivident/internal/models/app/public/model"
-	"primedivident/internal/modules/auth/entity"
+	"primedividend/api/internal/models"
+	"primedividend/api/internal/models/app/public/model"
+	"primedividend/api/internal/modules/auth/entity"
 )
 
 func EntityUserByModel(user model.Users) entity.User {

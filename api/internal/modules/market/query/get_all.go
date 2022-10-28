@@ -1,12 +1,12 @@
 package query
 
 import (
-	"primedivident/internal/decorators"
-	"primedivident/internal/models/app/public/model"
-	"primedivident/internal/modules/market/repository"
-	"primedivident/pkg/errs"
-	"primedivident/pkg/errs/errmsg"
-	"primedivident/pkg/paginate/cursor"
+	"primedividend/api/internal/decorators"
+	"primedividend/api/internal/models/app/public/model"
+	"primedividend/api/internal/modules/market/repository"
+	"primedividend/api/pkg/errs"
+	"primedividend/api/pkg/errs/errmsg"
+	"primedividend/api/pkg/paginate/cursor"
 )
 
 type (

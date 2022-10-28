@@ -5,9 +5,9 @@ import (
 
 	"github.com/go-chi/render"
 
-	"primedivident/pkg/logger"
-	"primedivident/pkg/utils/gog"
-	"primedivident/pkg/validator"
+	"primedividend/api/pkg/logger"
+	"primedividend/api/pkg/utils/gog"
+	"primedividend/api/pkg/validator"
 )
 
 type Responder interface {

@@ -5,10 +5,10 @@ import (
 	"log"
 	"net/http"
 
-	"primedivident/internal/config/consts"
-	"primedivident/internal/infrastructure/server/routes"
-	"primedivident/pkg/graceful"
-	"primedivident/pkg/utils/errlog"
+	"primedividend/api/internal/config/consts"
+	"primedividend/api/internal/infrastructure/server/routes"
+	"primedividend/api/pkg/graceful"
+	"primedividend/api/pkg/utils/errlog"
 )
 
 type Server struct {

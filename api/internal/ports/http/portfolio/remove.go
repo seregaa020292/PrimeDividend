@@ -3,9 +3,9 @@ package portfolio
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/middlewares/helper"
-	"primedivident/internal/infrastructure/server/openapi"
-	"primedivident/internal/modules/portfolio/command"
+	"primedividend/api/internal/infrastructure/server/middlewares/helper"
+	"primedividend/api/internal/infrastructure/server/openapi"
+	"primedividend/api/internal/modules/portfolio/command"
 )
 
 func (h HandlerPortfolio) RemovePortfolio(w http.ResponseWriter, r *http.Request, portfolioId openapi.PortfolioId) {

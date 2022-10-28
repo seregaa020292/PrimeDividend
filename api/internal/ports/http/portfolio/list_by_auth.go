@@ -3,9 +3,9 @@ package portfolio
 import (
 	"net/http"
 
-	"primedivident/internal/infrastructure/server/middlewares/helper"
-	"primedivident/internal/modules/portfolio/query"
-	"primedivident/pkg/utils/gog"
+	"primedividend/api/internal/infrastructure/server/middlewares/helper"
+	"primedividend/api/internal/modules/portfolio/query"
+	"primedividend/api/pkg/utils/gog"
 )
 
 func (h HandlerPortfolio) GetUserPortfolios(w http.ResponseWriter, r *http.Request) {

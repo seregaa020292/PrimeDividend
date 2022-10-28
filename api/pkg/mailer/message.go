@@ -6,7 +6,7 @@ import (
 
 	"github.com/jordan-wright/email"
 
-	"primedivident/pkg/utils/gog"
+	"primedividend/api/pkg/utils/gog"
 )
 
 // Attachment represents an email attachment.

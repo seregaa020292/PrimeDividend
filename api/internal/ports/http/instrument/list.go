@@ -3,7 +3,7 @@ package instrument
 import (
 	"net/http"
 
-	"primedivident/internal/modules/instrument/query"
+	"primedividend/api/internal/modules/instrument/query"
 )
 
 func (h HandlerInstrument) GetInstruments(w http.ResponseWriter, r *http.Request) {
