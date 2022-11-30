@@ -23,9 +23,9 @@ services:
         USER_ID: 1000
         GROUP_ID: 1000
     environment:
-      TZ: Europe/Moscow
+      TZ: ${TIME_ZONE}
       APP_NAME: PrimeDividend
-      APP_ENV: development
+      APP_ENV: ${APP_ENV}
       SITE_ORIGIN: http://localhost
       DB_HOST: api-postgres
       DB_PORT: 5432
@@ -65,6 +65,23 @@ services:
       - ./specs:/app/specs:ro
     command: sh -c "until [ -f .done ] ; do sleep 1 ; done && air"
 
+  quotes-go:
+    build:
+      context: quotes/docker
+      dockerfile: development/go/Dockerfile
+      args:
+        USER_ID: 1000
+        GROUP_ID: 1000
+    environment:
+      TZ: ${TIME_ZONE}
+      APP_ENV: ${APP_ENV}
+      REDIS_HOST: api-redis
+      REDIS_PORT: 6379
+      TINKOFF_AUTH_TOKEN: ${TINKOFF_AUTH_TOKEN}
+    volumes:
+      - ./quotes:/app
+    command: sh -c "until [ -f .done ] ; do sleep 1 ; done && air"
+
   front-nginx:
     build:
       context: front/docker/development/nginx
@@ -80,7 +97,7 @@ services:
   api-postgres:
     image: postgres:13.3-alpine
     environment:
-      TZ: Europe/Moscow
+      TZ: ${TIME_ZONE}
       POSTGRES_DB: app
       POSTGRES_USER: app
       POSTGRES_PASSWORD_FILE: /run/secrets/api_db_password
@@ -96,7 +113,7 @@ services:
     ports:
       - "63791:6379"
     environment:
-      TZ: Europe/Moscow
+      TZ: ${TIME_ZONE}
     restart: on-failure
     volumes:
       - api-redis:/data

@@ -1,0 +1,43 @@
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - asciicheck
+    - dogsled
+    - exhaustive
+    - exportloopref
+    - gocognit
+    - goconst
+    - gofmt
+    - goheader
+    - goimports
+    - gosec
+    - misspell
+    - nakedret
+    - nestif
+    - unconvert
+    - unparam
+    - whitespace
+    - lll
+
+linters-settings:
+  lll:
+    line-length: 120
+  goimports:
+    custom-order: true
+
+issues:
+  exclude:
+    - "composite literal uses unkeyed fields"
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - gosec
+        - noctx
+        - unparam
+        - bodyclose

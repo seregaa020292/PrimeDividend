@@ -12,14 +12,14 @@ up: docker-up
 down: docker-down
 restart: down up
 
-full-clear: docker-down-clear api-clear front-clear
-full-init: api-init front-init
-full-done: api-done front-done
+full-clear: docker-down-clear api-clear quotes-clear front-clear
+full-init: api-init quotes-init front-init
+full-done: api-done quotes-done front-done
 
 full-check: full-lint full-test
-full-lint: api-lint front-lint
-full-test: api-test front-test
-full-upgrade: api-mod-update front-yarn-upgrade
+full-lint: api-lint front-lint quotes-lint
+full-test: api-test front-test quotes-test
+full-upgrade: api-mod-update quotes-mod-update front-yarn-upgrade
 
 # ==============================================================================
 # Docker support
@@ -97,6 +97,42 @@ api-gen-oapi:
 
 api-gen-gojet:
 	docker-compose exec api-go gojet -path=./internal/models -ignore-tables=goose_db_version
+
+# ==============================================================================
+# Quotes commands
+
+quotes-init: quotes-install
+quotes-install: quotes-mod-download quotes-mod-vendor
+quotes-check: quotes-lint quotes-test
+
+quotes-clear:
+	docker run --rm -v ${PWD}/quotes:/app -w /app alpine sh -c 'rm -rf .done bin'
+
+quotes-done:
+	docker run --rm -v ${PWD}/quotes:/app -w /app alpine touch .done
+
+quotes-mod-tidy:
+	docker-compose exec quotes-go go mod tidy
+
+quotes-mod-vendor:
+	docker-compose exec quotes-go go mod vendor
+
+quotes-mod-update:
+	docker-compose exec quotes-go go get -u ./...
+	docker-compose exec quotes-go go mod tidy
+	docker-compose exec quotes-go go mod vendor
+
+quotes-mod-download:
+	docker-compose exec quotes-go go mod download
+
+quotes-lint:
+	docker-compose exec quotes-go golangci-lint run
+
+quotes-test:
+	docker-compose exec quotes-go go test -count=1 -p=8 -parallel=8 -race ./...
+
+quotes-gen-wire:
+	docker-compose exec quotes-go wire ./internal/wire/
 
 # ==============================================================================
 # Console commands

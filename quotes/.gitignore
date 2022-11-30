@@ -1,0 +1,19 @@
+# Editor directories and files
+.DS_Store
+.idea
+
+# Binary app
+bin
+tmp/*
+!/tmp/.gitkeep
+
+# Docker for start
+.done
+
+# Local env files
+.env
+
+# Test
+cover.out
+
+vendor
