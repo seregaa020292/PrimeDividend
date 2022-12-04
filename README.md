@@ -1,7 +1,10 @@
 # PrimeDividend
 
-### Пользовательский интерфейс Front:
+### Пользовательский интерфейс Website:
 http://localhost
+
+### Пользовательский интерфейс Cabinet:
+http://cabinet.localhost
 
 ### Backend Api:
 http://api.localhost

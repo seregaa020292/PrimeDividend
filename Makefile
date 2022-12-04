@@ -12,14 +12,14 @@ up: docker-up
 down: docker-down
 restart: down up
 
-full-clear: docker-down-clear api-clear quotes-clear front-clear
-full-init: api-init quotes-init front-init
-full-done: api-done quotes-done front-done
+full-clear: docker-down-clear api-clear quotes-clear front-clear website-clear
+full-init: api-init quotes-init front-init website-init
+full-done: api-done quotes-done front-done website-done
 
 full-check: full-lint full-test
 full-lint: api-lint front-lint quotes-lint
 full-test: api-test front-test quotes-test
-full-upgrade: api-mod-update quotes-mod-update front-yarn-upgrade
+full-upgrade: api-mod-update quotes-mod-update front-yarn-upgrade website-yarn-upgrade
 
 # ==============================================================================
 # Docker support
@@ -146,26 +146,29 @@ cli-run:
 # ==============================================================================
 # Migrate postgresql
 
+migrate-api-go:
+	docker compose exec api-go migrate $(command)
+
 migrate-create:
-	docker compose exec api-go migrate create $(p) $(or $(t), sql)
+	make migrate-api-go command="create $(p) $(or $(t), sql)"
 
 migrate-up:
-	docker compose exec api-go migrate up
+	make migrate-api-go command="up"
 
 migrate-down:
-	docker compose exec api-go migrate down
+	make migrate-api-go command="down"
 
 migrate-redo:
-	docker compose exec api-go migrate redo
+	make migrate-api-go command="redo"
 
 migrate-reset:
-	docker compose exec api-go migrate reset
+	make migrate-api-go command="reset"
 
 migrate-version:
-	docker compose exec api-go migrate version
+	make migrate-api-go command="version"
 
 migrate-fix:
-	docker compose exec api-go migrate fix
+	make migrate-api-go command="fix"
 
 # ==============================================================================
 # Front commands
@@ -179,20 +182,52 @@ front-clear:
 front-done:
 	docker run --rm -v ${PWD}/front:/app -w /app alpine touch .done
 
+front-yarn:
+	docker compose exec front-node yarn $(command)
+
 front-yarn-install:
-	docker compose exec front-node yarn install
+	make front-yarn command="install"
 
 front-yarn-add:
-	docker compose exec front-node yarn add $(p)
+	make front-yarn command="add $(p)"
+
+front-yarn-outdated:
+	make front-yarn command="outdated"
 
 front-yarn-upgrade:
-	docker compose exec front-node yarn upgrade --latest
+	make front-yarn command="upgrade --latest"
 
 front-lint:
-	docker compose exec front-node yarn lint
+	make front-yarn command="lint"
 
 front-test:
-	docker compose exec front-node yarn test
+	make front-yarn command="test"
 
 front-test-coverage:
-	docker compose exec front-node yarn test:cov
+	make front-yarn command="test:cov"
+
+# ==============================================================================
+# Website commands
+
+website-init: website-yarn-install
+
+website-clear:
+	docker run --rm -v ${PWD}/website:/app -w /app alpine sh -c 'rm -rf .done dist tmp'
+
+website-done:
+	docker run --rm -v ${PWD}/website:/app -w /app alpine touch .done
+
+website-yarn:
+	docker compose exec website-node yarn $(command)
+
+website-yarn-install:
+	make website-yarn command="install"
+
+website-yarn-add:
+	make website-yarn command="add $(p)"
+
+website-yarn-outdated:
+	make website-yarn command="outdated"
+
+website-yarn-upgrade:
+	make website-yarn command="upgrade --latest"

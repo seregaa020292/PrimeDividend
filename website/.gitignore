@@ -1,9 +1,11 @@
-/.idea
-/.DS_Store
-/node_modules
-/tmp
-/dist
-/.done
+node_modules
+*.log*
+.nuxt
+.nitro
+.cache
+.output
+.env
+dist
 
 # Logs
 logs
@@ -13,3 +15,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+
+.idea
+.DS_Store
+.done
+tmp

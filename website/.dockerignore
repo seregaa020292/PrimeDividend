@@ -4,6 +4,10 @@
 /tmp
 /dist
 /.done
+/.nuxt
+/.nitro
+/.cache
+/.output
 
 # Logs
 logs

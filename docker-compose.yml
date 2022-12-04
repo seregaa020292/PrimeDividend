@@ -82,6 +82,18 @@ services:
       - ./quotes:/app
     command: sh -c "until [ -f .done ] ; do sleep 1 ; done && air"
 
+  website-nginx:
+    build:
+      context: website/docker/development/nginx
+
+  website-node:
+    build:
+      context: website/docker/development/node
+    volumes:
+      - ./website:/app
+    command: sh -c "until [ -f .done ] ; do sleep 1 ; done && yarn dev"
+    tty: true
+
   front-nginx:
     build:
       context: front/docker/development/nginx
