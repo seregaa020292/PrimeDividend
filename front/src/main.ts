@@ -1,12 +1,7 @@
-import '@/assets/styles/style.scss'
-import 'element-plus/dist/index.css'
+import Application from "@/app"
 
-import ElementPlus from 'element-plus'
-import { createApp } from 'vue'
+const application = new Application()
 
-import App from '@/App.vue'
+application.mount('#app')
 
-const app = createApp(App)
-app.use(ElementPlus)
-
-app.mount('#app')
+export const getApplication = (): Application => application
