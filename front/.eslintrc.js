@@ -28,6 +28,7 @@ module.exports = {
     'vue/html-closing-bracket-newline': 'off',
     'vue/html-indent': 'off',
     'vue/html-self-closing': 'off',
+    'vue/multi-word-component-names': 'off',
   },
   plugins: ['simple-import-sort'],
 }

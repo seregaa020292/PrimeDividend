@@ -1,5 +1,4 @@
-
 export default {
-  path: "/:pathMatch(.*)*",
-  component: () => import("@/pages/404.vue")
+  path: '/:pathMatch(.*)*',
+  component: () => import('@/pages/PageNotFound.vue'),
 }

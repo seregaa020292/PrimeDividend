@@ -1,7 +1,3 @@
-<template>
-  Demo Page
-</template>
+<template>Demo Page</template>
 
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>

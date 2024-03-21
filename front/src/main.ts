@@ -1,4 +1,4 @@
-import Application from "@/app"
+import Application from '@/app'
 
 const application = new Application()
 
