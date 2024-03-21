@@ -1,0 +1,83 @@
+.m-auto {
+  margin: auto;
+}
+
+// margin
+@for $i from 0 through 8 {
+  .m-#{$i} {
+    $unit: if($i == 0, "", rem);
+    margin: #{calc($i / 4)}#{$unit};
+  }
+}
+
+.mx-auto {
+  margin-inline: auto;
+}
+
+// margin-inline
+@for $i from 0 through 8 {
+  .mx-#{$i} {
+    $unit: if($i == 0, "", rem);
+    margin-inline: #{calc($i / 4)}#{$unit};
+  }
+}
+
+.my-auto {
+  margin-block: auto;
+}
+
+// margin-block
+@for $i from 0 through 8 {
+  .my-#{$i} {
+    $unit: if($i == 0, "", rem);
+    margin-block: #{calc($i / 4)}#{$unit};
+  }
+}
+
+.mt-auto {
+  margin-top: auto;
+}
+
+// margin-top
+@for $i from 0 through 8 {
+  .mt-#{$i} {
+    $unit: if($i == 0, "", rem);
+    margin-top: #{calc($i / 4)}#{$unit};
+  }
+}
+
+.mr-auto {
+  margin-right: auto;
+}
+
+// margin-right
+@for $i from 0 through 8 {
+  .mr-#{$i} {
+    $unit: if($i == 0, "", rem);
+    margin-right: #{calc($i / 4)}#{$unit};
+  }
+}
+
+.mb-auto {
+  margin-bottom: auto;
+}
+
+// margin-bottom
+@for $i from 0 through 8 {
+  .mb-#{$i} {
+    $unit: if($i == 0, "", rem);
+    margin-bottom: #{calc($i / 4)}#{$unit};
+  }
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+// margin-left
+@for $i from 0 through 8 {
+  .ml-#{$i} {
+    $unit: if($i == 0, "", rem);
+    margin-left: #{calc($i / 4)}#{$unit};
+  }
+}

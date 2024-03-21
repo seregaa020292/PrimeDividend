@@ -1,0 +1,140 @@
+@use "sass:map";
+
+$colors: () !default;
+
+// prettier-ignore
+$colors: map-merge((
+  "white"               : ( "hex": #ffffff, "display-p3": 1 1 1 ),
+  "primary-text"        : ( "hex": #1e1e1e, "display-p3": 0.118 0.118 0.118 ),
+  "secondary-text"      : ( "hex": #918f90, "display-p3": 0.567 0.561 0.564 ),
+  "border-default"      : ( "hex": #dedede, "display-p3": 0.871 0.871 0.871 ),
+  "border-hover"        : ( "hex": #bdbcbc, "display-p3": 0.74 0.737 0.737 ),
+  "background-dark"     : ( "hex": #041c3b, "display-p3": 0.04 0.108 0.223 ),
+  "background-promo"    : ( "hex": #ecf3fd, "display-p3": 0.93 0.952 0.988 ),
+  "tooltip-background"  : ( "hex": #ededed, "display-p3": 0.929 0.929 0.929 ),
+  "background-interface": ( "hex": #f8f8f8, "display-p3": 0.973 0.973 0.973 ),
+
+  "success"             : ( "hex": #52d978, "display-p3": 0.476 0.84 0.509 ),
+  "warning"             : ( "hex": #f9690e, "display-p3": 0.908 0.447 0.191 ),
+  "error"               : ( "hex": #f23d52, "display-p3": 0.875 0.303 0.341 ),
+  "success-bg"          : ( "hex": #dcf7e4, "display-p3": 0.883 0.965 0.899 ),
+  "warning-bg"          : ( "hex": #fee1cf, "display-p3": 0.977 0.886 0.821 ),
+  "error-bg"            : ( "hex": #fcd8dc, "display-p3": 0.965 0.852 0.864 ),
+
+  "primary"             : ( "hex": #005e8d, "display-p3": 0.151 0.363 0.538 ),
+  "primary-hover"       : ( "hex": #1e517b, "display-p3": 0.173 0.313 0.469 ),
+  "primary-active"      : ( "hex": #396080, "display-p3": 0.259 0.373 0.491 ),
+  "primary-bg"          : ( "hex": #ccdfe8, "display-p3": 0.814 0.872 0.906 ),
+  "secondary"           : ( "hex": #5bc8d7, "display-p3": 0.471 0.775 0.834 ),
+  "secondary-bg"        : ( "hex": #def4f7, "display-p3": 0.887 0.954 0.966 ),
+  "tertiary"            : ( "hex": #47d1a1, "display-p3": 0.443 0.809 0.644 ),
+  "tertiary-bg"         : ( "hex": #daf6ec, "display-p3": 0.876 0.961 0.927 ),
+  "quaternary"          : ( "hex": #f2ff82, "display-p3": 0.958 0.998 0.576 ),
+  "quaternary-bg"       : ( "hex": #faffcd, "display-p3": 0.984 0.999 0.824 ),
+), $colors);
+
+/*
+PLEASE, don't delete this comment.
+This is needed to highlight colors in the IDE.
+
+--color-white: #fff;
+--color-primary-text: #3c3c3b;
+--color-secondary-text: #918f90;
+--color-border-default: #dedede;
+--color-border-hover: #bdbcbc;
+--color-background-dark: #041c3b;
+--color-background-promo: #ecf3fd;
+--color-tooltip-background: #ededed;
+--color-background-interface: #f8f8f8;
+--color-success: #2da182;
+--color-warning: #f89500;
+--color-error: #ec677a;
+--color-success-bg: #d5ece6;
+--color-warning-bg: #fef4e6;
+--color-error-bg: #fdf0f2;
+--color-primary: #005e8d;
+--color-primary-hover: #1e517b;
+--color-primary-active: #396080;
+--color-primary-bg: #ccdfe8;
+--color-secondary: #5bc8d7;
+--color-secondary-bg: #def4f7;
+--color-tertiary: #47d1a1;
+--color-tertiary-bg: #daf6ec;
+--color-quaternary: #f2ff82;
+--color-quaternary-bg: #faffcd;
+*/
+
+@function hexToRgb($hex) {
+  @return red($hex), green($hex), blue($hex);
+}
+
+:root {
+  @each $color in map.keys($colors) {
+    --color-#{$color}: #{map.get($colors, $color, "hex")};
+  }
+  --transition-duration: 0.25s;
+
+  --text-primary: var(--color-primary);
+  --text-secondary: var(--color-secondary-text);
+  --text-third: var(--color-primary-text);
+  --text-fourth: var(--color-white);
+  --text-fifth: var(--color-border-default);
+  --text-sixth: var(--color-secondary);
+  --text-seventh: var(--color-error);
+  --text-eighth: var(--color-success);
+  --text-ninth: var(--color-warning);
+  --text-tenth: var(--color-primary-hover);
+  --text-eleventh: var(--color-primary-active);
+  --text-twelfth: var(--color-tertiary);
+
+  --bg-primary: var(--color-white);
+  --bg-secondary: var(--color-primary);
+  --bg-third: var(--color-secondary);
+  --bg-fourth: var(--color-secondary-bg);
+  --bg-fifth: var(--color-primary-text);
+  --bg-sixth: var(--color-background-interface);
+  --bg-seventh: var(--color-tooltip-background);
+  --bg-eighth: var(--color-border-default);
+  --bg-ninth: var(--color-secondary-text);
+  --bg-tenth: var(--color-primary-bg);
+  --bg-eleventh: var(--color-primary-hover);
+  --bg-twelfth: var(--color-primary-active);
+  --bg-thirteenth: var(--color-success);
+  --bg-fourteenth: var(--color-warning-bg);
+  --bg-fifteenth: var(--color-error);
+  --bg-seventeenth: var(--color-error-bg);
+  --bg-sixteenth: var(--color-background-promo);
+  --bg-eighteenth: var(--color-success-bg);
+  --bg-nineteenth: var(--color-tertiary);
+  --bg-twentieth: var(--color-tertiary-bg);
+  --bg-twenty-first: var(--color-quaternary);
+  --bg-twenty-second: var(--color-quaternary-bg);
+
+  --border-primary: var(--color-border-default);
+  --border-secondary: var(--color-secondary-text);
+  --border-third: var(--color-white);
+  --border-fourth: var(--color-success);
+  --border-fifth: var(--color-primary-text);
+  --border-sixth: var(--color-border-hover);
+  --border-seventh: var(--color-secondary);
+  --border-eighth: var(--color-primary);
+  --border-ninth: var(--color-primary-bg);
+  --border-tenth: var(--color-warning);
+  --border-eleventh: var(--color-error);
+  --border-twelfth: var(--color-tooltip-background);
+  --border-thirteenth: var(--color-tertiary);
+  --border-fourteenth: var(--color-tertiary-bg);
+
+  --input-height-sm: 2.5rem;
+  --input-height-md: 3rem;
+
+  --backdrop-color: 58, 58, 58;
+}
+
+@media (color-gamut: p3) {
+  :root {
+    @each $color in map.keys($colors) {
+      --color-#{$color}: color(display-p3 #{map.get($colors, $color, "display-p3")});
+    }
+  }
+}

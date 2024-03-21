@@ -1,0 +1,152 @@
+@use "sass:map";
+
+:root {
+  --font-family-alt: "Montserrat", sans-serif;
+}
+
+body {
+  font-family: Montserrat, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+.text-h1 {
+  font-family: var(--font-family-alt);
+  font-size: 2.25rem;
+  font-weight: normal;
+  line-height: 1.33;
+
+  @media (max-width: 90rem) {
+    font-size: 1.875rem;
+    line-height: 1.2;
+  }
+}
+
+.text-h2 {
+  font-size: 1.875rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.text-h3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.33;
+}
+
+.text-h4 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.text-h5 {
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.56;
+}
+
+.text-h6 {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.56;
+}
+
+.text-base {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.43;
+}
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.font-normal {
+  font-weight: normal;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: bold;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+@each $color in map.keys($colors) {
+  .text-#{$color} {
+    color: var(--color-#{$color});
+  }
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.italic {
+  font-style: italic;
+}
+
+.whitespace-normal {
+  white-space: normal;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.text-body-s {
+  font-size: 0.875rem;
+  line-height: 1.25;
+  font-weight: normal;
+}
+.text-body-m {
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: normal;
+}
+.text-body-l {
+  font-size: 1.125rem;
+  line-height: 1.75;
+  font-weight: normal;
+}
+
+.text-button-s {
+  font-size: 0.875rem;
+  line-height: 1.25;
+  font-weight: 500;
+}
+.text-button-m {
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 500;
+}

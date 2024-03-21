@@ -1,0 +1,55 @@
+// padding
+@for $i from 0 through 8 {
+  .p-#{$i} {
+    $unit: if($i == 0, "", rem);
+    padding: #{calc($i / 4)}#{$unit};
+  }
+}
+
+// padding-inline
+@for $i from 0 through 8 {
+  .px-#{$i} {
+    $unit: if($i == 0, "", rem);
+    padding-inline: #{calc($i / 4)}#{$unit};
+  }
+}
+
+// padding-block
+@for $i from 0 through 8 {
+  .py-#{$i} {
+    $unit: if($i == 0, "", rem);
+    padding-block: #{calc($i / 4)}#{$unit};
+  }
+}
+
+// padding-top
+@for $i from 0 through 8 {
+  .pt-#{$i} {
+    $unit: if($i == 0, "", rem);
+    padding-top: #{calc($i / 4)}#{$unit};
+  }
+}
+
+// padding-right
+@for $i from 0 through 8 {
+  .pr-#{$i} {
+    $unit: if($i == 0, "", rem);
+    padding-right: #{calc($i / 4)}#{$unit};
+  }
+}
+
+// padding-bottom
+@for $i from 0 through 8 {
+  .pb-#{$i} {
+    $unit: if($i == 0, "", rem);
+    padding-bottom: #{calc($i / 4)}#{$unit};
+  }
+}
+
+// padding-left
+@for $i from 0 through 8 {
+  .pl-#{$i} {
+    $unit: if($i == 0, "", rem);
+    padding-left: #{calc($i / 4)}#{$unit};
+  }
+}

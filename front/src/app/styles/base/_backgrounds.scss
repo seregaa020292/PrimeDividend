@@ -1,0 +1,7 @@
+@use "sass:map";
+
+@each $color in map.keys($colors) {
+  .bg-#{$color} {
+    background-color: var(--color-#{$color});
+  }
+}

@@ -1,4 +1,4 @@
-import '@/assets/styles/style.scss'
+import '@/app/styles/index.scss'
 import 'element-plus/dist/index.css'
 
 import ElementPlus from 'element-plus'
@@ -15,7 +15,7 @@ export default class Application {
     this.app.use(router)
   }
 
-  mount(selector) {
+  mount(selector: Element) {
     this.app.mount(selector)
   }
 }
