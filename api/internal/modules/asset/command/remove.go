@@ -1,6 +1,8 @@
 package command
 
 import (
+	"context"
+
 	"github.com/google/uuid"
 
 	"primedividend/api/internal/decorators"
@@ -14,7 +16,7 @@ type (
 		UserID  uuid.UUID
 		AssetID uuid.UUID
 	}
-	Remove decorators.CommandHandler[PayloadRemove]
+	Remove decorators.CommandCtxHandler[PayloadRemove]
 )
 
 type remove struct {
@@ -29,8 +31,8 @@ func NewRemove(
 	}
 }
 
-func (c remove) Exec(cmd PayloadRemove) error {
-	exist, err := c.repository.HasByUser(cmd.AssetID, cmd.UserID)
+func (c remove) Exec(ctx context.Context, cmd PayloadRemove) error {
+	exist, err := c.repository.HasByUser(ctx, cmd.AssetID, cmd.UserID)
 	if err != nil {
 		return errs.BadRequest.Wrap(err, errmsg.FailedGetData)
 	}
@@ -39,7 +41,7 @@ func (c remove) Exec(cmd PayloadRemove) error {
 		return errs.BadRequest.Wrap(err, errmsg.ConfirmWhileMatching)
 	}
 
-	if err := c.repository.Remove(cmd.AssetID); err != nil {
+	if err := c.repository.Remove(ctx, cmd.AssetID); err != nil {
 		return errs.BadRequest.Wrap(err, errmsg.FailedDeleteData)
 	}
 

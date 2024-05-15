@@ -10,6 +10,7 @@ import (
 	"primedividend/api/internal/modules/market/service/quotes/providers"
 	"primedividend/api/pkg/db/postgres"
 	"primedividend/api/pkg/db/redis"
+	"primedividend/api/pkg/db/transaction"
 	"primedividend/api/pkg/graceful"
 	"primedividend/api/pkg/logger"
 	"primedividend/api/pkg/mailer"
@@ -26,6 +27,10 @@ func ProvideLogger(cfg config.Config) logger.Logger {
 
 func ProvidePostgres(cfg config.Config) *postgres.Postgres {
 	return postgres.NewPostgres(cfg.Postgres)
+}
+
+func ProvideTransactor(pq *postgres.Postgres) transaction.TxManager {
+	return transaction.New(pq.DB)
 }
 
 func ProvideRedis(cfg config.Config) *redis.Redis {

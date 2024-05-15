@@ -1,0 +1,64 @@
+:root {
+  /*========== Colors ==========*/
+  --color-1: linear-gradient(4.19deg, var(--color-blue) -17.59%, #05C0CC 115.3%);
+  --color-2: linear-gradient(304.64deg, rgba(130, 232, 255, 0.2) -19.82%, rgba(55, 159, 255, 0.2) 115.69%), rgba(255, 255, 255, 0.2);
+  --color-dark: #253142;
+  --color-glass: rgba(255, 255, 255, 0.04);
+  --color-white: #FFFFFF;
+  --color-gr: linear-gradient(4.19deg, rgba(97, 44, 247, 0.8) -17.59%, rgba(5, 192, 204, 0.8) 115.3%);
+  --color-violet-gr: linear-gradient(4.19deg, rgba(115, 17, 198, 0.8) -0.98%, rgba(132, 105, 209, 0.8) 89%);
+  --color-red: #FC4C4F;
+  --color-green-1: #73FFF2;
+  --color-green-2: #27AE60;
+  --color-yellow: #F2994A;
+  --color-violet: #6526AC;
+  --color-blue: #2C90F7;
+  --color-blue-gr: linear-gradient(173.81deg, var(--color-blue) 4.43%, #94B9FF 198%);
+  --color-icons: linear-gradient(90deg, #80D8FF 0%, #A167F6 100%);
+  --color-hover-button: linear-gradient(73.87deg, #057EFB 4.86%, #0DF0FF 97.42%);
+
+  /*========== Font and typography ==========*/
+  --font-family-body: 'Montserrat', sans-serif;
+
+  --font-size-h1: 40px;
+  --line-height-h1: 49px;
+  --font-size-h2: 32px;
+  --line-height-h2: 34px;
+  --font-size-h3: 26px;
+  --line-height-h3: 30px;
+  --font-size-h4: 22px;
+  --line-height-h4: 26px;
+
+  --font-size-subtitle-1: 20px;
+  --line-height-subtitle-1: 24px;
+  --font-size-subtitle-2: 16px;
+  --line-height-subtitle-2: 19px;
+  --font-size-subtitle-3: 15px;
+  --line-height-subtitle-3: 18px;
+  --font-size-subtitle-4: 13px;
+  --line-height-subtitle-4: 16px;
+  --font-size-body: 14px;
+  --line-height-body: 20px;
+  --font-size-caption: 12px;
+  --line-height-caption: 16px;
+
+  --letter-spacing-default: 0.02em;
+
+  /*========== Font weight ==========*/
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /*========== Shadow ==========*/
+  --box-shadow-inset-1: inset 0px 1px 2px rgba(239, 232, 232, 0.6);
+  --box-shadow-inset-2: inset 0px -4px 12px rgba(0, 0, 0, 0.22), var(--box-shadow-inset-1);
+
+  /*========== Blur ==========*/
+  --filter-blur-1: blur(2.5px);
+  --filter-blur-2: blur(10px);
+
+  /*========== Z index ==========*/
+  --z-tooltip: 10;
+  --z-fixed: 100;
+}
