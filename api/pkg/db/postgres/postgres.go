@@ -1,13 +1,16 @@
 package postgres
 
 import (
+	"context"
+	"database/sql"
 	"log"
 	"time"
 
-	_ "github.com/jackc/pgx/stdlib"
-	"github.com/jmoiron/sqlx"
+	"github.com/go-jet/jet/v2/qrm"
+	_ "github.com/lib/pq"
 
 	"primedividend/api/internal/config"
+	"primedividend/api/pkg/db/transaction"
 	"primedividend/api/pkg/utils/errlog"
 )
 
@@ -18,14 +21,19 @@ const (
 	connMaxIdleTime = 20 * time.Second
 )
 
+var (
+	_ qrm.Queryable  = (*Postgres)(nil)
+	_ qrm.Executable = (*Postgres)(nil)
+)
+
 type Postgres struct {
-	*sqlx.DB
+	*sql.DB
 }
 
 func NewPostgres(config config.Postgres) *Postgres {
 	log.Println("Start Postgres")
 
-	connect, err := sqlx.Connect("pgx", config.Dsn())
+	connect, err := sql.Open("postgres", config.Dsn())
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -46,4 +54,18 @@ func (p Postgres) Close() {
 	log.Println("Stop Postgres")
 
 	errlog.Println(p.DB.Close())
+}
+
+func (p Postgres) ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error) {
+	if tx := transaction.ExtractTx(ctx); tx != nil {
+		return tx.ExecContext(ctx, query, args...)
+	}
+	return p.DB.ExecContext(ctx, query, args)
+}
+
+func (p Postgres) QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
+	if tx := transaction.ExtractTx(ctx); tx != nil {
+		return tx.QueryContext(ctx, query, args...)
+	}
+	return p.DB.QueryContext(ctx, query, args...)
 }

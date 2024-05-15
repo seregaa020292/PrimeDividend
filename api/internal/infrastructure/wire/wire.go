@@ -23,6 +23,7 @@ func Initialize(ctx context.Context, cfg config.Config) server.Server {
 	wire.Build(
 		providers.ProvideLogger,
 		providers.ProvidePostgres,
+		providers.ProvideTransactor,
 		providers.ProvideRedis,
 		providers.ProvideMailerObserver,
 		providers.ProvideTemplate,

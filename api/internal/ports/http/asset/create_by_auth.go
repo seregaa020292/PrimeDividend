@@ -24,7 +24,7 @@ func (h HandlerAsset) CreateUserAsset(w http.ResponseWriter, r *http.Request, po
 		return
 	}
 
-	if err := h.commandCreate.Exec(command.PayloadCreate{
+	if err := h.commandCreate.Exec(r.Context(), command.PayloadCreate{
 		UserID:      user.ID,
 		PortfolioID: portfolioId,
 		Amount:      asset.Amount,

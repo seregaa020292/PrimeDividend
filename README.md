@@ -14,6 +14,3 @@ http://mailer.localhost
 
 ### Пользовательский интерфейс Swagger:
 http://swagger.localhost
-
-### Пользовательский интерфейс Swagger Editor:
-http://swagger-editor.localhost

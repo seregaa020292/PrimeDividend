@@ -17,7 +17,7 @@ func (h HandlerAsset) RemoveUserAsset(w http.ResponseWriter, r *http.Request, as
 		return
 	}
 
-	if err := h.commandRemove.Exec(command.PayloadRemove{
+	if err := h.commandRemove.Exec(r.Context(), command.PayloadRemove{
 		UserID:  user.ID,
 		AssetID: assetId,
 	}); err != nil {

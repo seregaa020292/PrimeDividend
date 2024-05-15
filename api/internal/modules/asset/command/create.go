@@ -1,6 +1,7 @@
 package command
 
 import (
+	"context"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,7 +22,7 @@ type (
 		MarketID    uuid.UUID
 		NotationAt  time.Time
 	}
-	Create decorators.CommandHandler[PayloadCreate]
+	Create decorators.CommandCtxHandler[PayloadCreate]
 )
 
 type create struct {
@@ -36,8 +37,8 @@ func NewCreate(
 	}
 }
 
-func (c create) Exec(cmd PayloadCreate) error {
-	if err := c.repository.Add(model.Assets{
+func (c create) Exec(ctx context.Context, cmd PayloadCreate) error {
+	if err := c.repository.Add(ctx, model.Assets{
 		Amount:      cmd.Amount,
 		Quantity:    cmd.Quantity,
 		PortfolioID: cmd.PortfolioID,

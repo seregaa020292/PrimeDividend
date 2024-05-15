@@ -1,6 +1,8 @@
 package query
 
 import (
+	"context"
+
 	"github.com/google/uuid"
 
 	"primedividend/api/internal/decorators"
@@ -15,7 +17,7 @@ type (
 		UserID      uuid.UUID
 		PortfolioID uuid.UUID
 	}
-	GetUserAll decorators.QueryHandler[PayloadUserAll, []model.Assets]
+	GetUserAll decorators.QueryCtxHandler[PayloadUserAll, []model.Assets]
 )
 
 type getUserAll struct {
@@ -30,8 +32,8 @@ func NewGetUserAll(
 	}
 }
 
-func (q getUserAll) Fetch(payload PayloadUserAll) ([]model.Assets, error) {
-	assets, err := q.repository.GetUserAll(payload.UserID, payload.PortfolioID)
+func (q getUserAll) Fetch(ctx context.Context, payload PayloadUserAll) ([]model.Assets, error) {
+	assets, err := q.repository.GetUserAll(ctx, payload.UserID, payload.PortfolioID)
 	if err != nil {
 		return nil, errs.NotFound.Wrap(err, errmsg.FailedGetData)
 	}

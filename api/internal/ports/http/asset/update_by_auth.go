@@ -24,7 +24,7 @@ func (h HandlerAsset) UpdateUserAsset(w http.ResponseWriter, r *http.Request, as
 		return
 	}
 
-	if err := h.commandEdit.Exec(command.PayloadUpdate{
+	if err := h.commandEdit.Exec(r.Context(), command.PayloadUpdate{
 		UserID:     user.ID,
 		AssetID:    assetId,
 		Quantity:   asset.Quantity,

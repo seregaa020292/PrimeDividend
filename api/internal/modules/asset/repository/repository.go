@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"context"
+
 	jet "github.com/go-jet/jet/v2/postgres"
 	"github.com/google/uuid"
 
@@ -10,11 +12,11 @@ import (
 )
 
 type Repository interface {
-	GetUserAll(userID, portfolioID uuid.UUID) ([]model.Assets, error)
-	HasByUser(id, userID uuid.UUID) (bool, error)
-	Add(asset model.Assets) error
-	Update(id uuid.UUID, patch UpdatePatch) error
-	Remove(id uuid.UUID) error
+	GetUserAll(ctx context.Context, userID, portfolioID uuid.UUID) ([]model.Assets, error)
+	HasByUser(ctx context.Context, id, userID uuid.UUID) (bool, error)
+	Add(ctx context.Context, asset model.Assets) error
+	Update(ctx context.Context, id uuid.UUID, patch UpdatePatch) error
+	Remove(ctx context.Context, id uuid.UUID) error
 }
 
 type repository struct {
@@ -25,7 +27,7 @@ func NewRepository(db *postgres.Postgres) Repository {
 	return repository{db: db}
 }
 
-func (r repository) GetUserAll(userID, portfolioID uuid.UUID) ([]model.Assets, error) {
+func (r repository) GetUserAll(_ context.Context, userID, portfolioID uuid.UUID) ([]model.Assets, error) {
 	var assets []model.Assets
 
 	stmt := jet.SELECT(table.Assets.AllColumns).
@@ -43,7 +45,7 @@ func (r repository) GetUserAll(userID, portfolioID uuid.UUID) ([]model.Assets, e
 	return assets, err
 }
 
-func (r repository) HasByUser(id, userID uuid.UUID) (bool, error) {
+func (r repository) HasByUser(_ context.Context, id, userID uuid.UUID) (bool, error) {
 	var dest struct {
 		Exists bool
 	}
@@ -68,7 +70,7 @@ func (r repository) HasByUser(id, userID uuid.UUID) (bool, error) {
 	return dest.Exists, err
 }
 
-func (r repository) Add(asset model.Assets) error {
+func (r repository) Add(ctx context.Context, asset model.Assets) error {
 	stmt := table.Assets.INSERT(
 		table.Assets.Amount,
 		table.Assets.Quantity,
@@ -77,26 +79,26 @@ func (r repository) Add(asset model.Assets) error {
 		table.Assets.NotationAt,
 	).MODEL(asset)
 
-	_, err := stmt.Exec(r.db)
+	_, err := stmt.ExecContext(ctx, r.db)
 
 	return err
 }
 
-func (r repository) Update(id uuid.UUID, patch UpdatePatch) error {
+func (r repository) Update(ctx context.Context, id uuid.UUID, patch UpdatePatch) error {
 	stmt := table.Assets.UPDATE().
 		SET(patch.Column(), patch.ColumnList()...).
 		WHERE(table.Assets.ID.EQ(jet.UUID(id)))
 
-	_, err := stmt.Exec(r.db)
+	_, err := stmt.ExecContext(ctx, r.db)
 
 	return err
 }
 
-func (r repository) Remove(id uuid.UUID) error {
+func (r repository) Remove(ctx context.Context, id uuid.UUID) error {
 	stmt := table.Assets.DELETE().
 		WHERE(table.Assets.ID.EQ(jet.UUID(id)))
 
-	_, err := stmt.Exec(r.db)
+	_, err := stmt.ExecContext(ctx, r.db)
 
 	return err
 }
