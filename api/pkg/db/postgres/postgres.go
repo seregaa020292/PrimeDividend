@@ -15,10 +15,10 @@ import (
 )
 
 const (
-	maxOpenConns    = 60
-	maxIdleConns    = 30
-	connMaxLifetime = 120 * time.Second
-	connMaxIdleTime = 20 * time.Second
+	maxOpenConns    = 25
+	maxIdleConns    = 10
+	connMaxLifetime = 30 * time.Minute
+	connMaxIdleTime = 5 * time.Minute
 )
 
 var (
