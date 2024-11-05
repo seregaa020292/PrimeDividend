@@ -60,7 +60,7 @@ func (p Postgres) ExecContext(ctx context.Context, query string, args ...any) (s
 	if tx := transaction.ExtractTx(ctx); tx != nil {
 		return tx.ExecContext(ctx, query, args...)
 	}
-	return p.DB.ExecContext(ctx, query, args)
+	return p.DB.ExecContext(ctx, query, args...)
 }
 
 func (p Postgres) QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
